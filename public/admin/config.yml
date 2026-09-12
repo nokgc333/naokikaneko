@@ -1,0 +1,19 @@
+backend:
+  name: github
+  repo: nokgc333/naokikaneko
+  branch: main
+  base_url: https://naokikaneko-xxx.vercel.app
+  auth_endpoint: api/decap-oauth/auth
+
+local_backend: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "name"
+    label: "label"
+    folder: "content/folder"
+    create: true
+    fields:
+      - { name: "title", label: "Title", widget: "string" }

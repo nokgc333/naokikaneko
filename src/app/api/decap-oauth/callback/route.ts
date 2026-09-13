@@ -44,6 +44,7 @@ export async function GET(request: Request) {
   const html = `
     <!doctype html>
     <html><body>
+    <p>Login successful. This window will close automatically.</p>
     <script>
       (function() {
         var expectedOrigin = ${JSON.stringify(expectedOrigin)};
@@ -56,6 +57,7 @@ export async function GET(request: Request) {
             e.origin
           );
           window.removeEventListener('message', receiveMessage, false);
+          window.close();
         }
         window.addEventListener('message', receiveMessage, false);
         window.opener.postMessage('authorizing:github', '*');

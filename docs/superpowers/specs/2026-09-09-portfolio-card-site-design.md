@@ -51,18 +51,26 @@
 
 ## データモデル
 
-`work` と `blog` は共通スキーマとする。フィールドは運用しながら随時追加可能な設計とする。
+`work` と `blog` は共通スキーマとする。フィールドは運用しながら随時追加可能な設計とする。（2026-09-13、Plan 2設計時に確定）
 
-- `date`
-- `title`
-- `slug`
-- `tags`
-- `thumbnail`
-- `url`
-- `description`
-- `body`（Markdown本文）
+| フィールド | Decap widget | 必須 | 備考 |
+|---|---|---|---|
+| `title` | string | 必須 | |
+| `slug` | string | 必須 | 手動入力。URLパス（`/work/[slug]`等）に使用。タイトル変更時もURLが変わらないようにするため自動生成にしない |
+| `date` | datetime | 必須 | 日付のみ（時刻は扱わない） |
+| `tags` | list | 任意 | 自由記入（事前定義の選択式にはしない） |
+| `thumbnail` | image | 任意 | 一覧・詳細ページで使用。未設定時はプレースホルダー表示 |
+| `url` | string | 任意 | 外部リンク（workの場合の公開先URL等） |
+| `description` | string | 必須 | 1行。一覧ページの説明文・OGPのmeta descriptionに使用 |
+| `body` | markdown | 必須 | Decap標準Markdownエディタ |
 
 profile情報（自己紹介・スキル等）はCMS管理せず、Top ページ内に直接記述する。
+
+## ページデザイン（Plan 2、2026-09-13確定）
+
+- `/work`, `/blog` 一覧: グリッド（カード並べ）レイアウト
+  - カード構成: サムネイル画像（あれば）+ タイトル + description + date + tags
+- `/work/[slug]`, `/blog/[slug]` 詳細: Markdown本文 + メタ情報（date, tags, url等）表示
 
 ## コンテンツ管理（Decap CMS）詳細
 

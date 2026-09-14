@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
 import { getEntry } from "@/lib/content";
-import { renderMarkdown } from "@/lib/markdown";
 
 export default async function BlogDetailPage({
   params,
@@ -14,8 +15,6 @@ export default async function BlogDetailPage({
     notFound();
   }
 
-  const html = await renderMarkdown(entry.body);
-
   return (
     <main className="mx-auto max-w-3xl p-8">
       <h1 className="text-3xl font-bold">{entry.title}</h1>
@@ -25,7 +24,13 @@ export default async function BlogDetailPage({
           <span key={tag}>{tag}</span>
         ))}
       </div>
-      <div className="prose mt-6" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="prose mt-6">
+        <MDXRemote
+          source={entry.body}
+          components={{}}
+          options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }}
+        />
+      </div>
     </main>
   );
 }

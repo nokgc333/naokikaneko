@@ -31,6 +31,7 @@ collections:
     folder: "content/blog"
     create: true
     slug: "{{fields.slug}}"
+    extension: "mdx"
     fields:
       - { name: "title", label: "Title", widget: "string" }
       - { name: "slug", label: "Slug", widget: "string", hint: "URLに使われます（例: my-post）" }

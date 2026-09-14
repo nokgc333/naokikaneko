@@ -1,4 +1,5 @@
 import { SiX, SiGithub, SiInstagram } from "react-icons/si";
+import ContactForm from "@/components/contact-form";
 
 const snsLinks = [
   { label: "GitHub", href: "#", Icon: SiGithub },
@@ -51,6 +52,7 @@ export default function Home() {
         <h2 className="text-2xl font-bold" lang="en">
           Contact
         </h2>
+        <ContactForm />
       </section>
     </main>
   );

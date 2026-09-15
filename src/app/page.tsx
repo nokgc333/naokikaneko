@@ -9,7 +9,7 @@ const snsLinks = [
 
 export default function Home() {
   return (
-    <main className="mx-auto flex max-w-3xl flex-col gap-24 p-8 py-24">
+    <main className="mx-auto w-full max-w-3xl flex flex-col gap-24 p-8 py-24">
       <section>
         <h1 className="text-[32px] font-bold" lang="en">
           Naoki Kaneko / Engineer

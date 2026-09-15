@@ -17,8 +17,17 @@ export default async function WorkDetailPage({
   const html = await renderMarkdown(entry.body);
 
   return (
-    <main className="mx-auto max-w-3xl p-8">
+    <main className="mx-auto w-full max-w-3xl p-8">
       <h1 className="text-3xl font-bold">{entry.title}</h1>
+      <hr className="my-6 border-border" />
+      {entry.thumbnail ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={entry.thumbnail}
+          alt={entry.title}
+          className="mt-4 aspect-video w-full object-cover"
+        />
+      ) : null}
       <div className="mt-2 flex flex-wrap gap-2 text-sm text-muted-foreground">
         <time>{entry.date}</time>
         {entry.tags.map((tag) => (

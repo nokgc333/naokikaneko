@@ -39,6 +39,9 @@ yarn-error.log*
 # internal docs (not published)
 /docs
 
+# local dev preview config
+/.claude
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

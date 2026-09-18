@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "cms:proxy": "decap-server"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -35,6 +36,7 @@
     "@vitest/coverage-v8": "^4.1.11",
     "babel-plugin-react-compiler": "1.0.0",
     "daisyui": "^5.7.39",
+    "decap-server": "^3.11.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.5",
     "jsdom": "^29.1.1",

@@ -2,7 +2,7 @@ backend:
   name: github
   repo: nokgc333/naokikaneko
   branch: main
-  base_url: https://naokikaneko-xxx.vercel.app
+  base_url: https://naokikaneko.vercel.app
   auth_endpoint: api/decap-oauth/auth
 
 local_backend: true

@@ -1,0 +1,10 @@
+---
+title: "Sample Post"
+slug: "sample-post"
+date: "2026-01-01"
+tags: ["Next.js", "TypeScript"]
+thumbnail: "/images/uploads/sample.svg"
+description: "動作確認用のサンプル記事"
+---
+
+サンプル本文。

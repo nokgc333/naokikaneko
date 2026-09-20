@@ -1,33 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
 import { getEntries } from "@/lib/content";
+import ContentCard from "@/components/content-card";
 
 export default function BlogPage() {
   const entries = getEntries("blog");
 
   return (
-    <main>
-      <h1>Blog</h1>
-      <div>
+    <main className="mx-auto w-full max-w-5xl p-8">
+      <h1 className="mb-6 text-3xl font-bold">Blog</h1>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {entries.map((entry) => (
-          <Link key={entry.slug} href={`/blog/${entry.slug}`}>
-            <Image
-              src={entry.thumbnail ?? "/images/placeholder.svg"}
-              alt={entry.title}
-              width={400}
-              height={225}
-            />
-            <div>
-              <h3>{entry.title}</h3>
-              <p>{entry.description}</p>
-              <div>
-                <time>{entry.date}</time>
-                {entry.tags.map((tag) => (
-                  <span key={tag}>{tag}</span>
-                ))}
-              </div>
-            </div>
-          </Link>
+          <ContentCard key={entry.slug} entry={entry} href={`/blog/${entry.slug}`} />
         ))}
       </div>
     </main>

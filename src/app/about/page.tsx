@@ -8,18 +8,24 @@ const snsLinks = [
 
 export default function About() {
   return (
-    <main>
+    <main className="mx-auto w-full max-w-3xl flex flex-col gap-24 p-8 py-24">
       <section>
-        <h1 lang="en">Naoki Kaneko / Engineer</h1>
-        <p>金子 直樹 / エンジニア</p>
-        <p>
+        <h1 className="text-[32px] font-bold" lang="en">
+          Naoki Kaneko / Engineer
+        </h1>
+        <p className="mt-2 text-base text-muted-foreground">
+          金子 直樹 / エンジニア
+        </p>
+        <p className="mt-8 leading-relaxed">
           （仮）自己紹介文。Lorem ipsum dolor sit, amet consectetur adipisicing elit. Maiores consequatur, aperiam nam dolorem quaerat odio autem maxime placeat molestiae dolorum. In repellendus repellat laborum quasi, est minima laudantium qui! Reiciendis.
         </p>
       </section>
 
       <section>
-        <h2 lang="en">Skill, Tools</h2>
-        <ul>
+        <h2 className="text-2xl font-bold" lang="en">
+          Skill, Tools
+        </h2>
+        <ul className="mt-6 list-disc space-y-1 pl-5">
           {["Skill A", "Skill B", "Skill C"].map((skill) => (
             <li key={skill} lang="en">
               {skill}
@@ -29,10 +35,12 @@ export default function About() {
       </section>
 
       <section>
-        <h2 lang="en">SNS</h2>
-        <div>
+        <h2 className="text-2xl font-bold" lang="en">
+          SNS
+        </h2>
+        <div className="mt-6 flex gap-6">
           {snsLinks.map(({ label, href, Icon }) => (
-            <a key={label} href={href} aria-label={label}>
+            <a key={label} href={href} aria-label={label} className="text-4xl">
               <Icon />
             </a>
           ))}
@@ -40,7 +48,9 @@ export default function About() {
       </section>
 
       <section>
-        <h2 lang="en">Contact</h2>
+        <h2 className="text-2xl font-bold" lang="en">
+          Contact
+        </h2>
       </section>
     </main>
   );

@@ -22,22 +22,28 @@ export default async function WorkDetailPage({
   const html = await renderMarkdown(entry.body);
 
   return (
-    <main>
+    <main className="mx-auto w-full max-w-3xl p-8">
+      <h1 className="text-3xl font-bold">{entry.title}</h1>
+      <hr className="my-6 border-border" />
       <Image
         src={entry.thumbnail ?? "/images/placeholder.svg"}
         alt={entry.title}
-        width={400}
-        height={225}
+        width={800}
+        height={450}
+        className="mt-4 aspect-video w-full object-cover"
       />
-      <h1>{entry.title}</h1>
-      <div>
+      <div className="mt-2 flex flex-wrap gap-2 text-sm text-muted-foreground">
         <time>{entry.date}</time>
         {entry.tags.map((tag) => (
           <span key={tag}>{tag}</span>
         ))}
       </div>
-      {entry.url ? <a href={entry.url}>{entry.url}</a> : null}
-      <div dangerouslySetInnerHTML={{ __html: html }} />
+      {entry.url ? (
+        <a href={entry.url} className="mt-4 inline-block text-primary underline">
+          {entry.url}
+        </a>
+      ) : null}
+      <div className="prose mt-6" dangerouslySetInnerHTML={{ __html: html }} />
     </main>
   );
 }

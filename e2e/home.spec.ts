@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('トップページのタイトルにnaokikaneko.comが含まれる', async ({ page }) => {
-  await page.goto('/');
-  await expect(page).toHaveTitle(/naokikaneko\.com/);
+test('Aboutページに見出しが表示される', async ({ page }) => {
+  await page.goto('/about');
+  await expect(page.getByRole('heading', { name: /naoki kaneko/i })).toBeVisible();
 });

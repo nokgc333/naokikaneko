@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { SiX, SiGithub, SiInstagram } from "react-icons/si";
 import ContactForm from "@/components/contact-form";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Naoki Kaneko | Profile・Skill",
+};
 
 const snsLinks = [
   { label: "GitHub", href: "#", Icon: SiGithub },

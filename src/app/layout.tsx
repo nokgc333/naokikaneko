@@ -14,8 +14,20 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "naokikaneko.com",
-  description: "portfolio website",
+  metadataBase: new URL("https://naokikaneko.vercel.app"),
+  title: {
+    default: "naokikaneko.com",
+    template: "%s | naokikaneko.com",
+  },
+  description: "Naoki Kaneko | Portfolio Website",
+  openGraph: {
+    siteName: "naokikaneko.com",
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

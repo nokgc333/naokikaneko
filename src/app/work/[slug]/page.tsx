@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getEntries, getEntry } from "@/lib/content";
@@ -5,6 +6,38 @@ import { renderMarkdown } from "@/lib/markdown";
 
 export function generateStaticParams() {
   return getEntries("work").map((entry) => ({ slug: entry.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const entry = getEntry("work", slug);
+
+  if (!entry) {
+    return {};
+  }
+
+  const image = entry.thumbnail ?? "/images/placeholder.svg";
+
+  return {
+    title: entry.title,
+    description: entry.description,
+    openGraph: {
+      title: entry.title,
+      description: entry.description,
+      type: "article",
+      images: [image],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: entry.title,
+      description: entry.description,
+      images: [image],
+    },
+  };
 }
 
 export default async function WorkDetailPage({

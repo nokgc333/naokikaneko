@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import { getEntries } from "@/lib/content";
 import ContentCard from "@/components/content-card";
+
+export const metadata: Metadata = {
+  title: "Blog",
+  description: "Naoki Kaneko | Tech Blog",
+};
 
 export default function BlogPage() {
   const entries = getEntries("blog");

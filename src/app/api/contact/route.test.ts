@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
+import { resetRateLimit } from "@/lib/rate-limit";
 
 const sendMock = vi.fn().mockResolvedValue({ data: { id: "test-id" }, error: null });
 
@@ -9,10 +10,10 @@ vi.mock("resend", () => ({
   }),
 }));
 
-function makeRequest(body: unknown) {
+function makeRequest(body: unknown, ip = "127.0.0.1") {
   return new Request("http://localhost:3000/api/contact", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", "x-forwarded-for": ip },
     body: JSON.stringify(body),
   });
 }
@@ -20,6 +21,7 @@ function makeRequest(body: unknown) {
 describe("POST /api/contact", () => {
   beforeEach(() => {
     sendMock.mockClear();
+    resetRateLimit();
     vi.stubEnv("RESEND_API_KEY", "test-key");
     vi.stubEnv("ADMIN_EMAIL", "admin@example.com");
   });
@@ -66,5 +68,27 @@ describe("POST /api/contact", () => {
 
     expect(response.status).toBe(200);
     expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("同一IPからの送信が上限回数を超えた場合、429を返す", async () => {
+    for (let i = 0; i < 5; i++) {
+      const response = await POST(
+        makeRequest(
+          { name: "Taro", email: "taro@example.com", message: "Hello" },
+          "9.9.9.9"
+        )
+      );
+      expect(response.status).toBe(200);
+    }
+
+    const response = await POST(
+      makeRequest(
+        { name: "Taro", email: "taro@example.com", message: "Hello" },
+        "9.9.9.9"
+      )
+    );
+
+    expect(response.status).toBe(429);
+    expect(sendMock).toHaveBeenCalledTimes(5);
   });
 });

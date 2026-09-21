@@ -1,7 +1,17 @@
 import { Resend } from "resend";
 import { contactFormSchema } from "@/lib/schemas/contact";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+
+  if (!checkRateLimit(ip)) {
+    return Response.json(
+      { error: "リクエストが多すぎます。時間をおいて再度お試しください" },
+      { status: 429 }
+    );
+  }
+
   const body = await request.json();
   const parsed = contactFormSchema.safeParse(body);
 

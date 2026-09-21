@@ -1,0 +1,85 @@
+---
+title: "MDX修飾"
+slug: "mdx-tailwindcss-cheatsheet"
+date: "2026-01-02"
+tags: ["MDX", "Tailwind CSS", "Cheatsheet"]
+description: "@tailwindcss/typographyの見た目を目視確認するためのMDX記法サンプル集"
+---
+
+## 見出し（h2）
+
+### 見出し（h3）
+
+#### 見出し（h4）
+
+##### 見出し（h5）
+
+###### 見出し（h6）
+
+## テキスト装飾
+
+通常の段落テキストです。**太字テキスト**、*斜体テキスト*、***太字＋斜体***、~~取り消し線~~、`インラインコード`を含みます。
+
+[リンクのサンプル](https://example.com)も本文中に混ぜてみます。
+
+## リスト
+
+### 箇条書き（ネスト含む）
+
+- リスト項目1
+- リスト項目2
+  - ネストされた項目2-1
+  - ネストされた項目2-2
+- リスト項目3
+
+### 番号付きリスト
+
+1. 最初の手順
+2. 次の手順
+   1. サブ手順A
+   2. サブ手順B
+3. 最後の手順
+
+### タスクリスト（GFM）
+
+- [x] 完了したタスク
+- [ ] 未完了のタスク
+
+## 引用
+
+> これは引用文です。複数行にまたがる場合の表示も確認します。
+> 2行目の引用テキストです。
+
+## コードブロック
+
+```ts
+type Entry = {
+  title: string;
+  slug: string;
+};
+
+function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+```
+
+## テーブル（GFM）
+
+| 項目 | 説明 | 対応状況 |
+| --- | --- | --- |
+| 見出し | h2〜h6 | ✅ |
+| リスト | 箇条書き・番号付き・タスク | ✅ |
+| テーブル | GFM記法 | ✅ |
+| 画像 | サムネイル含む | ✅ |
+
+## 水平線
+
+---
+
+## 画像
+
+![サンプル画像](/images/placeholder.svg)
+
+## 長い文章の折り返し確認
+
+Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores consequatur, aperiam nam dolorem quaerat odio autem maxime placeat molestiae dolorum. In repellendus repellat laborum quasi, est minima laudantium qui! Reiciendis quia, eius voluptates quae accusantium fugit ratione.

@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
+import rehypeSanitize from "rehype-sanitize";
 import { getEntries, getEntry } from "@/lib/content";
-import { renderMarkdown } from "@/lib/markdown";
 
 export function generateStaticParams() {
   return getEntries("blog").map((entry) => ({ slug: entry.slug }));
@@ -18,8 +20,6 @@ export default async function BlogDetailPage({
   if (!entry) {
     notFound();
   }
-
-  const html = await renderMarkdown(entry.body);
 
   return (
     <main className="mx-auto w-full max-w-3xl p-8">
@@ -38,7 +38,18 @@ export default async function BlogDetailPage({
           <span key={tag}>{tag}</span>
         ))}
       </div>
-      <div className="prose mt-6" dangerouslySetInnerHTML={{ __html: html }} />
+      <div className="prose mt-6">
+        <MDXRemote
+          source={entry.body}
+          components={{}}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+              rehypePlugins: [rehypeSanitize],
+            },
+          }}
+        />
+      </div>
     </main>
   );
 }

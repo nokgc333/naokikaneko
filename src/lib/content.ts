@@ -12,7 +12,9 @@ export function getEntries(collection: Collection): ContentEntry[] {
     return [];
   }
 
-  const files = fs.readdirSync(dir).filter((file) => file.endsWith(".md"));
+  const files = fs
+    .readdirSync(dir)
+    .filter((file) => file.endsWith(".md") || file.endsWith(".mdx"));
 
   const entries = files.map((file) => {
     const raw = fs.readFileSync(path.join(dir, file), "utf-8");

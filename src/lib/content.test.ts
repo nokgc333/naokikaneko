@@ -40,6 +40,18 @@ describe("getEntries", () => {
     const entries = getEntries("blog");
     expect(entries).toEqual([]);
   });
+
+  it(".mdxファイルも読み込む", () => {
+    fs.writeFileSync(
+      path.join(tempDir, "content", "work", "mdx-entry.mdx"),
+      `---\ntitle: MDX Entry\nslug: mdx-entry\ndate: "2025-06-01"\ndescription: mdx entry\n---\nMDX body`
+    );
+
+    const entries = getEntries("work");
+
+    expect(entries).toHaveLength(1);
+    expect(entries[0].slug).toBe("mdx-entry");
+  });
 });
 
 describe("getEntry", () => {

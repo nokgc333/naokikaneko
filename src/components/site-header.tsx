@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiGithub } from "react-icons/si";
+import { SiX, SiGithub, SiNote } from "react-icons/si";
 
 const navLinks = [
   { label: "About", href: "/about" },
@@ -9,6 +9,8 @@ const navLinks = [
 
 const snsLinks = [
   { label: "GitHub", href: "#", Icon: SiGithub },
+  { label: "note", href: "#", Icon: SiNote, className: "scale-85" },
+  { label: "X", href: "#", Icon: SiX, className: "scale-90" },
 ];
 
 export default function SiteHeader() {
@@ -24,9 +26,14 @@ export default function SiteHeader() {
           </Link>
         ))}
       </nav>
-      <div className="ml-auto flex items-center gap-4">
-        {snsLinks.map(({ label, href, Icon }) => (
-          <a key={label} href={href} aria-label={label} className="text-[31.5px]">
+      <div className="ml-auto flex items-center gap-6">
+        {snsLinks.map(({ label, href, Icon, className }) => (
+          <a
+            key={label}
+            href={href}
+            aria-label={label}
+            className={`text-[31.5px] ${className ?? ""}`}
+          >
             <Icon />
           </a>
         ))}

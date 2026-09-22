@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import SiteHeader from "@/components/site-header";
+import SiteFooter from "@/components/site-footer";
 import ContactWidget from "@/components/contact-widget";
 import "./globals.css";
 
@@ -39,7 +40,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <SiteHeader />
-        <div className="pt-20">{children}</div>
+        <div className="flex-1 pb-10 pt-20">{children}</div>
+        <SiteFooter />
         <ContactWidget />
       </body>
     </html>

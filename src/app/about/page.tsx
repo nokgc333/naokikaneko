@@ -14,8 +14,8 @@ const snsLinks = [
 
 export default function About() {
   return (
-    <main className="mx-auto w-full max-w-6xl p-8 lg:flex lg:min-h-[calc(100vh-5rem)] lg:items-center">
-      <div className="flex w-full flex-col gap-8 lg:-translate-y-[20px]">
+    <main className="mx-auto w-full max-w-6xl p-6 lg:flex lg:min-h-[calc(100vh-7.5rem)] lg:items-center">
+      <div className="flex w-full flex-col gap-7 lg:-translate-y-[20px]">
         <section>
           <h1 className="text-[32px] font-bold" lang="en">
             Naoki Kaneko / Engineer

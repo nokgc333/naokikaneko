@@ -6,12 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { contactFormSchema, type ContactFormData } from "@/lib/schemas/contact";
 
 export default function ContactForm() {
-  const [
-    status,
-    setStatus,
-  ] = useState<"idle" | "sending" | "sent" | "error">(
-    "idle",
-  );
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const {
     register,
     handleSubmit,
@@ -37,7 +32,7 @@ export default function ContactForm() {
   }
 
   if (status === "sent") {
-    return <p>送信しました</p>;
+    return <p className="mt-7 pl-6">送信しました</p>;
   }
 
   return (

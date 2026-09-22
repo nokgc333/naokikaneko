@@ -14,8 +14,8 @@ const snsLinks = [
 
 export default function About() {
   return (
-    <main className="mx-auto w-full max-w-6xl p-6 lg:flex lg:min-h-[calc(100vh-7.5rem)] lg:items-center">
-      <div className="flex w-full flex-col gap-7 lg:-translate-y-[20px]">
+    <main className="mx-auto w-full max-w-6xl px-6 py-6 lg:flex lg:min-h-[calc(100vh-7.5rem)] lg:items-center lg:px-10">
+      <div className="flex w-full flex-col gap-7">
         <section>
           <h1 className="text-[32px] font-bold" lang="en">
             Naoki Kaneko / Engineer
@@ -30,7 +30,7 @@ export default function About() {
             銀行営業職の法人融資・金融商品担当として勤務後、オーストラリアでの海外就労経験を経てシステム開発職へ従事。
           </p>
           <p className="mt-3 leading-relaxed">
-            Webアプリケーション開発を通じたユーザーの業務効率化支援や、3D制作ソフトツール開発を通じたクリエイターの制作効率化支援など、<br />幅広いアプローチによる課題解決を探求している。
+            Webアプリケーション開発を通じたユーザーの業務効率化支援や、3D制作ソフトツール開発を通じたクリエイターの制作効率化支援など、<br className="hidden lg:block" />幅広いアプローチによる課題解決を探求している。
           </p>
         </section>
 

@@ -15,8 +15,8 @@ const snsLinks = [
 
 export default function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-20 items-center gap-6 border-b border-border bg-background px-10">
-      <Link href="/about" className="text-lg font-bold tracking-wide" lang="en">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-20 items-center gap-4 border-b border-border bg-background px-6 lg:gap-6 lg:px-10">
+      <Link href="/about" className="whitespace-nowrap text-lg font-bold tracking-wide" lang="en">
         NAOKI KANEKO
       </Link>
       <nav className="flex gap-6">
@@ -26,7 +26,7 @@ export default function SiteHeader() {
           </Link>
         ))}
       </nav>
-      <div className="ml-auto flex items-center gap-6">
+      <div className="ml-auto hidden items-center gap-6 lg:flex">
         {snsLinks.map(({ label, href, Icon, className }) => (
           <a
             key={label}

@@ -9,8 +9,10 @@ export default function ContactWidget() {
 
   return (
     <div
-      className={`fixed bottom-8 right-8 z-50 overflow-y-auto border border-border bg-background shadow-lg ${
-        isOpen ? "h-[648px] w-[486px] rounded-2xl p-6" : "h-16 w-16 rounded-full"
+      className={`fixed z-50 overflow-y-auto border border-border bg-background shadow-lg ${
+        isOpen
+          ? "inset-x-4 top-24 bottom-16 rounded-2xl p-6 sm:inset-x-auto sm:bottom-8 sm:top-auto sm:right-8 sm:h-[648px] sm:w-[486px]"
+          : "bottom-8 right-8 h-16 w-16 rounded-full"
       }`}
     >
       {isOpen ? (

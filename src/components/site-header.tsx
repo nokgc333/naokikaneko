@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SiX, SiGithub, SiNote } from "react-icons/si";
+import { SiGithub } from "react-icons/si";
 
 const navLinks = [
   { label: "About", href: "/about" },
@@ -8,9 +8,7 @@ const navLinks = [
 ];
 
 const snsLinks = [
-  { label: "GitHub", href: "#", Icon: SiGithub },
-  { label: "note", href: "#", Icon: SiNote, className: "scale-85" },
-  { label: "X", href: "#", Icon: SiX, className: "scale-90" },
+  { label: "GitHub", href: "https://github.com/nokgc333", Icon: SiGithub },
 ];
 
 export default function SiteHeader() {
@@ -26,13 +24,14 @@ export default function SiteHeader() {
           </Link>
         ))}
       </nav>
-      <div className="ml-auto hidden items-center gap-6 lg:flex">
-        {snsLinks.map(({ label, href, Icon, className }) => (
+      <div className="ml-auto hidden items-center gap-6 lg:flex text-[31.5px]">
+        {snsLinks.map(({ label, href, Icon }) => (
           <a
             key={label}
             href={href}
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label={label}
-            className={`text-[31.5px] ${className ?? ""}`}
           >
             <Icon />
           </a>

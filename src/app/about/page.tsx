@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SiX, SiGithub, SiNote } from "react-icons/si";
+import { SiGithub } from "react-icons/si";
 
 export const metadata: Metadata = {
   title: "About",
@@ -7,9 +7,17 @@ export const metadata: Metadata = {
 };
 
 const snsLinks = [
-  { label: "GitHub", href: "#", Icon: SiGithub },
-  { label: "note", href: "#", Icon: SiNote, className: "scale-85" },
-  { label: "X", href: "#", Icon: SiX, className: "scale-90" },
+  { label: "GitHub", href: "https://github.com/nokgc333", Icon: SiGithub },
+];
+
+const skills = [
+  "3D制作ソフト ツール開発（Python, VEX）",
+  "Webアプリケーション開発（HTML/CSS, JavaScript, TypeScript）",
+];
+
+const certifications = [
+  "Python 3 エンジニア認定データ分析試験",
+  "2級ファイナンシャル・プランニング技能士",
 ];
 
 export default function About() {
@@ -39,7 +47,7 @@ export default function About() {
             Skill, Tools
           </h2>
           <ul className="mt-6 list-disc space-y-1 pl-5">
-            {["Skill A", "Skill B", "Skill C"].map((skill) => (
+            {skills.map((skill) => (
               <li key={skill} lang="en">
                 {skill}
               </li>
@@ -52,7 +60,7 @@ export default function About() {
             Certifications
           </h2>
           <ul className="mt-6 list-disc space-y-1 pl-5">
-            {["Certification A", "Certification B", "Certification C"].map((certification) => (
+            {certifications.map((certification) => (
               <li key={certification} lang="en">
                 {certification}
               </li>
@@ -65,15 +73,16 @@ export default function About() {
             Contact
           </h2>
           <p className="mt-6">
-            <a href="mailto:xxxyyyzzz@gmail.com">✉︎ xxxyyyzzz@gmail.com</a>
+            <a href="mailto:naokikaneko333@gmail.com">✉︎ naokikaneko333@gmail.com</a>
           </p>
-          <div className="mt-6 flex gap-6">
-            {snsLinks.map(({ label, href, Icon, className }) => (
+          <div className="mt-6 flex gap-6 text-4xl">
+            {snsLinks.map(({ label, href, Icon }) => (
               <a
                 key={label}
                 href={href}
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label={label}
-                className={`text-4xl ${className ?? ""}`}
               >
                 <Icon />
               </a>

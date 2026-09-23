@@ -18,6 +18,9 @@ describe("SiteHeader", () => {
 
   it("GitHubアイコンのリンクを持つ", () => {
     render(<SiteHeader />);
-    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "#");
+    const githubLink = screen.getByRole("link", { name: "GitHub" });
+    expect(githubLink).toHaveAttribute("href", "https://github.com/nokgc333");
+    expect(githubLink).toHaveAttribute("target", "_blank");
+    expect(githubLink).toHaveAttribute("rel", "noopener noreferrer");
   });
 });

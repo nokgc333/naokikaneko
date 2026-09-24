@@ -22,10 +22,10 @@ const certifications = [
 
 export default function About() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-6 lg:flex lg:min-h-[calc(100vh-7.5rem)] lg:items-center lg:px-10">
+    <main className="mx-auto w-full max-w-6xl p-8 lg:px-10">
       <div className="flex w-full flex-col gap-7">
         <section>
-          <h1 className="text-[32px] font-bold" lang="en">
+          <h1 className="mb-7 text-3xl font-bold" lang="en">
             Naoki Kaneko / Engineer
           </h1>
           <p className="mt-2 text-base text-muted-foreground">

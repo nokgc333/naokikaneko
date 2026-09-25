@@ -1,5 +1,5 @@
 import { getEntries } from "@/lib/content";
-import WorkFilter from "@/components/work-filter";
+import CategoryFilter from "@/components/category-filter";
 
 export default function Home() {
   const entries = getEntries("work");
@@ -7,7 +7,13 @@ export default function Home() {
   return (
     <main className="mx-auto w-full max-w-5xl p-8">
       <h1 className="mb-7 text-3xl font-bold">Work</h1>
-      <WorkFilter entries={entries} />
+      <CategoryFilter
+        entries={entries}
+        hrefPrefix="/work"
+        cardType="work"
+        defaultFilter="Tool"
+        gridClassName="grid-cols-1 gap-6 sm:grid-cols-2"
+      />
     </main>
   );
 }

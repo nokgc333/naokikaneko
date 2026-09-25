@@ -47,3 +47,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local dummy content for layout testing (not real content)
+content/work/dummy-*.md
+content/blog/dummy-*.mdx
+public/images/uploads/dummy/

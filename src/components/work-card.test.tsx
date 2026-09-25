@@ -8,7 +8,7 @@ const entry: ContentEntry = {
   slug: "sample-project",
   date: "2025-06-01",
   tags: ["Next.js", "TypeScript"],
-  category: "Tools",
+  category: "Tool",
   description: "A sample project description",
   body: "",
 };

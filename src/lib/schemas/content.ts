@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const workCategories = ["Tools", "HDA", "HP", "Others"] as const;
+export const workCategories = ["Tool", "HDA", "HP", "Others"] as const;
 export type WorkCategory = (typeof workCategories)[number];
 
 export const contentFrontmatterSchema = z.object({

@@ -3,20 +3,35 @@
 import { useState } from "react";
 import type { ContentEntry } from "@/lib/schemas/content";
 import { workCategories } from "@/lib/schemas/content";
+import ContentCard from "@/components/content-card";
 import WorkCard from "@/components/work-card";
 
 type FilterValue = "All" | (typeof workCategories)[number];
 
 const filters: FilterValue[] = ["All", ...workCategories];
 
-const DEFAULT_FILTER: FilterValue = "Tools";
-
-type WorkFilterProps = {
-  entries: ContentEntry[];
+const cardComponents = {
+  work: WorkCard,
+  blog: ContentCard,
 };
 
-export default function WorkFilter({ entries }: WorkFilterProps) {
-  const [activeFilter, setActiveFilter] = useState<FilterValue>(DEFAULT_FILTER);
+type CategoryFilterProps = {
+  entries: ContentEntry[];
+  hrefPrefix: string;
+  cardType: keyof typeof cardComponents;
+  defaultFilter?: FilterValue;
+  gridClassName?: string;
+};
+
+export default function CategoryFilter({
+  entries,
+  hrefPrefix,
+  cardType,
+  defaultFilter = "All",
+  gridClassName = "grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
+}: CategoryFilterProps) {
+  const [activeFilter, setActiveFilter] = useState<FilterValue>(defaultFilter);
+  const CardComponent = cardComponents[cardType];
 
   const filteredEntries =
     activeFilter === "All" ? entries : entries.filter((entry) => entry.category === activeFilter);
@@ -40,9 +55,9 @@ export default function WorkFilter({ entries }: WorkFilterProps) {
           </button>
         ))}
       </nav>
-      <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className={`mt-6 grid ${gridClassName}`}>
         {filteredEntries.map((entry) => (
-          <WorkCard key={entry.slug} entry={entry} href={`/work/${entry.slug}`} />
+          <CardComponent key={entry.slug} entry={entry} href={`${hrefPrefix}/${entry.slug}`} />
         ))}
       </div>
     </div>

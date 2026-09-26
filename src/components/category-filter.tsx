@@ -28,7 +28,7 @@ export default function CategoryFilter({
   hrefPrefix,
   cardType,
   defaultFilter = "All",
-  gridClassName = "grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
+  gridClassName = "grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3",
 }: CategoryFilterProps) {
   const [activeFilter, setActiveFilter] = useState<FilterValue>(defaultFilter);
   const CardComponent = cardComponents[cardType];
@@ -55,7 +55,7 @@ export default function CategoryFilter({
           </button>
         ))}
       </nav>
-      <div className={`mt-6 grid ${gridClassName}`}>
+      <div className={`mt-4 grid ${gridClassName}`}>
         {filteredEntries.map((entry) => (
           <CardComponent key={entry.slug} entry={entry} href={`${hrefPrefix}/${entry.slug}`} />
         ))}

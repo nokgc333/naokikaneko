@@ -55,7 +55,7 @@ export default async function WorkDetailPage({
   const html = await renderMarkdown(entry.body);
 
   return (
-    <main className="mx-auto w-full max-w-3xl p-8">
+    <main className="mx-auto w-full max-w-4xl px-8 py-9">
       <h1 className="text-3xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />
       <Image
@@ -63,12 +63,12 @@ export default async function WorkDetailPage({
         alt={entry.title}
         width={800}
         height={450}
-        className="mt-4 aspect-video w-full object-cover"
+        className="mx-auto mt-4 h-[378px] w-full object-cover"
       />
-      <div className="mt-2 flex flex-wrap gap-2 text-sm text-muted-foreground">
+      <div className="mt-6 flex flex-wrap gap-2 text-sm text-muted-foreground">
         <time>{entry.date}</time>
         {entry.tags.map((tag) => (
-          <span key={tag}>{tag}</span>
+          <span key={tag}>#{tag}</span>
         ))}
       </div>
       {entry.url ? (

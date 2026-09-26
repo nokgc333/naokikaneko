@@ -9,23 +9,21 @@ type ContentCardProps = {
 
 export default function ContentCard({ entry, href }: ContentCardProps) {
   return (
-    <Link href={href} className="block border border-border hover:bg-muted">
+    <Link href={href} className="group relative block h-[288px] overflow-hidden border border-border">
       <Image
         src={entry.thumbnail ?? "/images/placeholder.svg"}
         alt={entry.title}
-        width={800}
-        height={450}
-        className="aspect-video w-full object-cover"
+        fill
+        className="object-cover transition-transform duration-[500ms] ease-out group-hover:scale-110"
       />
-      <div className="p-4">
-        <h3 className="line-clamp-1 text-lg font-semibold">{entry.title}</h3>
-        <p className="mt-1 line-clamp-2 min-h-10 text-sm text-muted-foreground">
-          {entry.description}
-        </p>
-        <div className="mt-2 flex flex-wrap gap-2 text-xs text-muted-foreground">
+      <div className="absolute inset-x-0 bottom-0 bg-background/60 p-2 backdrop-blur-sm transition-colors duration-500 ease-out group-hover:bg-black/80">
+        <h3 className="line-clamp-1 text-base font-semibold group-hover:text-white">
+          {entry.title}
+        </h3>
+        <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground group-hover:text-white">
           <time>{entry.date}</time>
           {entry.tags.map((tag) => (
-            <span key={tag}>{tag}</span>
+            <span key={tag}>#{tag}</span>
           ))}
         </div>
       </div>

@@ -22,31 +22,31 @@ const certifications = [
 
 export default function About() {
   return (
-    <main className="mx-auto w-full max-w-6xl p-8 lg:px-10">
-      <div className="flex w-full flex-col gap-7">
+    <main className="mx-auto w-full max-w-7xl px-8 py-9">
+      <div className="flex w-full flex-col gap-8">
         <section>
-          <h1 className="mb-7 text-3xl font-bold" lang="en">
+          <h1 className="mb-2 text-3xl font-bold" lang="en">
             Naoki Kaneko / Engineer
           </h1>
-          <p className="mt-2 text-base text-muted-foreground">
+          <p className="mb-6 text-base text-muted-foreground">
             金子 直樹 / エンジニア
           </p>
-          <p className="mt-7 leading-relaxed">
+          <p className="mb-2 leading-relaxed">
             1997年生まれ。千葉県出身。東京都在住。
           </p>
-          <p className="mt-3 leading-relaxed">
+          <p className="mb-2 leading-relaxed">
             銀行営業職の法人融資・金融商品担当として勤務後、オーストラリアでの海外就労経験を経てシステム開発職へ従事。
           </p>
-          <p className="mt-3 leading-relaxed">
+          <p className="leading-relaxed">
             Webアプリケーション開発を通じたユーザーの業務効率化支援や、3D制作ソフトツール開発を通じたクリエイターの制作効率化支援など、<br className="hidden lg:block" />幅広いアプローチによる課題解決を探求している。
           </p>
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold" lang="en">
+          <h2 className="mb-6 text-2xl font-bold" lang="en">
             Skill, Tools
           </h2>
-          <ul className="mt-6 list-disc space-y-1 pl-5">
+          <ul className="list-disc space-y-1 pl-5">
             {skills.map((skill) => (
               <li key={skill} lang="en">
                 {skill}
@@ -56,10 +56,10 @@ export default function About() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold" lang="en">
+          <h2 className="mb-6 text-2xl font-bold" lang="en">
             Certifications
           </h2>
-          <ul className="mt-6 list-disc space-y-1 pl-5">
+          <ul className="list-disc space-y-1 pl-5">
             {certifications.map((certification) => (
               <li key={certification} lang="en">
                 {certification}
@@ -69,13 +69,10 @@ export default function About() {
         </section>
 
         <section>
-          <h2 className="text-2xl font-bold" lang="en">
-            Contact
+          <h2 className="mb-6 text-2xl font-bold" lang="en">
+            SNS
           </h2>
-          <p className="mt-6">
-            <a href="mailto:naokikaneko333@gmail.com">✉︎ naokikaneko333@gmail.com</a>
-          </p>
-          <div className="mt-6 flex gap-6 text-4xl">
+          <div className="flex gap-6 text-4xl">
             {snsLinks.map(({ label, href, Icon }) => (
               <a
                 key={label}
@@ -88,6 +85,15 @@ export default function About() {
               </a>
             ))}
           </div>
+        </section>
+
+        <section>
+          <h2 className="mb-6 text-2xl font-bold" lang="en">
+            Contact
+          </h2>
+          <p className="">
+            <a href="mailto:naokikaneko333@gmail.com">✉︎ naokikaneko333@gmail.com</a>
+          </p>
         </section>
       </div>
     </main>

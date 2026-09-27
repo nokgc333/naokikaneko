@@ -13,13 +13,13 @@ const snsLinks = [
 
 export default function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 flex h-20 items-center gap-4 border-b border-border bg-background px-6 lg:gap-6 lg:px-10">
+    <header className="fixed inset-x-0 top-0 z-50 flex h-20 items-center gap-4 lg:gap-6 border-b border-border bg-background px-5 lg:px-10">
       <Link href="/about" className="whitespace-nowrap text-lg font-bold tracking-wide" lang="en">
         NAOKI KANEKO
       </Link>
       <nav className="flex gap-6">
         {navLinks.map((link) => (
-          <Link key={link.href} href={link.href} className="text-sm font-medium" lang="en">
+          <Link key={link.href} href={link.href} className="text-sm font-light" lang="en">
             {link.label}
           </Link>
         ))}

@@ -55,15 +55,15 @@ export default async function WorkDetailPage({
   const html = await renderMarkdown(entry.body);
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-8 py-9">
-      <h1 className="text-3xl font-bold">{entry.title}</h1>
+    <main className="mx-auto w-full max-w-4xl px-5 lg:px-10 py-6 lg:py-9">
+      <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />
       <Image
         src={entry.thumbnail ?? "/images/placeholder.svg"}
         alt={entry.title}
         width={800}
         height={450}
-        className="mx-auto mt-4 h-[378px] w-full object-cover"
+        className="mx-auto mt-4 h-auto w-full object-contain"
       />
       <div className="mt-6 flex flex-wrap gap-2 text-sm text-muted-foreground">
         <time>{entry.date}</time>
@@ -76,7 +76,10 @@ export default async function WorkDetailPage({
           {entry.url}
         </a>
       ) : null}
-      <div className="prose mt-6" dangerouslySetInnerHTML={{ __html: html }} />
+      <div
+        className="prose mt-6 w-full [&_img]:mx-auto [&_img]:block"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
     </main>
   );
 }

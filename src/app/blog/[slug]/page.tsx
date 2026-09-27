@@ -4,7 +4,10 @@ import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
+import rehypeSlug from "rehype-slug";
 import { getEntries, getEntry } from "@/lib/content";
+import { extractHeadings } from "@/lib/toc";
+import TableOfContents from "@/components/table-of-contents";
 
 export function generateStaticParams() {
   return getEntries("blog").map((entry) => ({ slug: entry.slug }));
@@ -54,16 +57,19 @@ export default async function BlogDetailPage({
     notFound();
   }
 
+  const headings = extractHeadings(entry.body);
+
   return (
-    <main className="mx-auto w-full max-w-4xl px-8 py-9">
-      <h1 className="text-3xl font-bold">{entry.title}</h1>
+    <main className="mx-auto w-full max-w-4xl px-5 lg:px-10 py-6 lg:py-9">
+      <TableOfContents headings={headings} />
+      <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />
       <Image
         src={entry.thumbnail ?? "/images/placeholder.svg"}
         alt={entry.title}
         width={800}
         height={450}
-        className="mx-auto mt-4 h-[378px] w-full object-cover"
+        className="mx-auto mt-4 h-auto w-full object-contain"
       />
       <div className="mt-6 flex flex-wrap gap-2 text-sm text-muted-foreground">
         <time>{entry.date}</time>
@@ -71,14 +77,14 @@ export default async function BlogDetailPage({
           <span key={tag}>#{tag}</span>
         ))}
       </div>
-      <div className="prose mt-6">
+      <div className="prose mt-6 max-w-4xl [&_img]:mx-auto [&_img]:block">
         <MDXRemote
           source={entry.body}
           components={{}}
           options={{
             mdxOptions: {
               remarkPlugins: [remarkGfm],
-              rehypePlugins: [rehypeSanitize],
+              rehypePlugins: [rehypeSlug, rehypeSanitize],
             },
           }}
         />

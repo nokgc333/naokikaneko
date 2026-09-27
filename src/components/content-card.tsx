@@ -15,7 +15,7 @@ export default function ContentCard({ entry, href }: ContentCardProps) {
           src={entry.thumbnail ?? "/images/placeholder.svg"}
           alt={entry.title}
           fill
-          className="object-contain transition-transform duration-[500ms] ease-out group-hover:scale-110 [@container(max-aspect-ratio:800/450)]:object-cover"
+          className="object-contain [@container(max-aspect-ratio:800/450)]:object-cover"
         />
       </div>
       <div className="bg-background/60 p-2 backdrop-blur-sm transition-colors duration-500 ease-out group-hover:bg-black/80">

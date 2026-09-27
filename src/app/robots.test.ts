@@ -10,6 +10,6 @@ describe("robots", () => {
       allow: "/",
       disallow: "/admin",
     });
-    expect(result.sitemap).toBe("https://naokikaneko.vercel.app/sitemap.xml");
+    expect(result.sitemap).toBe("https://naokikaneko.com/sitemap.xml");
   });
 });

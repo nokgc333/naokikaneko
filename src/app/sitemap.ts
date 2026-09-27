@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getEntries } from "@/lib/content";
 
-const baseUrl = "https://naokikaneko.vercel.app";
+const baseUrl = "https://naokikaneko.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [

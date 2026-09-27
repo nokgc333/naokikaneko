@@ -23,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://naokikaneko.vercel.app"),
+  metadataBase: new URL("https://naokikaneko.com"),
   title: {
     default: "naokikaneko.com",
     template: "%s | naokikaneko.com",

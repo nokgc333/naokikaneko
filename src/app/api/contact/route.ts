@@ -29,7 +29,7 @@ export async function POST(request: Request) {
   const adminEmail = process.env.ADMIN_EMAIL;
 
   const { error } = await resend.emails.send({
-    from: "お問い合わせ <onboarding@resend.dev>",
+    from: "お問い合わせ <contact@naokikaneko.com>",
     to: adminEmail ?? "",
     replyTo: email,
     subject: `【お問い合わせ】${name}様より`,

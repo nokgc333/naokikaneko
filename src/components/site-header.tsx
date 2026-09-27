@@ -19,7 +19,7 @@ export default function SiteHeader() {
       </Link>
       <nav className="flex gap-6">
         {navLinks.map((link) => (
-          <Link key={link.href} href={link.href} className="text-sm font-medium" lang="en">
+          <Link key={link.href} href={link.href} className="text-sm font-light" lang="en">
             {link.label}
           </Link>
         ))}

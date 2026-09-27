@@ -1,5 +1,22 @@
-import { describe, it, expect } from "vitest";
-import { generateMetadata } from "./page";
+import { describe, it, expect, vi } from "vitest";
+import type { ContentEntry } from "@/lib/schemas/content";
+
+const entry: ContentEntry = {
+  title: "Sample Post",
+  slug: "sample-post",
+  date: "2025-06-01",
+  tags: ["Next.js"],
+  category: "Tool",
+  description: "動作確認用のサンプル記事",
+  body: "",
+};
+
+vi.mock("@/lib/content", () => ({
+  getEntries: () => [entry],
+  getEntry: (_collection: string, slug: string) => (slug === entry.slug ? entry : undefined),
+}));
+
+const { generateMetadata } = await import("./page");
 
 describe("generateMetadata (blog)", () => {
   it("エントリのタイトル・説明文からメタデータを生成する", async () => {

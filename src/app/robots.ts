@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: "/admin",
     },
-    sitemap: "https://naokikaneko.vercel.app/sitemap.xml",
+    sitemap: "https://naokikaneko.com/sitemap.xml",
   };
 }

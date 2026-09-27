@@ -22,15 +22,18 @@ const certifications = [
 
 export default function About() {
   return (
-    <main className="mx-auto w-full max-w-7xl px-8 py-9">
-      <div className="flex w-full flex-col gap-8">
+    <main className="mx-auto w-full max-w-7xl px-5 lg:px-10 py-6 lg:py-9">
+      <div className="flex w-full flex-col gap-7 lg:gap-10">
         <section>
-          <h1 className="mb-2 text-3xl font-bold" lang="en">
+          <h1 className="mb-3 text-3xl font-bold" lang="en">
             Naoki Kaneko / Engineer
           </h1>
-          <p className="mb-6 text-base text-muted-foreground">
+          <p className="text-base text-muted-foreground">
             金子 直樹 / エンジニア
           </p>
+        </section>
+
+        <section>
           <p className="mb-2 leading-relaxed">
             1997年生まれ。千葉県出身。東京都在住。
           </p>

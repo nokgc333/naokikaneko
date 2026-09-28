@@ -8,6 +8,7 @@ import rehypeSlug from "rehype-slug";
 import { getEntries, getEntry } from "@/lib/content";
 import { extractHeadings } from "@/lib/toc";
 import TableOfContents from "@/components/table-of-contents";
+import RelatedPosts from "@/components/related-posts";
 
 export function generateStaticParams() {
   return getEntries("blog").map((entry) => ({ slug: entry.slug }));
@@ -58,9 +59,13 @@ export default async function BlogDetailPage({
   }
 
   const headings = extractHeadings(entry.body);
+  const relatedPosts = getEntries("blog")
+    .filter((post) => post.slug !== slug)
+    .slice(0, 5);
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-5 lg:px-10 py-6 lg:py-9">
+    <main className="mx-auto w-full max-w-4xl px-5 lg:px-20 py-6 lg:py-9">
+      <RelatedPosts posts={relatedPosts} />
       <TableOfContents headings={headings} />
       <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />

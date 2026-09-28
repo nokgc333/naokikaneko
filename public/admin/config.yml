@@ -16,6 +16,8 @@ collections:
     folder: "content/work"
     create: true
     slug: "{{fields.slug}}"
+    extension: "mdx"
+    format: "frontmatter"
     fields:
       - { name: "title", label: "Title", widget: "string" }
       - { name: "slug", label: "Slug", widget: "string", hint: "URLに使われる（例: my-project）" }

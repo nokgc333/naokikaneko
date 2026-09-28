@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { MDXRemote } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
+import rehypeSanitize from "rehype-sanitize";
 import { getEntries, getEntry } from "@/lib/content";
-import { renderMarkdown } from "@/lib/markdown";
 
 export function generateStaticParams() {
   return getEntries("work").map((entry) => ({ slug: entry.slug }));
@@ -52,10 +54,8 @@ export default async function WorkDetailPage({
     notFound();
   }
 
-  const html = await renderMarkdown(entry.body);
-
   return (
-    <main className="mx-auto w-full max-w-4xl px-5 lg:px-10 py-6 lg:py-9">
+    <main className="mx-auto w-full max-w-4xl px-5 lg:px-20 py-6 lg:py-9">
       <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />
       <Image
@@ -76,10 +76,18 @@ export default async function WorkDetailPage({
           {entry.url}
         </a>
       ) : null}
-      <div
-        className="prose mt-6 w-full [&_img]:mx-auto [&_img]:block"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <div className="prose mt-6 w-full [&_img]:mx-auto [&_img]:block">
+        <MDXRemote
+          source={entry.body}
+          components={{}}
+          options={{
+            mdxOptions: {
+              remarkPlugins: [remarkGfm],
+              rehypePlugins: [rehypeSanitize],
+            },
+          }}
+        />
+      </div>
     </main>
   );
 }

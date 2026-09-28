@@ -44,10 +44,10 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   return (
     <nav
       aria-label="目次"
-      className="fixed top-28 hidden w-56 pt-20 2xl:block"
-      style={{ left: "calc(50% + 32rem)" }}
+      className="fixed top-28 hidden max-h-[calc(100vh-10.5rem)] w-[min(270px,calc((100vw-896px)*10/21))] overflow-y-auto pt-20 2xl:block"
+      style={{ left: "calc(50% + 26.5rem)" }}
     >
-      <p className="mb-3 text-sm font-medium">目次</p>
+      <p className="mb-3 border-b-4 border-border pb-2 text-xl font-medium">目次</p>
       <ul className="space-y-2 text-sm">
         {headings.map((heading) => (
           <li key={heading.id} style={{ paddingLeft: `${(heading.depth - minDepth) * 0.75}rem` }}>

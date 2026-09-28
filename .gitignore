@@ -50,5 +50,6 @@ next-env.d.ts
 
 # local dummy content for layout testing (not real content)
 content/work/dummy-*.md
+content/work/dummy-*.mdx
 content/blog/dummy-*.mdx
 public/images/uploads/dummy/

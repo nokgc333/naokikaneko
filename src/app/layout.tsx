@@ -47,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col">
         <SiteHeader />
-        <div className="flex-1 pb-10 pt-20">{children}</div>
+        <div className="flex-1 pb-10 pt-20 px-5 lg:px-10">{children}</div>
         <SiteFooter />
         <ContactWidget />
       </body>

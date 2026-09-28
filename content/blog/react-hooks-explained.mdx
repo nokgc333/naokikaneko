@@ -1,0 +1,232 @@
+---
+title: "React Hooks全解説"
+slug: "react-hooks-explained"
+date: "2026-09-27"
+tags: ["React", "Hooks", "TypeScript"]
+category: "Others"
+thumbnail: "/images/uploads/react-hooks-explained.svg"
+description: "useState・useEffectをはじめとした主要なReact Hooksの役割・使い方・注意点を整理する。"
+---
+
+React Hooksは「クラスコンポーネントを使わずに、関数コンポーネントで状態やライフサイクルを扱うための仕組み」として2018年に導入された。    
+
+今では関数コンポーネント + Hooksが事実上の標準スタイルになっている。    
+
+この記事では主要なHooksを一通り解説する。
+
+## Hooksとは何か
+
+- 関数コンポーネントの中で、状態管理・副作用・参照の保持などをおこなうための特別な関数群
+- すべて`use`から始まる名前を持つ（`useState`, `useEffect`, `useRef`など）
+- コンポーネントのトップレベルでのみ呼び出せる。条件分岐やループの中では呼び出せない（「Hooksのルール」と呼ばれる制約）
+
+## useState: 状態を持つ
+
+もっとも基本的なHook。    
+
+値と、その値を更新する関数のペアを返す。
+
+```tsx
+const [count, setCount] = useState(0);
+
+<button onClick={() => setCount(count + 1)}>{count}</button>
+```
+
+`setCount`を呼ぶとコンポーネントが再レンダリングされ、新しい`count`の値が反映される。
+初期値に関数を渡すと、初回レンダリング時にのみその関数が実行される（重い初期化処理に便利）。
+
+```tsx
+const [value] = useState(() => computeExpensiveValue());
+```
+
+## useEffect: 副作用を扱う
+
+レンダリングの結果として発生する「副作用」（DOM操作、データ取得、購読の登録など）を扱う。
+
+```tsx
+useEffect(() => {
+  document.title = `${count}回クリックされました`;
+}, [count]);
+```
+
+第2引数の配列は「依存配列」と呼ばれ、この中の値が変化したときだけ再実行される。
+空配列`[]`を渡すとマウント時に1度だけ実行され、省略するとレンダリングのたびに毎回実行される。
+
+クリーンアップ関数を返すと、次の副作用が実行される前、またはアンマウント時に呼ばれる。
+
+```tsx
+useEffect(() => {
+  const id = setInterval(() => tick(), 1000);
+  return () => clearInterval(id);
+}, []);
+```
+
+## useContext: コンテキストを購読する
+
+親コンポーネントから渡された値を、Propsのバケツリレーなしに直接受け取る。
+
+```tsx
+const theme = useContext(ThemeContext);
+```
+
+テーマやログインユーザー情報など、    
+多くのコンポーネントで共通して必要になる値を扱うのに向いている。
+
+## useRef: 再レンダリングを伴わない値を保持する
+
+DOM要素への参照や、レンダリングに影響を与えたくない値の保持に使う。
+
+```tsx
+const inputRef = useRef<HTMLInputElement>(null);
+
+<input ref={inputRef} />
+```
+
+`useState`と違い、`.current`を書き換えても再レンダリングは発生しない。
+タイマーIDや前回の値の保持など、「値は持っておきたいが画面には影響させたくない」場面で使う。
+
+## useMemo: 計算結果をメモ化する
+
+依存配列の値が変わらない限り、計算結果を再利用する。
+
+```tsx
+const sorted = useMemo(() => list.toSorted(), [list]);
+```
+
+重いソート処理やフィルタ処理を、無関係な再レンダリングのたびに実行してしまうのを防ぐ。
+
+## useCallback: 関数をメモ化する
+
+`useMemo`の関数版。関数そのものの再生成を防ぐ。
+
+```tsx
+const handleClick = useCallback(() => {
+  onSelect(id);
+}, [id, onSelect]);
+```
+
+子コンポーネントに関数をPropsとして渡す際、`React.memo`と組み合わせることで不要な再レンダリングを防げる。
+
+## useReducer: 複雑な状態遷移を扱う
+
+`useState`では表現しにくい、複数のアクションによる状態遷移を扱う場合に向いている。
+
+```tsx
+function reducer(state, action) {
+  switch (action.type) {
+    case "increment":
+      return { count: state.count + 1 };
+    default:
+      return state;
+  }
+}
+
+const [state, dispatch] = useReducer(reducer, { count: 0 });
+```
+
+「状態」と「状態を変える操作」を分離できるため、<br />
+状態遷移が複雑になるフォームや、Reduxのような設計に近いコンポーネントで扱いやすい。
+
+## カスタムHooks: 独自のロジックを切り出す
+
+`use`から始まる関数を自作すれば、複数のコンポーネントで再利用できるロジックとして切り出せる。
+
+```tsx
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const onResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  return width;
+}
+```
+
+内部で他のHooksを呼び出しているだけの、ただの関数である。特別な構文や登録は不要。
+
+## useLayoutEffect: 描画前に同期実行する
+
+`useEffect`とほぼ同じAPIだが、ブラウザが画面を描画する前に同期的に実行される点が異なる。
+
+```tsx
+useLayoutEffect(() => {
+  const rect = ref.current.getBoundingClientRect();
+  setHeight(rect.height);
+}, []);
+```
+
+DOMのサイズや位置を測定して即座にレイアウトを調整したい場合に使う。<br />
+多くの場合`useEffect`で十分なので、描画のちらつきが実際に問題になったときにだけ検討すればよい。
+
+## useId: 一意なIDを生成する
+
+サーバーサイドレンダリングとクライアントサイドで一致する、一意な文字列IDを生成する。
+
+```tsx
+const id = useId();
+
+<label htmlFor={id}>名前</label>
+<input id={id} />
+```
+
+フォームの`label`と`input`を紐付ける際など、コンポーネントが複数回使われてもIDが重複しないようにしたい場面で使う。
+
+## useTransition / useDeferredValue: 優先度を扱う
+
+React 18で導入された、レンダリングの優先度を扱うためのHooks。
+
+```tsx
+const [isPending, startTransition] = useTransition();
+
+startTransition(() => {
+  setSearchResults(filterList(query));
+});
+```
+
+`startTransition`で包んだ更新は「緊急度の低い更新」として扱われ、<br />
+入力欄への文字入力のような緊急度の高い更新をブロックしない。<br /><br />
+
+`useDeferredValue`は値そのものの反映を遅延させる、似た目的のHookである。
+
+## Hooks一覧表
+
+| Hook | 主な用途 |
+| --- | --- |
+| `useState` | 状態を持つ |
+| `useEffect` | 副作用を扱う |
+| `useContext` | コンテキストを購読する |
+| `useRef` | 再レンダリングを伴わない値の保持・DOM参照 |
+| `useMemo` | 計算結果のメモ化 |
+| `useCallback` | 関数のメモ化 |
+| `useReducer` | 複雑な状態遷移の管理 |
+| `useLayoutEffect` | 描画前の同期的な副作用 |
+| `useId` | 一意なIDの生成 |
+| `useTransition` | 更新の優先度制御 |
+
+## よくある間違い
+
+- **依存配列の書き忘れ**: `useEffect`の第2引数を省略すると毎レンダリングごとに実行されてしまい、意図しない無限ループの原因になりやすい
+- **条件分岐の中でHooksを呼ぶ**: `if (condition) { useState(); }`のような書き方はHooksのルール違反であり、ESLintの`react-hooks/rules-of-hooks`ルールで検出できる
+- **早すぎる最適化**: `useMemo`/`useCallback`をとりあえず全部に付けるのではなく、実際にパフォーマンス上の問題が測定できてから導入する方が、コードの見通しを保ちやすい
+- **`useRef`の値をレンダリング中に読む**: `.current`の変更は再レンダリングを引き起こさないため、画面に表示したい値には向いていない（`useState`を使うべき）
+
+## Hooksのルール
+
+- コンポーネントのトップレベルでのみ呼び出す（`if`文や`for`ループの中で呼び出さない）
+- Reactの関数コンポーネント、またはカスタムHooksの中でのみ呼び出す（通常の関数からは呼び出せない）
+
+これらのルールが必要な理由は、Reactが「何番目に呼ばれたHookか」という順序でそれぞれの状態を対応付けているためである。呼び出し順序が実行のたびに変わると、状態の対応関係が壊れてしまう。
+
+## まとめ
+
+- `useState`と`useEffect`が最も基本かつ頻出のHooks
+- `useRef`は「値は保持したいが再レンダリングは不要」な場面で使う
+- `useMemo`/`useCallback`はパフォーマンス最適化のためのHooksであり、まず動くものを作ってから必要に応じて導入すればよい
+- `useReducer`は状態遷移が複雑になったときの選択肢
+- 自作のカスタムHooksを使えば、コンポーネント間でロジックを再利用できる
+
+いずれも「関数コンポーネントに閉じ込められた小さな仕組み」であり、    
+組み合わせ次第で複雑なUIロジックも宣言的に表現できるようになる。

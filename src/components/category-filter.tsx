@@ -29,6 +29,7 @@ type CategoryFilterProps = {
   cardType: keyof typeof cardComponents;
   defaultFilter?: FilterValue;
   gridClassName?: string;
+  title?: string;
 };
 
 export default function CategoryFilter({
@@ -37,6 +38,7 @@ export default function CategoryFilter({
   cardType,
   defaultFilter = "All",
   gridClassName = "grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3",
+  title,
 }: CategoryFilterProps) {
   const [activeFilter, setActiveFilter] = useState<FilterValue>(defaultFilter);
   const [view, setView] = useState<ViewMode>("grid");
@@ -52,8 +54,55 @@ export default function CategoryFilter({
 
   return (
     <div>
-      <div className="flex h-[47px] flex-wrap items-center justify-between gap-4 border-b border-border">
-        <nav className="flex flex-wrap gap-6">
+      <div className="flex flex-wrap items-center gap-x-4 border-b border-border pb-4">
+        {title ? <h1 className="text-3xl font-bold">{title}</h1> : null}
+        {ListComponent ? (
+          <>
+            <div className="ml-auto flex flex-wrap items-center gap-4 sm:order-4">
+              <button
+                type="button"
+                onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
+              >
+                <ArrowUpDown size={16} />
+                {sortOrder === "desc" ? "新しい順" : "古い順"}
+              </button>
+              <div className="inline-flex divide-x divide-border border border-border">
+                <button
+                  type="button"
+                  onClick={() => setView("grid")}
+                  aria-pressed={view === "grid"}
+                  aria-label="グリッド表示"
+                  className={`flex items-center justify-center p-1.5 ${
+                    view === "grid"
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <LayoutGrid size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setView("list")}
+                  aria-pressed={view === "list"}
+                  aria-label="リスト表示"
+                  className={`flex items-center justify-center p-1.5 ${
+                    view === "list"
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <ListIcon size={16} />
+                </button>
+              </div>
+            </div>
+            {/* Forces a line break after the heading+toolbar row on mobile only. */}
+            <div className="h-4 basis-full sm:hidden" />
+            {/* Forces a line break after the heading row on sm+ only. */}
+            <div className="hidden h-4 basis-full sm:order-2 sm:block" />
+          </>
+        ) : null}
+        <nav className="flex flex-wrap gap-6 sm:order-3">
           {filters.map((filter) => (
             <button
               key={filter}
@@ -70,46 +119,6 @@ export default function CategoryFilter({
             </button>
           ))}
         </nav>
-        {ListComponent ? (
-          <div className="flex flex-wrap items-center gap-4">
-            <button
-              type="button"
-              onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
-            >
-              <ArrowUpDown size={16} />
-              {sortOrder === "desc" ? "新しい順" : "古い順"}
-            </button>
-            <div className="inline-flex divide-x divide-border border border-border">
-              <button
-                type="button"
-                onClick={() => setView("grid")}
-                aria-pressed={view === "grid"}
-                aria-label="グリッド表示"
-                className={`flex items-center justify-center p-1.5 ${
-                  view === "grid"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <LayoutGrid size={16} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setView("list")}
-                aria-pressed={view === "list"}
-                aria-label="リスト表示"
-                className={`flex items-center justify-center p-1.5 ${
-                  view === "list"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <ListIcon size={16} />
-              </button>
-            </div>
-          </div>
-        ) : null}
       </div>
       {view === "list" && ListComponent ? (
         <div className="mt-4 flex flex-col">

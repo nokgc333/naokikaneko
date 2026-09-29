@@ -5,7 +5,7 @@ export default function Home() {
   const entries = getEntries("work");
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-5 lg:px-10 py-6 lg:py-9">
+    <main className="mx-auto w-full max-w-7xl py-6 lg:py-9">
       <h1 className="mb-6 text-3xl font-bold">Work</h1>
       <CategoryFilter
         entries={entries}

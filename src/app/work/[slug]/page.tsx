@@ -55,7 +55,7 @@ export default async function WorkDetailPage({
   }
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-5 lg:px-20 py-6 lg:py-9">
+    <main className="mx-auto w-full max-w-4xl lg:px-10 py-6 lg:py-9">
       <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />
       <Image

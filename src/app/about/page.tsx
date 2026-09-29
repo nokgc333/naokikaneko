@@ -22,7 +22,7 @@ const certifications = [
 
 export default function About() {
   return (
-    <main className="mx-auto w-full max-w-7xl px-5 lg:px-10 py-6 lg:py-9">
+    <main className="mx-auto w-full max-w-7xl py-6 lg:py-9">
       <div className="flex w-full flex-col gap-7 lg:gap-10">
         <section>
           <h1 className="mb-3 text-3xl font-bold" lang="en">

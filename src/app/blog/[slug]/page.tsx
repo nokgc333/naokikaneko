@@ -64,7 +64,7 @@ export default async function BlogDetailPage({
     .slice(0, 5);
 
   return (
-    <main className="mx-auto w-full max-w-4xl lg:px-10 py-6 lg:py-9">
+    <main className="mx-auto w-full max-w-4xl lg:px-20 py-6 lg:py-9">
       <RelatedPosts posts={relatedPosts} />
       <TableOfContents headings={headings} />
       <h1 className="text-2xl font-bold">{entry.title}</h1>

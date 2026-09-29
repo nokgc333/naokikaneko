@@ -97,12 +97,12 @@ export default function CategoryFilter({
               </div>
             </div>
             {/* Forces a line break after the heading+toolbar row on mobile only. */}
-            <div className="h-4 basis-full sm:hidden" />
+            <div className="h-6 basis-full sm:hidden" />
             {/* Forces a line break after the heading row on sm+ only. */}
-            <div className="hidden h-4 basis-full sm:order-2 sm:block" />
+            <div className="hidden h-6 basis-full sm:order-2 sm:block" />
           </>
         ) : null}
-        <nav className="flex flex-wrap gap-6 sm:order-3">
+        <nav className="flex min-h-[30px] flex-wrap items-center gap-6 sm:order-3">
           {filters.map((filter) => (
             <button
               key={filter}

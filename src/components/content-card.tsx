@@ -10,12 +10,12 @@ type ContentCardProps = {
 export default function ContentCard({ entry, href }: ContentCardProps) {
   return (
     <Link href={href} className="group flex h-[288px] flex-col overflow-hidden border border-border">
-      <div className="relative min-h-0 flex-1 overflow-hidden [container-type:size]">
+      <div className="relative min-h-0 flex-1 overflow-hidden">
         <Image
           src={entry.thumbnail ?? "/images/placeholder.svg"}
           alt={entry.title}
           fill
-          className="object-contain [@container(max-aspect-ratio:800/450)]:object-cover"
+          className="object-cover"
         />
       </div>
       <div className="bg-background/60 p-2 backdrop-blur-sm transition-colors duration-500 ease-out group-hover:bg-black/80">

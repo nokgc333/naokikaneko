@@ -17,7 +17,7 @@ export default function BlogPage() {
         hrefPrefix="/blog"
         cardType="blog"
         defaultFilter="Tool"
-        gridClassName="grid-cols-[minmax(0,397px)] justify-center gap-1 sm:grid-cols-[repeat(2,minmax(0,397px))] lg:grid-cols-[repeat(3,minmax(0,397px))]"
+        gridClassName="mx-auto w-fit max-w-7xl grid-cols-[minmax(0,424px)] gap-1 sm:grid-cols-[repeat(2,minmax(0,424px))] lg:grid-cols-[repeat(3,minmax(0,424px))]"
         title="Blog"
       />
     </main>

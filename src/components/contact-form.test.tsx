@@ -38,4 +38,23 @@ describe("ContactForm", () => {
       expect.objectContaining({ method: "POST" })
     );
   });
+
+  it("送信に失敗した場合、エラーメッセージを表示し開発者向けログを出力する", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false }));
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const user = userEvent.setup();
+    render(<ContactForm />);
+
+    await user.type(screen.getByLabelText("個人・法人名"), "Taro");
+    await user.type(screen.getByLabelText("メールアドレス"), "taro@example.com");
+    await user.type(screen.getByLabelText("本文"), "Hello");
+    await user.click(screen.getByRole("button", { name: "送信" }));
+
+    expect(
+      await screen.findByText("送信に失敗しました。時間をおいて再度お試しください。")
+    ).toBeInTheDocument();
+    expect(consoleErrorSpy).toHaveBeenCalled();
+
+    consoleErrorSpy.mockRestore();
+  });
 });

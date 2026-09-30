@@ -26,7 +26,8 @@ export default function ContactForm() {
       });
       if (!response.ok) throw new Error("failed");
       setStatus("sent");
-    } catch {
+    } catch (error) {
+      console.error("[ContactForm] 送信に失敗しました:", error);
       setStatus("error");
     }
   }

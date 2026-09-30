@@ -3,6 +3,7 @@ import { Geist_Mono, Noto_Sans_JP, Roboto } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ContactWidget from "@/components/contact-widget";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -23,7 +24,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://naokikaneko.com"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "naokikaneko.com",
     template: "%s | naokikaneko.com",

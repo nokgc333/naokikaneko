@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
 import { getEntries, getEntry } from "@/lib/content";
 import { extractHeadings } from "@/lib/toc";
+import { buildEntryMetadata } from "@/lib/metadata";
 import TableOfContents from "@/components/table-of-contents";
 import RelatedPosts from "@/components/related-posts";
+import ContentDetail from "@/components/content-detail";
 
 export function generateStaticParams() {
   return getEntries("blog").map((entry) => ({ slug: entry.slug }));
@@ -20,30 +19,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const entry = getEntry("blog", slug);
-
-  if (!entry) {
-    return {};
-  }
-
-  const image = entry.thumbnail ?? "/images/placeholder.svg";
-
-  return {
-    title: entry.title,
-    description: entry.description,
-    openGraph: {
-      title: entry.title,
-      description: entry.description,
-      type: "article",
-      images: [image],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: entry.title,
-      description: entry.description,
-      images: [image],
-    },
-  };
+  return buildEntryMetadata("blog", slug);
 }
 
 export default async function BlogDetailPage({
@@ -64,36 +40,16 @@ export default async function BlogDetailPage({
     .slice(0, 5);
 
   return (
-    <main className="mx-auto w-full max-w-4xl lg:px-20 py-6 lg:py-9">
-      <RelatedPosts posts={relatedPosts} />
-      <TableOfContents headings={headings} />
-      <h1 className="text-2xl font-bold">{entry.title}</h1>
-      <hr className="my-6 border-border" />
-      <Image
-        src={entry.thumbnail ?? "/images/placeholder.svg"}
-        alt={entry.title}
-        width={800}
-        height={450}
-        className="mx-auto mt-4 h-auto w-full object-contain"
-      />
-      <div className="mt-6 flex flex-wrap gap-2 text-sm text-muted-foreground">
-        <time>{entry.date}</time>
-        {entry.tags.map((tag) => (
-          <span key={tag}>#{tag}</span>
-        ))}
-      </div>
-      <div className="prose mt-6 max-w-4xl [&_img]:mx-auto [&_img]:block">
-        <MDXRemote
-          source={entry.body}
-          components={{}}
-          options={{
-            mdxOptions: {
-              remarkPlugins: [remarkGfm],
-              rehypePlugins: [rehypeSlug, rehypeSanitize],
-            },
-          }}
-        />
-      </div>
-    </main>
+    <ContentDetail
+      entry={entry}
+      rehypePlugins={[rehypeSlug, rehypeSanitize]}
+      proseClassName="prose mt-6 max-w-4xl [&_img]:mx-auto [&_img]:block"
+      sidebar={
+        <>
+          <RelatedPosts posts={relatedPosts} />
+          <TableOfContents headings={headings} />
+        </>
+      }
+    />
   );
 }

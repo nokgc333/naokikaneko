@@ -1,3 +1,10 @@
+function toInlineScriptJson(value: unknown): string {
+  return JSON.stringify(value)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026');
+}
+
 function getCookie(request: Request, name: string): string | undefined {
   const cookieHeader = request.headers.get('cookie');
   if (!cookieHeader) return undefined;
@@ -38,7 +45,7 @@ export async function GET(request: Request) {
     return new Response(`OAuth error: ${error ?? 'unknown'}`, { status: 400 });
   }
 
-  const message = JSON.stringify({ token: accessToken, provider: 'github' });
+  const payload = `authorization:github:success:${JSON.stringify({ token: accessToken, provider: 'github' })}`;
   const expectedOrigin = url.origin;
 
   const html = `
@@ -47,15 +54,13 @@ export async function GET(request: Request) {
     <p>Login successful. This window will close automatically.</p>
     <script>
       (function() {
-        var expectedOrigin = ${JSON.stringify(expectedOrigin)};
+        var expectedOrigin = ${toInlineScriptJson(expectedOrigin)};
+        var payload = ${toInlineScriptJson(payload)};
         function receiveMessage(e) {
           if (e.origin !== expectedOrigin) {
             return;
           }
-          window.opener.postMessage(
-            'authorization:github:success:${message}',
-            e.origin
-          );
+          window.opener.postMessage(payload, e.origin);
           window.removeEventListener('message', receiveMessage, false);
           window.close();
         }

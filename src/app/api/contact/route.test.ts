@@ -70,6 +70,17 @@ describe("POST /api/contact", () => {
     expect(sendMock).not.toHaveBeenCalled();
   });
 
+  it("ADMIN_EMAIL未設定の場合、500を返しResendへ問い合わせない", async () => {
+    vi.stubEnv("ADMIN_EMAIL", "");
+
+    const response = await POST(
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" })
+    );
+
+    expect(response.status).toBe(500);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
   it("同一IPからの送信が上限回数を超えた場合、429を返す", async () => {
     for (let i = 0; i < 5; i++) {
       const response = await POST(

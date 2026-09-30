@@ -29,4 +29,24 @@ describe('GET /api/decap-oauth/callback', () => {
     expect(response.status).toBe(400);
     expect(fetchSpy).not.toHaveBeenCalled();
   });
+
+  it('アクセストークンに</script>を含む値が返ってきても、スクリプトタグを閉じずに安全に埋め込む', async () => {
+    const dangerousToken = '</script><script>alert(1)</script>';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue({
+        json: async () => ({ access_token: dangerousToken }),
+      })
+    );
+
+    const request = new Request(
+      'http://localhost:3000/api/decap-oauth/callback?code=dummy&state=correct-state',
+      { headers: { cookie: 'decap_oauth_state=correct-state' } }
+    );
+    const response = await GET(request);
+    const html = await response.text();
+
+    expect(html).not.toContain('</script><script>alert(1)</script>');
+    expect(html).toContain('\\u003c/script\\u003e');
+  });
 });

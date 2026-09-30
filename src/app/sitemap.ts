@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getEntries } from "@/lib/content";
-
-const baseUrl = "https://naokikaneko.com";
+import { SITE_URL as baseUrl } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [

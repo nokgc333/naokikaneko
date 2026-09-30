@@ -25,18 +25,25 @@ export async function POST(request: Request) {
     return Response.json({ ok: true }, { status: 200 });
   }
 
-  const resend = new Resend(process.env.RESEND_API_KEY);
   const adminEmail = process.env.ADMIN_EMAIL;
+
+  if (!adminEmail) {
+    console.error("[api/contact] ADMIN_EMAIL is not set. Cannot send contact form email.");
+    return Response.json({ error: "メール送信に失敗しました" }, { status: 500 });
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
 
   const { error } = await resend.emails.send({
     from: "お問い合わせ <contact@naokikaneko.com>",
-    to: adminEmail ?? "",
+    to: adminEmail,
     replyTo: email,
     subject: `【お問い合わせ】${name}様より`,
     text: `お名前: ${name}\nメールアドレス: ${email}\n\n${message}`,
   });
 
   if (error) {
+    console.error("[api/contact] Resend送信エラー:", error);
     return Response.json({ error: "メール送信に失敗しました" }, { status: 500 });
   }
 

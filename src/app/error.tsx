@@ -6,7 +6,6 @@ export default function ErrorPage({
   error,
 }: {
   error: Error & { digest?: string };
-  retry: () => void;
 }) {
   useEffect(() => {
     console.error(error);

@@ -12,7 +12,7 @@ export default function Home() {
         hrefPrefix="/work"
         cardType="work"
         defaultFilter="Tool"
-        gridClassName="grid-cols-1 md:grid-cols-2 gap-1 [&>*]:mx-auto [&>*]:w-[596px] [&>*]:max-w-full"
+        gridClassName="grid-cols-1 md:grid-cols-2 gap-1"
       />
     </main>
   );

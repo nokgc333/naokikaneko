@@ -94,7 +94,7 @@ export default function About() {
           <h2 className="mb-6 text-2xl font-bold" lang="en">
             Contact
           </h2>
-          <p className="">
+          <p>
             <a href="mailto:naokikaneko333@gmail.com">✉︎ naokikaneko333@gmail.com</a>
           </p>
         </section>

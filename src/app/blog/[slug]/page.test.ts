@@ -5,6 +5,7 @@ const entry: ContentEntry = {
   title: "Sample Post",
   slug: "sample-post",
   date: "2025-06-01",
+  updatedDate: "2025-06-01",
   tags: ["Next.js"],
   category: "Tool",
   description: "動作確認用のサンプル記事",

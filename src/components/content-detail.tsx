@@ -53,10 +53,17 @@ export default function ContentDetail({
         />
       )}
       <div className="mt-6 flex flex-wrap gap-2 text-sm text-muted-foreground">
-        <time>{entry.date}</time>
         {entry.tags.map((tag) => (
           <span key={tag}>#{tag}</span>
         ))}
+        <div className="ml-auto hidden flex-wrap gap-2 sm:flex">
+          <span>
+            追加日: <time>{entry.date}</time>
+          </span>
+          <span>
+            更新日: <time>{entry.updatedDate}</time>
+          </span>
+        </div>
       </div>
       {afterMeta}
       <div className={proseClassName}>

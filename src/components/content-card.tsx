@@ -23,10 +23,10 @@ export default function ContentCard({ entry, href }: ContentCardProps) {
           {entry.title}
         </h3>
         <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground group-hover:text-white">
-          <time>{entry.date}</time>
           {entry.tags.map((tag) => (
             <span key={tag}>#{tag}</span>
           ))}
+          <time className="pl-2">{entry.date}</time>
         </div>
       </div>
     </Link>

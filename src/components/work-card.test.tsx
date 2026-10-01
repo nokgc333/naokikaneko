@@ -7,6 +7,7 @@ const entry: ContentEntry = {
   title: "Sample Project",
   slug: "sample-project",
   date: "2025-06-01",
+  updatedDate: "2025-06-01",
   tags: ["Next.js", "TypeScript"],
   category: "Tool",
   description: "A sample project description",

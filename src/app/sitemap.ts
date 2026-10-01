@@ -11,14 +11,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const workRoutes: MetadataRoute.Sitemap = getEntries("work").map((entry) => ({
     url: `${baseUrl}/work/${entry.slug}`,
-    lastModified: entry.date,
+    lastModified: entry.updatedDate,
     changeFrequency: "monthly",
     priority: 0.6,
   }));
 
   const blogRoutes: MetadataRoute.Sitemap = getEntries("blog").map((entry) => ({
     url: `${baseUrl}/blog/${entry.slug}`,
-    lastModified: entry.date,
+    lastModified: entry.updatedDate,
     changeFrequency: "monthly",
     priority: 0.6,
   }));

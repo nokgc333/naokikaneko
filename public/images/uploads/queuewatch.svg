@@ -1,0 +1,17 @@
+<svg viewBox="0 0 800 450" width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#0a0a0a" />
+
+  <text x="400" y="100" font-family="Arial, sans-serif" font-size="15" fill="#777777" text-anchor="middle" letter-spacing="3">RENDER QUEUE MONITOR</text>
+
+  <text x="400" y="210" font-family="ui-monospace, monospace" font-size="52" font-weight="700" fill="#ffffff" text-anchor="middle">queuewatch</text>
+
+  <text x="400" y="248" font-family="Arial, sans-serif" font-size="17" fill="#999999" text-anchor="middle">Celery &#183; Redis &#183; retry / dead-letter</text>
+
+  <g font-family="ui-monospace, monospace" font-size="13" fill="#888888" text-anchor="middle">
+    <text x="290" y="300">high</text>
+    <text x="400" y="300">normal</text>
+    <text x="510" y="300">low</text>
+  </g>
+  <rect x="220" y="315" width="360" height="1" fill="#333333" />
+  <text x="400" y="340" font-family="ui-monospace, monospace" font-size="14" fill="#666666" text-anchor="middle">queue &#8594; worker &#8594; retry &#8594; DLQ</text>
+</svg>

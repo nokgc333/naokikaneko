@@ -1,0 +1,34 @@
+---
+title: "pipeboard"
+slug: "pipeboard"
+date: "2026-09-28"
+tags: ["FastAPI", "Next.js", "PySide6", "Houdini"]
+category: "Tool"
+thumbnail: "/images/uploads/pipeboard.svg"
+url: "https://github.com/nokgc333/pipeboard"
+description: "ショット/アセットの進捗をカンバン形式で管理し、Houdiniから直接ステータスを更新できるミニ・プロダクショントラッカー。"
+---
+
+ショット/アセットの進捗をカンバン形式で管理し、Houdiniから直接ステータスを更新できるミニ・プロダクショントラッカー（ShotGrid/Kitsuの縮小版）。制作中、日々のステータス更新・進捗共有を担う位置づけのツールとして制作した。
+
+## 背景
+
+ショット・アセットの進捗がExcelや口頭連携で属人化するのは、中小規模スタジオで頻発する課題。Webダッシュボードとして自作し、さらにHoudiniから直接ステータス更新できる導線を用意することで、「DCCとWebをまたぐ横断ツール」を実際に動くコードで示した。
+
+## 2つの入り口を同一バックエンドで共有
+
+Next.jsのWebカンバンに加え、同じFastAPI REST APIを叩くだけのPySide6デスクトップクライアントを追加している。バックエンドは無改修のまま、Web・デスクトップという2つの異なる入り口から同一のビジネスロジックを使い回せることの実証を兼ねた設計。
+
+```python
+# Houdini Python Shellから直接ステータス更新
+from houdini_status_update import send_status_update
+send_status_update("http://localhost:8000", "shot", 1, "in_review")
+```
+
+## 技術スタック
+
+- frontend: Next.js 15 / React 19 / TypeScript / Tailwind CSS v4 / Playwright
+- backend: FastAPI / SQLAlchemy 2.0 / Pydantic v2
+- desktop_client: PySide6（`view_model`とウィジェット層を分離し、ヘッドレス環境で本物のPySide6ウィジェットをTDD）
+
+バックエンド30テスト（カバレッジ98%）、フロントエンド32テスト、デスクトップクライアント46テスト（カバレッジ99%）。実際にバックエンド・フロントエンドを起動し、カンバン表示・ステータス変更・コメント投稿がDBまで正しく反映されることをE2Eで確認済み。

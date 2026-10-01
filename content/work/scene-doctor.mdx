@@ -1,0 +1,35 @@
+---
+title: "scene-doctor"
+slug: "scene-doctor"
+date: "2026-09-30"
+tags: ["Python", "Houdini", "PySide6", "PDG"]
+category: "Tool"
+thumbnail: "/images/uploads/scene-doctor.svg"
+url: "https://github.com/nokgc333/scene-doctor"
+description: "Houdiniシーンのジオメトリ欠陥・ノード構造・命名規則違反を自動検出するHDA/PDGツール。Houdini本体にドッキングするPySide6カスタムパネルも搭載。"
+---
+
+Houdiniシーンのジオメトリ欠陥（非多様体・N-gon・ゼロ面積）・ノード構造（未接続・未使用）・命名規則違反を自動検出するツール。複数アーティストが触るシーンで静かに蓄積し、レンダー直前で発覚する不具合をバッチで検出・レポート化する。
+
+## 構成
+
+HDA（パラメータUI）に加え、Houdini本体にドッキングするPySide6カスタムパネル（違反一覧のツリー表示・クリックでのノード選択ジャンプ・severity/categoryフィルタ）、PDG（TOPs）によるバッチcook処理を備える。検証ロジックは`hou`に依存しない純粋なPythonで実装し、実`hou`呼び出しはアダプタ層のみに閉じ込めるPorts & Adaptersアーキテクチャを採用した。
+
+## 実機検証で見つかった問題
+
+Houdini Indie 22.0で実際にシーンを検証し、3件の実データ特有のバグを発見・修正した。
+
+- DOPネットワーク配下のノードにSOP専用フラグメソッドを呼んでいた（`AttributeError`）
+- ノードカテゴリ境界を意識しない再帰でDOPネットワーク探索がハング
+- `measuredarea`をアトリビュートとして参照していたが、実際はintrinsic値だった
+
+62,749プリムを持つ実シーンに対しては2.12秒で検証が完走し、56,788件の違反を検出した。人間が1件ずつ目視チェックすると17時間以上かかる規模であり、この種の自動検出が実務上ほぼ唯一の現実的な手段になることを実データで示せた。
+
+## 技術スタック
+
+- Python 3.11+ / hython（Houdini 22.0 Indie）
+- PySide6（`hou.qt`経由でHoudini本体にドッキング）
+- pytest-qt（`QT_QPA_PLATFORM=offscreen`でPySide6ウィジェットをヘッドレステスト）
+- mypy(strict) / black / isort / flake8
+
+72テスト全pass、カバレッジ96%（UI層のview-model/panelはともに100%）。

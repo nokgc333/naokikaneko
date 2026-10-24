@@ -20,7 +20,7 @@ vi.mock("@/lib/content", () => ({
 const { generateMetadata } = await import("./page");
 
 describe("generateMetadata (blog)", () => {
-  it("エントリのタイトル・説明文からメタデータを生成する", async () => {
+  it("generates metadata from the entry title and description", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: "sample-post" }),
     });
@@ -30,7 +30,7 @@ describe("generateMetadata (blog)", () => {
     expect(metadata.openGraph?.title).toBe("Sample Post");
   });
 
-  it("存在しないslugの場合は空のメタデータを返す", async () => {
+  it("returns empty metadata for a slug that does not exist", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: "not-found" }),
     });

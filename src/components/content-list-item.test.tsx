@@ -15,7 +15,7 @@ const entry: ContentEntry = {
 };
 
 describe("ContentListItem", () => {
-  it("タイトル・説明文・タグ・日付を表示する", () => {
+  it("shows the title, description, tags and date", () => {
     render(<ContentListItem entry={entry} href="/blog/sample-post" />);
     expect(screen.getByText("Sample Post")).toBeInTheDocument();
     expect(screen.getByText("A sample post description")).toBeInTheDocument();
@@ -23,7 +23,7 @@ describe("ContentListItem", () => {
     expect(screen.getByText("2025-06-01")).toBeInTheDocument();
   });
 
-  it("詳細ページへのリンクを持つ", () => {
+  it("has a link to the detail page", () => {
     render(<ContentListItem entry={entry} href="/blog/sample-post" />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/blog/sample-post");
   });

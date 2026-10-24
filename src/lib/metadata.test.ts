@@ -35,7 +35,7 @@ vi.mock("@/lib/content", () => ({
 const { buildEntryMetadata } = await import("./metadata");
 
 describe("buildEntryMetadata", () => {
-  it("エントリのタイトル・説明文・サムネイルからメタデータを生成する", () => {
+  it("generates metadata from the entry title, description and thumbnail", () => {
     const metadata = buildEntryMetadata("blog", "sample-post");
 
     expect(metadata.title).toBe("Sample Post");
@@ -43,13 +43,13 @@ describe("buildEntryMetadata", () => {
     expect(metadata.openGraph?.images).toEqual(["/images/uploads/sample.png"]);
   });
 
-  it("サムネイル未設定時はプレースホルダー画像を使用する", () => {
+  it("uses the placeholder image when no thumbnail is set", () => {
     const metadata = buildEntryMetadata("work", "sample-project");
 
     expect(metadata.openGraph?.images).toEqual(["/images/placeholder.svg"]);
   });
 
-  it("存在しないslugの場合は空のメタデータを返す", () => {
+  it("returns empty metadata for a slug that does not exist", () => {
     const metadata = buildEntryMetadata("blog", "not-found");
 
     expect(metadata).toEqual({});

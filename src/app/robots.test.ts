@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import robots from "./robots";
 
 describe("robots", () => {
-  it("/adminを除いて全て許可し、sitemapを参照する", () => {
+  it("allows everything except /admin and references the sitemap", () => {
     const result = robots();
 
     expect(result.rules).toEqual({

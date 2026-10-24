@@ -15,13 +15,13 @@ const entry: ContentEntry = {
 };
 
 describe("ContentCard", () => {
-  it("タイトル・タグを表示する", () => {
+  it("shows the title and tags", () => {
     render(<ContentCard entry={entry} href="/work/sample-project" />);
     expect(screen.getByText("Sample Project")).toBeInTheDocument();
     expect(screen.getByText("#Next.js")).toBeInTheDocument();
   });
 
-  it("詳細ページへのリンクを持つ", () => {
+  it("has a link to the detail page", () => {
     render(<ContentCard entry={entry} href="/work/sample-project" />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/work/sample-project");
   });

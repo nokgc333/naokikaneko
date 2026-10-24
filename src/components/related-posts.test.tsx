@@ -27,13 +27,13 @@ const posts: ContentEntry[] = [
 ];
 
 describe("RelatedPosts", () => {
-  it("記事が無い場合は何も描画しない", () => {
+  it("renders nothing when there are no posts", () => {
     const { container } = render(<RelatedPosts posts={[]} />);
 
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("各記事のタイトル・日付・リンク先を表示する", () => {
+  it("shows the title, date and link of each post", () => {
     render(<RelatedPosts posts={posts} />);
 
     expect(screen.getByText("Post A")).toBeInTheDocument();

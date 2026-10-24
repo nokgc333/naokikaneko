@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { extractHeadings } from "./toc";
 
 describe("extractHeadings", () => {
-  it("見出しのテキスト・深さを抽出する", () => {
+  it("extracts the text and depth of headings", () => {
     const markdown = "# タイトル\n\n本文です。\n\n## サブ見出し\n";
 
     const headings = extractHeadings(markdown);
@@ -13,13 +13,13 @@ describe("extractHeadings", () => {
     ]);
   });
 
-  it("idにrehype-sanitizeのclobberPrefixと同じuser-content-を付与する", () => {
+  it("prefixes ids with user-content-, the same as rehype-sanitize's clobberPrefix", () => {
     const headings = extractHeadings("# Hello World");
 
     expect(headings[0].id).toBe("user-content-hello-world");
   });
 
-  it("同名見出しが複数ある場合、末尾に連番を付けて重複を避ける", () => {
+  it("appends a sequence number to duplicate heading names to keep ids unique", () => {
     const markdown = "# 見出し\n\n## 見出し\n";
 
     const headings = extractHeadings(markdown);
@@ -28,7 +28,7 @@ describe("extractHeadings", () => {
     expect(headings[1].id).toBe("user-content-見出し-1");
   });
 
-  it("見出しが無い場合は空配列を返す", () => {
+  it("returns an empty array when there are no headings", () => {
     const headings = extractHeadings("本文のみで見出しはありません。");
 
     expect(headings).toEqual([]);

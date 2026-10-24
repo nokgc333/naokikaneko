@@ -10,27 +10,27 @@ describe("checkRateLimit", () => {
     vi.useRealTimers();
   });
 
-  it("上限回数以内であれば許可する", () => {
+  it("allows requests within the limit", () => {
     for (let i = 0; i < 5; i++) {
       expect(checkRateLimit("1.2.3.4", 5, 10_000)).toBe(true);
     }
   });
 
-  it("上限回数を超えたら拒否する", () => {
+  it("rejects requests beyond the limit", () => {
     for (let i = 0; i < 5; i++) {
       checkRateLimit("1.2.3.4", 5, 10_000);
     }
     expect(checkRateLimit("1.2.3.4", 5, 10_000)).toBe(false);
   });
 
-  it("キー（IP）が異なれば独立してカウントする", () => {
+  it("counts independently for different keys (IPs)", () => {
     for (let i = 0; i < 5; i++) {
       checkRateLimit("1.2.3.4", 5, 10_000);
     }
     expect(checkRateLimit("5.6.7.8", 5, 10_000)).toBe(true);
   });
 
-  it("時間枠が過ぎたらカウントがリセットされる", () => {
+  it("resets the count after the time window passes", () => {
     vi.useFakeTimers();
     vi.setSystemTime(0);
     for (let i = 0; i < 5; i++) {

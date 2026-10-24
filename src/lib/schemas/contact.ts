@@ -1,3 +1,4 @@
+import "./zod-config";
 import { z } from "zod";
 
 export const contactFormSchema = z.object({

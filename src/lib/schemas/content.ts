@@ -1,3 +1,4 @@
+import "./zod-config";
 import { z } from "zod";
 
 export const workCategories = ["Tool", "HDA", "HP", "Others"] as const;

@@ -3,7 +3,7 @@ import { describe, it, expect } from "vitest";
 import ErrorPage from "./error";
 
 describe("ErrorPage", () => {
-  it("エラーメッセージを表示する", () => {
+  it("shows the error message", () => {
     render(<ErrorPage error={new Error("boom")} />);
 
     expect(screen.getByRole("heading", { name: "エラーが発生しました" })).toBeInTheDocument();

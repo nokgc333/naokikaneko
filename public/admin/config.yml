@@ -21,7 +21,8 @@ collections:
     fields:
       - { name: "title", label: "Title", widget: "string" }
       - { name: "slug", label: "Slug", widget: "string", hint: "URLに使われる（例: my-project）" }
-      - { name: "date", label: "Date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { name: "date", label: "追加日", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { name: "updatedDate", label: "更新日", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
       - { name: "tags", label: "Tags", widget: "list", required: false, default: [] }
       - { name: "thumbnail", label: "Thumbnail", widget: "image", required: false, hint: "推奨アスペクト比 約2:1の横長画像（表示箇所によって自動でクロップされる。主要な被写体は画像中央に配置する）" }
       - { name: "url", label: "URL", widget: "string", required: false }
@@ -38,7 +39,8 @@ collections:
     fields:
       - { name: "title", label: "Title", widget: "string" }
       - { name: "slug", label: "Slug", widget: "string", hint: "URLに使われる（例: my-post）" }
-      - { name: "date", label: "Date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { name: "date", label: "追加日", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
+      - { name: "updatedDate", label: "更新日", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false }
       - { name: "tags", label: "Tags", widget: "list", required: false, default: [] }
       - { name: "thumbnail", label: "Thumbnail", widget: "image", required: false, hint: "推奨アスペクト比 約2:1の横長画像（表示箇所によって自動でクロップされる。主要な被写体は画像中央に配置する）" }
       - { name: "url", label: "URL", widget: "string", required: false }

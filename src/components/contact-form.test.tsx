@@ -11,7 +11,7 @@ describe("ContactForm", () => {
     );
   });
 
-  it("必須項目が空のまま送信するとエラーメッセージを表示する", async () => {
+  it("shows error messages when submitted with required fields empty", async () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
@@ -21,7 +21,7 @@ describe("ContactForm", () => {
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("正しく入力して送信すると成功メッセージを表示する", async () => {
+  it("shows a success message when submitted with valid input", async () => {
     const user = userEvent.setup();
     render(<ContactForm />);
 
@@ -39,7 +39,7 @@ describe("ContactForm", () => {
     );
   });
 
-  it("送信に失敗した場合、エラーメッセージを表示し開発者向けログを出力する", async () => {
+  it("shows an error message and writes a developer log when submission fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false }));
     const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();

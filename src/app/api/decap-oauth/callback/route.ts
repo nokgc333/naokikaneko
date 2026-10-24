@@ -1,3 +1,5 @@
+import { describeEnvProblem, loadGithubOAuthEnv } from '@/lib/env';
+
 function toInlineScriptJson(value: unknown): string {
   return JSON.stringify(value)
     .replace(/</g, '\\u003c')
@@ -29,12 +31,18 @@ export async function GET(request: Request) {
     return new Response('Missing code', { status: 400 });
   }
 
+  const env = loadGithubOAuthEnv();
+  if (!env.ok) {
+    console.error(`[api/decap-oauth/callback] ${describeEnvProblem(env)}`);
+    return new Response('OAuth is not configured', { status: 500 });
+  }
+
   const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
     method: 'POST',
     headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      client_id: process.env.GITHUB_OAUTH_CLIENT_ID,
-      client_secret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
+      client_id: env.value.GITHUB_OAUTH_CLIENT_ID,
+      client_secret: env.value.GITHUB_OAUTH_CLIENT_SECRET,
       code,
     }),
   });

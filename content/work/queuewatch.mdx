@@ -1,0 +1,41 @@
+---
+title: "queuewatch"
+slug: "queuewatch"
+date: "2026-09-27"
+updatedDate: "2026-09-27"
+tags: ["FastAPI", "Celery", "Redis", "React"]
+category: "Tool"
+thumbnail: "/images/uploads/queuewatch.svg"
+url: "https://github.com/nokgc333/queuewatch"
+description: "Celery + Redisで動く分散レンダーファーム風のジョブキュー監視ダッシュボード。優先度キューイング・自動リトライ・デッドレターキューを実装している。"
+---
+
+Celery + Redisで動く分散レンダーファーム風のジョブキュー監視ダッシュボード。優先度別キューイング・自動リトライ（指数バックオフ）・デッドレターキューという、分散タスクキューの核心を実際に動くコードで示すプロジェクト。実務ワークフローの最終段階、レンダー投入・監視を担う位置づけ。
+
+## 重要な前提
+
+queuewatchは疑似レンダーファームであり、実際のHoudini/Nukeレンダリングは行わない。ジョブの複雑度に応じた処理時間をシミュレートし、一定確率で意図的に失敗させることで「キューイング → ワーカー処理 → リトライ → デッドレターキュー」という設計を再現性高く実演する。捏造せず、README上でも疑似シミュレーションであることを明記している。
+
+## アーキテクチャ
+
+ジョブ登録・一覧取得は同期API（DB読み書きのみ、即座に応答）、ジョブの実処理はCeleryワーカー上で非同期実行し、フロントエンドは3秒間隔のポーリングで結果を確認する。この「登録は同期・高速」「実処理は非同期・低速」という分離が設計の核。
+
+```python
+# Houdini Python Shellからジョブ投入
+from houdini_submit_job import submit_job
+submit_job("http://localhost:8000", "SHOT010_render", "high")
+```
+
+## 技術スタック
+
+- backend: FastAPI / Celery / Redis / SQLAlchemy 2.0 / Pydantic v2
+- frontend: React 19 / Vite / TypeScript(strict) / Chart.js
+- infra: Docker Compose（Redis / backend / worker / frontend）
+
+## 設計判断
+
+- 指数バックオフはCeleryの標準機能（`retry_backoff`）をそのまま使用し、自前実装しない
+- RedisブローカーのDLQ機構が限定的なため、`status="dead"`というDBフィールドを正としたアプリケーションレベルDLQを実装
+- `task_acks_late=True`による再配信時の二重処理を、`status="success"`チェックの冪等性ガードで防止
+
+backend 57テスト（カバレッジ98%）、frontend 77テスト（カバレッジ99%）。

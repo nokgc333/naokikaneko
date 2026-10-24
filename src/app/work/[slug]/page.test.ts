@@ -5,6 +5,7 @@ const entry: ContentEntry = {
   title: "Sample Project",
   slug: "sample-project",
   date: "2025-06-01",
+  updatedDate: "2025-06-01",
   tags: ["Next.js"],
   category: "Tool",
   description: "動作確認用のサンプル制作物",
@@ -19,7 +20,7 @@ vi.mock("@/lib/content", () => ({
 const { generateMetadata } = await import("./page");
 
 describe("generateMetadata (work)", () => {
-  it("エントリのタイトル・説明文からメタデータを生成する", async () => {
+  it("generates metadata from the entry title and description", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: "sample-project" }),
     });
@@ -29,7 +30,7 @@ describe("generateMetadata (work)", () => {
     expect(metadata.openGraph?.title).toBe("Sample Project");
   });
 
-  it("存在しないslugの場合は空のメタデータを返す", async () => {
+  it("returns empty metadata for a slug that does not exist", async () => {
     const metadata = await generateMetadata({
       params: Promise.resolve({ slug: "not-found" }),
     });

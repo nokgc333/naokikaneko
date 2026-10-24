@@ -20,8 +20,6 @@ export function extractHeadings(markdown: string): TocHeading[] {
   visit(tree, "heading", (node: Heading) => {
     const text = toString(node);
     headings.push({
-      // rehype-sanitize prefixes heading ids with "user-content-" by default
-      // (DOM clobbering protection), so the extracted id must match.
       id: `user-content-${slugger.slug(text)}`,
       text,
       depth: node.depth,

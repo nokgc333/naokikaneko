@@ -3,7 +3,7 @@ import sitemap from "./sitemap";
 import { getEntries } from "@/lib/content";
 
 describe("sitemap", () => {
-  it("固定ページ（トップ・About・Blog一覧）を含む", () => {
+  it("includes the fixed pages (top, About, blog list)", () => {
     const urls = sitemap().map((entry) => entry.url);
 
     expect(urls).toContain("https://naokikaneko.com");
@@ -11,7 +11,7 @@ describe("sitemap", () => {
     expect(urls).toContain("https://naokikaneko.com/blog");
   });
 
-  it("Work記事すべての詳細ページを含む", () => {
+  it("includes the detail page of every work entry", () => {
     const urls = sitemap().map((entry) => entry.url);
     const workUrls = getEntries("work").map(
       (entry) => `https://naokikaneko.com/work/${entry.slug}`,
@@ -22,7 +22,7 @@ describe("sitemap", () => {
     }
   });
 
-  it("Blog記事すべての詳細ページを含む", () => {
+  it("includes the detail page of every blog entry", () => {
     const urls = sitemap().map((entry) => entry.url);
     const blogUrls = getEntries("blog").map(
       (entry) => `https://naokikaneko.com/blog/${entry.slug}`,

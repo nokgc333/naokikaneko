@@ -9,6 +9,7 @@ const entries: ContentEntry[] = [
     title: "HDA Entry",
     slug: "hda-entry",
     date: "2025-06-02",
+    updatedDate: "2025-06-02",
     tags: [],
     category: "HDA",
     description: "An HDA entry",
@@ -18,6 +19,7 @@ const entries: ContentEntry[] = [
     title: "Tools Entry",
     slug: "tools-entry",
     date: "2025-06-01",
+    updatedDate: "2025-06-01",
     tags: [],
     category: "Tool",
     description: "A tools entry",
@@ -26,14 +28,14 @@ const entries: ContentEntry[] = [
 ];
 
 describe("CategoryFilter", () => {
-  it("defaultFilter省略時はAllが選択され、全件表示される", () => {
+  it("selects All and shows every item when defaultFilter is omitted", () => {
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
     expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("Tools Entry")).toBeInTheDocument();
     expect(screen.getByText("HDA Entry")).toBeInTheDocument();
   });
 
-  it("defaultFilterを指定すると該当カテゴリのみ表示される", () => {
+  it("shows only the matching category when defaultFilter is given", () => {
     render(
       <CategoryFilter
         entries={entries}
@@ -46,7 +48,7 @@ describe("CategoryFilter", () => {
     expect(screen.queryByText("HDA Entry")).not.toBeInTheDocument();
   });
 
-  it("タブを切り替えると該当カテゴリの項目のみ表示される", async () => {
+  it("shows only the items of the selected category after switching tabs", async () => {
     const user = userEvent.setup();
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
 
@@ -56,7 +58,7 @@ describe("CategoryFilter", () => {
     expect(screen.queryByText("Tools Entry")).not.toBeInTheDocument();
   });
 
-  it("hrefPrefixに応じたリンク先を生成する", () => {
+  it("generates links according to hrefPrefix", () => {
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
     expect(screen.getByRole("link", { name: /Tools Entry/ })).toHaveAttribute(
       "href",
@@ -64,12 +66,12 @@ describe("CategoryFilter", () => {
     );
   });
 
-  it("cardTypeがworkの場合は表示切り替えボタンが表示されない", () => {
+  it("does not show the view toggle buttons when cardType is work", () => {
     render(<CategoryFilter entries={entries} hrefPrefix="/work" cardType="work" />);
     expect(screen.queryByLabelText("リスト表示")).not.toBeInTheDocument();
   });
 
-  it("cardTypeがblogの場合はグリッド・リストの両方の表示切り替えボタンが常時表示され、切り替えられる", async () => {
+  it("always shows both the grid and list toggle buttons when cardType is blog, and they switch the view", async () => {
     const user = userEvent.setup();
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
 
@@ -85,7 +87,7 @@ describe("CategoryFilter", () => {
     expect(listButton).toHaveAttribute("aria-pressed", "true");
   });
 
-  it("グリッド表示中も並び替えボタンが表示され、クリックで順序が反転する", async () => {
+  it("shows the sort button in grid view too, and clicking it reverses the order", async () => {
     const user = userEvent.setup();
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
     const links = () => screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
@@ -99,7 +101,7 @@ describe("CategoryFilter", () => {
     expect(links()[0]).toHaveAttribute("href", "/blog/tools-entry");
   });
 
-  it("リスト表示に切り替えても並び替え結果が引き継がれる", async () => {
+  it("keeps the sort result when switching to list view", async () => {
     const user = userEvent.setup();
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
     const links = () => screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));

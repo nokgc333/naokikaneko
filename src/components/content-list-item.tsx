@@ -29,10 +29,10 @@ export default function ContentListItem({ entry, href }: ContentListItemProps) {
           {entry.description}
         </p>
         <div className="mt-auto flex flex-wrap gap-2 pt-2 text-xs text-muted-foreground">
-          <time>{entry.date}</time>
           {entry.tags.map((tag) => (
             <span key={tag}>#{tag}</span>
           ))}
+          <time className="pl-2">{entry.date}</time>
         </div>
       </div>
     </Link>

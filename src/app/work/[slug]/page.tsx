@@ -34,7 +34,10 @@ export default async function WorkDetailPage({
     <ContentDetail
       entry={entry}
       rehypePlugins={[rehypeSanitize]}
-      proseClassName="prose mt-6 w-full [&_img]:mx-auto [&_img]:block"
+      proseClassName="prose mt-6 w-full max-w-none [&_img]:mx-auto [&_img]:block"
+      cropEyecatch
+      mainMaxWidthClassName="max-w-5xl"
+      eyecatchMaxWidth={864}
       afterMeta={
         entry.url ? (
           <a href={entry.url} className="mt-4 inline-block text-primary underline">

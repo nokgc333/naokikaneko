@@ -37,13 +37,13 @@ describe("TableOfContents", () => {
     vi.unstubAllGlobals();
   });
 
-  it("見出しが無い場合は何も描画しない", () => {
+  it("renders nothing when there are no headings", () => {
     const { container } = render(<TableOfContents headings={[]} />);
 
     expect(container).toBeEmptyDOMElement();
   });
 
-  it("各見出しへのアンカーリンクを表示する", () => {
+  it("shows an anchor link for each heading", () => {
     render(<TableOfContents headings={headings} />);
 
     expect(screen.getByRole("link", { name: "見出し1" })).toHaveAttribute(
@@ -56,7 +56,7 @@ describe("TableOfContents", () => {
     );
   });
 
-  it("交差した見出しをアクティブ表示にする", () => {
+  it("marks the intersecting heading as active", () => {
     render(<TableOfContents headings={headings} />);
     const activeLink = screen.getByRole("link", { name: "見出し2" });
 

@@ -1,0 +1,12 @@
+<svg viewBox="0 0 800 450" width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#0a0a0a" />
+
+  <text x="400" y="110" font-family="Arial, sans-serif" font-size="15" fill="#777777" text-anchor="middle" letter-spacing="3">HOUDINI SCENE QA</text>
+
+  <text x="400" y="220" font-family="ui-monospace, monospace" font-size="52" font-weight="700" fill="#ffffff" text-anchor="middle">scene-doctor</text>
+
+  <text x="400" y="258" font-family="Arial, sans-serif" font-size="17" fill="#999999" text-anchor="middle">HDA &#183; PDG &#183; PySide6 panel</text>
+
+  <rect x="220" y="290" width="360" height="1" fill="#333333" />
+  <text x="400" y="322" font-family="ui-monospace, monospace" font-size="16" fill="#aaaaaa" text-anchor="middle">non-manifold &#183; zero-area &#183; naming</text>
+</svg>

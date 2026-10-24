@@ -11,6 +11,9 @@ type ContentDetailProps = {
   proseClassName: string;
   sidebar?: ReactNode;
   afterMeta?: ReactNode;
+  cropEyecatch?: boolean;
+  mainMaxWidthClassName?: string;
+  eyecatchMaxWidth?: number;
 };
 
 export default function ContentDetail({
@@ -19,24 +22,48 @@ export default function ContentDetail({
   proseClassName,
   sidebar,
   afterMeta,
+  cropEyecatch = false,
+  mainMaxWidthClassName = "max-w-4xl",
+  eyecatchMaxWidth = 736,
 }: ContentDetailProps) {
   return (
-    <main className="mx-auto w-full max-w-4xl lg:px-20 py-6 lg:py-9">
+    <main className={`mx-auto w-full ${mainMaxWidthClassName} lg:px-20 py-6 lg:py-9`}>
       {sidebar}
       <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />
-      <Image
-        src={entry.thumbnail ?? "/images/placeholder.svg"}
-        alt={entry.title}
-        width={800}
-        height={450}
-        className="mx-auto mt-4 h-auto w-full object-contain"
-      />
+      {cropEyecatch ? (
+        <div
+          className="relative mx-auto mt-4 w-full overflow-hidden"
+          style={{ maxWidth: `${eyecatchMaxWidth}px`, aspectRatio: `${eyecatchMaxWidth} / 414` }}
+        >
+          <Image
+            src={entry.thumbnail ?? "/images/placeholder.svg"}
+            alt={entry.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+      ) : (
+        <Image
+          src={entry.thumbnail ?? "/images/placeholder.svg"}
+          alt={entry.title}
+          width={800}
+          height={450}
+          className="mx-auto mt-4 h-auto w-full object-contain"
+        />
+      )}
       <div className="mt-6 flex flex-wrap gap-2 text-sm text-muted-foreground">
-        <time>{entry.date}</time>
         {entry.tags.map((tag) => (
           <span key={tag}>#{tag}</span>
         ))}
+        <div className="ml-auto hidden flex-wrap gap-2 sm:flex">
+          <span>
+            追加日: <time>{entry.date}</time>
+          </span>
+          <span>
+            更新日: <time>{entry.updatedDate}</time>
+          </span>
+        </div>
       </div>
       {afterMeta}
       <div className={proseClassName}>

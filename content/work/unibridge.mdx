@@ -1,0 +1,31 @@
+---
+title: "unibridge"
+slug: "unibridge"
+date: "2026-09-29"
+updatedDate: "2026-09-29"
+tags: ["Python", "Houdini", "Blender", "USD"]
+category: "Tool"
+thumbnail: "/images/uploads/unibridge.svg"
+url: "https://github.com/nokgc333/unibridge"
+description: "HoudiniとBlenderの間でOpenUSDシーンを相互変換・検証するツール。座標系・スケール単位・命名規則の不整合を検出し、差分レポートを生成する。"
+---
+
+HoudiniとBlenderの間でOpenUSD（USD）シーンを相互変換・検証するツール。両DCCともUSDをネイティブサポートするが、往復させると座標系（Y-up/Z-up）やスケール単位（m/cm）が静かに食い違うことがある。unibridgeはこの不整合を検出とレポートに限定し（自動修正は行わない）、パイプラインTDが安全に問題箇所を特定できるようにする。
+
+## アーキテクチャ
+
+検証ロジックは`usd-core`（pxr）にのみ依存し、`hou`/`bpy`を一切importしない。実DCC呼び出しはHoudini専用・Blender専用の2つのアダプタに閉じ込めており、Houdini/Blenderがインストールされていない環境でもコア層全体をTDDで検証できる。
+
+## 実機検証で判明した挙動
+
+Blender実機（4.0.0）で往復（round-trip）検証を行ったところ、`upAxis=Y`のUSDをBlenderで読み込みそのまま再エクスポートすると、出力USDの`upAxis`が`Z`に変わることを確認した（Blenderの内部座標系がZ-upであるため）。このbefore/afterペアに対し実際に`scale-check`を実行し、unibridgeが検出しようとしている「DCC往復での座標系不整合」を実データで再現・検出できることを確認した。
+
+Houdini実機（Houdini Indie 22.0）でも、LOPノードから合成済みStageをそのままエクスポートするとプリム定義が失われる重大なバグを発見。`Usd.Stage.Export`（合成結果をフラット化してから書き出す方式）への修正で解決した。
+
+## 技術スタック
+
+- Python 3.11+ / usd-core（pip配布、DCC非依存）
+- FastAPI + uvicorn（簡易Web GUI、USDファイルのドラッグ&ドロップ検証）
+- pytest / mypy(strict) / black / isort / flake8 / pip-audit
+
+pytest 53件全てpass、コア層カバレッジ94.66%。pip-auditで検出された既知の脆弱性2件も依存バージョンの更新で解消済み。

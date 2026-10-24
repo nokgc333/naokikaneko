@@ -2,8 +2,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { GET } from './route';
 
 describe('GET /api/decap-oauth/auth', () => {
-  it('GitHubの認可URLへリダイレクトする', async () => {
+  it('redirects to the GitHub authorization URL', async () => {
     vi.stubEnv('GITHUB_OAUTH_CLIENT_ID', 'test-client-id');
+    vi.stubEnv('GITHUB_OAUTH_CLIENT_SECRET', 'test-client-secret');
     const request = new Request('http://localhost:3000/api/decap-oauth/auth');
     const response = await GET(request);
     expect(response.status).toBe(302);
@@ -12,8 +13,9 @@ describe('GET /api/decap-oauth/auth', () => {
     expect(location).toContain('client_id=test-client-id');
   });
 
-  it('CSRF対策のstateパラメータを生成し、認可URLとCookie両方に含める', async () => {
+  it('generates a CSRF state parameter and includes it in both the authorization URL and the cookie', async () => {
     vi.stubEnv('GITHUB_OAUTH_CLIENT_ID', 'test-client-id');
+    vi.stubEnv('GITHUB_OAUTH_CLIENT_SECRET', 'test-client-secret');
     const request = new Request('http://localhost:3000/api/decap-oauth/auth');
     const response = await GET(request);
 
@@ -24,5 +26,18 @@ describe('GET /api/decap-oauth/auth', () => {
     const setCookie = response.headers.get('set-cookie');
     expect(setCookie).toContain(`decap_oauth_state=${stateInUrl}`);
     expect(setCookie).toContain('HttpOnly');
+  });
+
+  it('returns 500 instead of redirecting with an empty client_id when GITHUB_OAUTH_CLIENT_ID is not set', async () => {
+    vi.stubEnv('GITHUB_OAUTH_CLIENT_ID', '');
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const request = new Request('http://localhost:3000/api/decap-oauth/auth');
+
+    const response = await GET(request);
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get('location')).toBeNull();
+    expect(errorSpy.mock.calls.flat().join(' ')).toContain('GITHUB_OAUTH_CLIENT_ID');
+    errorSpy.mockRestore();
   });
 });

@@ -1,18 +1,35 @@
 import { Resend } from "resend";
 import { contactFormSchema } from "@/lib/schemas/contact";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { getClientIp } from "@/lib/client-ip";
+import { BodyTooLargeError, readLimitedText } from "@/lib/request-body";
+
+const MAX_BODY_BYTES = 16 * 1024;
 
 export async function POST(request: Request) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
-
-  if (!checkRateLimit(ip)) {
+  if (!checkRateLimit(getClientIp(request))) {
     return Response.json(
       { error: "リクエストが多すぎます。時間をおいて再度お試しください" },
       { status: 429 }
     );
   }
 
-  const body = await request.json();
+  let body: unknown;
+  try {
+    body = JSON.parse(await readLimitedText(request, MAX_BODY_BYTES));
+  } catch (error) {
+    if (error instanceof BodyTooLargeError) {
+      return Response.json(
+        { error: "送信内容が大きすぎます" },
+        { status: 413 }
+      );
+    }
+    return Response.json(
+      { error: "リクエストの形式が正しくありません" },
+      { status: 400 }
+    );
+  }
+
   const parsed = contactFormSchema.safeParse(body);
 
   if (!parsed.success) {

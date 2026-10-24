@@ -96,9 +96,7 @@ export default function CategoryFilter({
                 </button>
               </div>
             </div>
-            {/* Forces a line break after the heading+toolbar row on mobile only. */}
             <div className="h-6 basis-full sm:hidden" />
-            {/* Forces a line break after the heading row on sm+ only. */}
             <div className="hidden h-6 basis-full sm:order-2 sm:block" />
           </>
         ) : null}

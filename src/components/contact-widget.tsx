@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { MdOutlineChatBubbleOutline, MdClose } from "react-icons/md";
-import ContactForm from "./contact-form";
+import dynamic from "next/dynamic";
+
+const loadContactForm = () => import("./contact-form");
+const ContactForm = dynamic(loadContactForm);
 
 export default function ContactWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,6 +37,8 @@ export default function ContactWidget() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
+          onPointerEnter={loadContactForm}
+          onFocus={loadContactForm}
           aria-label="お問い合わせを開く"
           className="flex h-16 w-16 items-center justify-center text-3xl"
         >

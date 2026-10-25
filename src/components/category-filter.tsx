@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { LayoutGrid, List as ListIcon, ArrowUpDown } from "lucide-react";
 import type { ContentEntry } from "@/lib/schemas/content";
-import { workCategories } from "@/lib/schemas/content";
+import { workCategories } from "@/lib/work-categories";
 import ContentCard from "@/components/content-card";
 import ContentListItem from "@/components/content-list-item";
 import WorkCard from "@/components/work-card";
@@ -13,6 +13,8 @@ type ViewMode = "grid" | "list";
 type SortOrder = "desc" | "asc";
 
 const filters: FilterValue[] = ["All", ...workCategories];
+
+const PRIORITY_IMAGE_COUNT = 2;
 
 const cardComponents = {
   work: WorkCard,
@@ -125,8 +127,13 @@ export default function CategoryFilter({
         </div>
       ) : (
         <div className={`mt-4 grid ${gridClassName}`}>
-          {displayedEntries.map((entry) => (
-            <CardComponent key={entry.slug} entry={entry} href={`${hrefPrefix}/${entry.slug}`} />
+          {displayedEntries.map((entry, index) => (
+            <CardComponent
+              key={entry.slug}
+              entry={entry}
+              href={`${hrefPrefix}/${entry.slug}`}
+              priority={index < PRIORITY_IMAGE_COUNT}
+            />
           ))}
         </div>
       )}

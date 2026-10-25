@@ -70,15 +70,63 @@ npm run test:e2e     # Playwright（E2E）
 
 GitHub Actions上でPull Requestごとに上記すべてを自動実行している（`.github/workflows/ci.yml`）。
 
-## ローカルでの起動方法
+## セットアップ
+
+### 前提
+
+- Node.js 24（`.nvmrc` で固定。`nvm use` で切り替える）。別の版では `npm install` が失敗する（`engine-strict`）。
+- npm 11 以上。
+
+### 起動
 
 ```bash
-npm install
-npm run dev
+nvm use
+npm ci
+cp .env.example .env.local   # 値は次の節を見て埋める
+npm run dev                  # http://localhost:3000
 ```
 
-`http://localhost:3000` で確認できる。
-お問い合わせフォームの送信機能を使う場合は、Resendの APIキー等を`.env.local`に設定する。
+環境変数が空でも、サイトの閲覧は動く。お問い合わせの送信と CMS のログインだけが、それぞれの設定を必要とする（未設定の機能は 500 を返し、ログに不足している変数名が出る）。
+
+### 環境変数
+
+| 変数 | 必要な機能 | 値 | Vercel での種別 |
+|---|---|---|---|
+| `RESEND_API_KEY` | お問い合わせ | Resend の API キー | シークレット（Sensitive） |
+| `ADMIN_EMAIL` | お問い合わせ | 問い合わせの届け先（自分のメール） | 通常 |
+| `CONTACT_MAIL_FROM` | お問い合わせ | 送信元。`名前 <address@your-domain>` の形。ドメインは Resend で認証済みであること | 通常 |
+| `GITHUB_OAUTH_CLIENT_ID` | CMS のログイン | GitHub OAuth App の Client ID | 通常 |
+| `GITHUB_OAUTH_CLIENT_SECRET` | CMS のログイン | GitHub OAuth App の Client Secret | シークレット（Sensitive） |
+
+- 本番（Vercel）では、同じ名前を Project Settings > Environment Variables に登録する。Production と Preview の両方に設定する。
+- 値はコミットしない（`.env*` は `.gitignore` 済みで、`.env.example` だけが追跡される）。
+- 値が不正（形式が違う）な場合も、不足と同じく該当機能が 500 を返し、ログに変数名だけが出る（値は出ない）。
+
+### 外部サービスの設定
+
+**Resend（お問い合わせのメール送信）**
+
+1. Resend でドメインを追加し、DNS に DKIM / SPF / DMARC のレコードを登録して認証する。
+2. API キーを発行し、`RESEND_API_KEY` に設定する。
+3. `CONTACT_MAIL_FROM` に、認証済みドメインの送信元アドレスを設定する。
+
+**GitHub OAuth App（CMS のログイン）**
+
+1. GitHub > Settings > Developer settings > OAuth Apps で、新しい OAuth App を作る。
+2. Homepage URL にサイトの URL、Authorization callback URL に `<サイトの URL>/api/decap-oauth/callback` を設定する。
+3. Client ID と、発行した Client Secret を、`GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` に設定する。
+4. 要求するスコープは `public_repo` のみ（公開リポジトリへの書き込み）。
+
+**Decap CMS**
+
+- 設定は `public/admin/config.yml`。`backend.repo` / `branch` / `base_url` / `auth_endpoint` を自分のリポジトリとサイトに合わせる。
+- 本番: `<サイトの URL>/admin/index.html` を開き、GitHub でログインする。記事を保存すると、`main` に直接コミットされる。
+- ローカル（ログイン不要）: 別のターミナルで `npm run cms:proxy` を起動し、`http://localhost:3000/admin/index.html` を開く（`local_backend: true`）。ローカルの `content/` を直接編集する。
+
+## ライセンス
+
+- ソースコードは MIT License（`LICENSE`）。
+- `content/`（記事）、`public/images/uploads/`（画像）、About ページのプロフィール文は対象外で、すべての権利を留保する（`CONTENT_LICENSE.md`）。
 
 ## ディレクトリ構成
 

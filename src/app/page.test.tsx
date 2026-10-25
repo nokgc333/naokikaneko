@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import Home from "./page";
+import Home, { metadata } from "./page";
 
 const getEntries = vi.fn();
 vi.mock("@/lib/content", () => ({ getEntries: (...args: unknown[]) => getEntries(...args) }));
@@ -25,5 +25,9 @@ describe("Home", () => {
       cardType: "work",
       defaultFilter: "Tool",
     });
+  });
+
+  it("declares the canonical URL of the top page", () => {
+    expect(metadata.alternates?.canonical).toBe("/");
   });
 });

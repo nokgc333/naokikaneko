@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import { getEntries } from "@/lib/content";
 import CategoryFilter from "@/components/category-filter";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   const entries = getEntries("work");

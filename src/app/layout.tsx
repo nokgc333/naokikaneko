@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Noto_Sans_JP, Roboto } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ContactWidget from "@/components/contact-widget";
+import JsonLd from "@/components/json-ld";
+import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/structured-data";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -24,6 +26,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
   preload: false,
 });
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -66,6 +72,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </div>
         <SiteFooter />
         <ContactWidget />
+        <JsonLd data={buildWebSiteJsonLd()} />
+        <JsonLd data={buildPersonJsonLd()} />
       </body>
     </html>
   );

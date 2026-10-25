@@ -36,6 +36,15 @@ vi.mock("@/components/table-of-contents", () => ({
   ),
 }));
 
+const basePost = {
+  title: "Post",
+  slug: "current",
+  date: "2025-06-01",
+  updatedDate: "2025-06-02",
+  description: "A post",
+  tags: [] as string[],
+};
+
 const params = (slug: string) => ({ params: Promise.resolve({ slug }) });
 
 describe("blog detail page", () => {
@@ -65,7 +74,7 @@ describe("blog detail page", () => {
   });
 
   it("shows the table of contents and related posts without the current post", async () => {
-    getEntry.mockReturnValue({ title: "Post", slug: "current", body: "## First\n\n## Second" });
+    getEntry.mockReturnValue({ ...basePost, body: "## First\n\n## Second" });
     getEntries.mockReturnValue(
       ["current", "p1", "p2", "p3", "p4", "p5", "p6"].map((slug) => ({ slug })),
     );
@@ -75,5 +84,17 @@ describe("blog detail page", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Post" })).toBeInTheDocument();
     expect(screen.getByTestId("toc")).toHaveTextContent("First,Second");
     expect(screen.getByTestId("related")).toHaveTextContent("p1,p2,p3,p4,p5");
+  });
+
+  it("embeds BlogPosting structured data for the entry", async () => {
+    getEntry.mockReturnValue({ ...basePost, body: "" });
+    getEntries.mockReturnValue([]);
+
+    const { container } = render(await BlogDetailPage(params("current")));
+
+    const data = JSON.parse(
+      container.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}",
+    );
+    expect(data).toMatchObject({ "@type": "BlogPosting", headline: "Post" });
   });
 });

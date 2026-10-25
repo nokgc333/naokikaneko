@@ -28,5 +28,6 @@ describe("BlogPage", () => {
 
   it("exports the page metadata", () => {
     expect(metadata).toMatchObject({ title: "Blog" });
+    expect(metadata.alternates?.canonical).toBe("/blog");
   });
 });

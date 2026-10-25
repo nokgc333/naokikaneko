@@ -1,0 +1,14 @@
+.next
+out
+build
+coverage
+playwright-report
+test-results
+node_modules
+public
+content
+docs
+package-lock.json
+next-env.d.ts
+tsconfig.tsbuildinfo
+*.md

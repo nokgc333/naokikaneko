@@ -49,8 +49,7 @@ export default function CategoryFilter({
   const filteredEntries =
     activeFilter === "All" ? entries : entries.filter((entry) => entry.category === activeFilter);
 
-  const displayedEntries =
-    sortOrder === "asc" ? [...filteredEntries].reverse() : filteredEntries;
+  const displayedEntries = sortOrder === "asc" ? [...filteredEntries].reverse() : filteredEntries;
 
   return (
     <div>

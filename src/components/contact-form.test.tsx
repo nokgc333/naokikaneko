@@ -7,7 +7,7 @@ describe("ContactForm", () => {
   beforeEach(() => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) })
+      vi.fn().mockResolvedValue({ ok: true, json: async () => ({ ok: true }) }),
     );
   });
 
@@ -33,10 +33,7 @@ describe("ContactForm", () => {
     await waitFor(() => {
       expect(screen.getByText("送信しました")).toBeInTheDocument();
     });
-    expect(fetch).toHaveBeenCalledWith(
-      "/api/contact",
-      expect.objectContaining({ method: "POST" })
-    );
+    expect(fetch).toHaveBeenCalledWith("/api/contact", expect.objectContaining({ method: "POST" }));
   });
 
   it("shows an error message and writes a developer log when submission fails", async () => {
@@ -51,7 +48,7 @@ describe("ContactForm", () => {
     await user.click(screen.getByRole("button", { name: "送信" }));
 
     expect(
-      await screen.findByText("送信に失敗しました。時間をおいて再度お試しください。")
+      await screen.findByText("送信に失敗しました。時間をおいて再度お試しください。"),
     ).toBeInTheDocument();
     expect(consoleErrorSpy).toHaveBeenCalled();
 

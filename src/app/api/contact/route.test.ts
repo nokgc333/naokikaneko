@@ -29,7 +29,7 @@ describe("POST /api/contact", () => {
 
   it("sends the mail through Resend and returns 200 for valid input", async () => {
     const response = await POST(
-      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" })
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
     );
 
     expect(response.status).toBe(200);
@@ -41,7 +41,7 @@ describe("POST /api/contact", () => {
 
   it("returns 422 and sends nothing when name is empty", async () => {
     const response = await POST(
-      makeRequest({ name: "", email: "taro@example.com", message: "Hello" })
+      makeRequest({ name: "", email: "taro@example.com", message: "Hello" }),
     );
 
     expect(response.status).toBe(422);
@@ -50,7 +50,7 @@ describe("POST /api/contact", () => {
 
   it("returns 422 when email is malformed", async () => {
     const response = await POST(
-      makeRequest({ name: "Taro", email: "not-an-email", message: "Hello" })
+      makeRequest({ name: "Taro", email: "not-an-email", message: "Hello" }),
     );
 
     expect(response.status).toBe(422);
@@ -64,7 +64,7 @@ describe("POST /api/contact", () => {
         email: "bot@example.com",
         message: "spam",
         honeypot: "filled",
-      })
+      }),
     );
 
     expect(response.status).toBe(200);
@@ -75,7 +75,7 @@ describe("POST /api/contact", () => {
     vi.stubEnv("ADMIN_EMAIL", "");
 
     const response = await POST(
-      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" })
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
     );
 
     expect(response.status).toBe(500);
@@ -83,13 +83,9 @@ describe("POST /api/contact", () => {
   });
 
   it("uses the CONTACT_MAIL_FROM environment variable as the sender", async () => {
-    await POST(
-      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" })
-    );
+    await POST(makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }));
 
-    expect(sendMock.mock.calls[0][0].from).toBe(
-      "お問い合わせ <contact@example.com>"
-    );
+    expect(sendMock.mock.calls[0][0].from).toBe("お問い合わせ <contact@example.com>");
   });
 
   it.each(["RESEND_API_KEY", "CONTACT_MAIL_FROM"])(
@@ -99,7 +95,7 @@ describe("POST /api/contact", () => {
       const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
       const response = await POST(
-        makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" })
+        makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
       );
 
       expect(response.status).toBe(500);
@@ -108,25 +104,19 @@ describe("POST /api/contact", () => {
       expect(logged).toContain(name);
       expect(logged).not.toContain("test-key");
       errorSpy.mockRestore();
-    }
+    },
   );
 
   it("returns 429 when one IP exceeds the send limit", async () => {
     for (let i = 0; i < 5; i++) {
       const response = await POST(
-        makeRequest(
-          { name: "Taro", email: "taro@example.com", message: "Hello" },
-          "9.9.9.9"
-        )
+        makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }, "9.9.9.9"),
       );
       expect(response.status).toBe(200);
     }
 
     const response = await POST(
-      makeRequest(
-        { name: "Taro", email: "taro@example.com", message: "Hello" },
-        "9.9.9.9"
-      )
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }, "9.9.9.9"),
     );
 
     expect(response.status).toBe(429);
@@ -159,7 +149,7 @@ describe("POST /api/contact", () => {
 
     it("returns 413 when Content-Length declares more than the limit", async () => {
       const response = await POST(
-        makeRawRequest(JSON.stringify(valid), { "content-length": "100000" })
+        makeRawRequest(JSON.stringify(valid), { "content-length": "100000" }),
       );
 
       expect(response.status).toBe(413);
@@ -184,7 +174,7 @@ describe("POST /api/contact", () => {
 
     it("returns 422 and sends nothing when the name contains a line break (prevents subject injection)", async () => {
       const response = await POST(
-        makeRequest({ ...valid, name: "Taro\r\nBcc: attacker@example.com" })
+        makeRequest({ ...valid, name: "Taro\r\nBcc: attacker@example.com" }),
       );
 
       expect(response.status).toBe(422);
@@ -223,7 +213,7 @@ describe("POST /api/contact", () => {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-real-ip": "7.7.7.7" },
             body,
-          })
+          }),
         );
 
       for (let i = 0; i < 5; i++) expect((await send()).status).toBe(200);
@@ -238,7 +228,7 @@ describe("POST /api/contact", () => {
             method: "POST",
             headers: { "Content-Type": "application/json", "x-real-ip": ip },
             body: JSON.stringify(valid),
-          })
+          }),
         );
 
       for (let i = 0; i < 5; i++) await sendFrom("1.1.1.1");
@@ -246,5 +236,28 @@ describe("POST /api/contact", () => {
       expect((await sendFrom("1.1.1.1")).status).toBe(429);
       expect((await sendFrom("2.2.2.2")).status).toBe(200);
     });
+  });
+});
+
+describe("POST /api/contact when Resend rejects the mail", () => {
+  beforeEach(() => {
+    resetRateLimit();
+    vi.stubEnv("RESEND_API_KEY", "test-key");
+    vi.stubEnv("ADMIN_EMAIL", "admin@example.com");
+    vi.stubEnv("CONTACT_MAIL_FROM", "contact@example.com");
+  });
+
+  it("returns 500 and logs the provider error without leaking it to the client", async () => {
+    sendMock.mockResolvedValueOnce({ data: null, error: { message: "provider down" } });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const response = await POST(
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
+    );
+
+    expect(response.status).toBe(500);
+    expect(await response.text()).not.toContain("provider down");
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 });

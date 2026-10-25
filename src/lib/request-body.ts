@@ -5,10 +5,7 @@ export class BodyTooLargeError extends Error {
   }
 }
 
-export async function readLimitedText(
-  request: Request,
-  maxBytes: number
-): Promise<string> {
+export async function readLimitedText(request: Request, maxBytes: number): Promise<string> {
   const declared = Number(request.headers.get("content-length"));
   if (Number.isFinite(declared) && declared > maxBytes) {
     throw new BodyTooLargeError(maxBytes);

@@ -30,28 +30,22 @@ describe("contactFormSchema", () => {
     "rejects a name that contains control characters (%j)",
     (name) => {
       expect(contactFormSchema.safeParse({ ...valid, name }).success).toBe(false);
-    }
+    },
   );
 
   it("accepts an email address exactly at the limit and rejects a longer one", () => {
     const domain = "@example.com";
     const atLimit = `${"a".repeat(EMAIL_MAX_LENGTH - domain.length)}${domain}`;
 
-    expect(contactFormSchema.safeParse({ ...valid, email: atLimit }).success).toBe(
-      true
-    );
-    expect(
-      contactFormSchema.safeParse({ ...valid, email: `a${atLimit}` }).success
-    ).toBe(false);
+    expect(contactFormSchema.safeParse({ ...valid, email: atLimit }).success).toBe(true);
+    expect(contactFormSchema.safeParse({ ...valid, email: `a${atLimit}` }).success).toBe(false);
   });
 
   it("accepts a message up to 2000 characters and rejects a longer one", () => {
-    expect(
-      contactFormSchema.safeParse({ ...valid, message: "a".repeat(2000) }).success
-    ).toBe(true);
-    expect(
-      contactFormSchema.safeParse({ ...valid, message: "a".repeat(2001) }).success
-    ).toBe(false);
+    expect(contactFormSchema.safeParse({ ...valid, message: "a".repeat(2000) }).success).toBe(true);
+    expect(contactFormSchema.safeParse({ ...valid, message: "a".repeat(2001) }).success).toBe(
+      false,
+    );
   });
 
   it("configures zod not to use eval (avoids violation reports in browsers whose CSP forbids eval)", () => {

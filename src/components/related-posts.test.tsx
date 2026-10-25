@@ -39,9 +39,6 @@ describe("RelatedPosts", () => {
     expect(screen.getByText("Post A")).toBeInTheDocument();
     expect(screen.getByText("Post B")).toBeInTheDocument();
     expect(screen.getByText("2025-06-01")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Post A/ })).toHaveAttribute(
-      "href",
-      "/blog/post-a"
-    );
+    expect(screen.getByRole("link", { name: /Post A/ })).toHaveAttribute("href", "/blog/post-a");
   });
 });

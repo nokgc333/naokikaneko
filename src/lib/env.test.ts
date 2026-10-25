@@ -1,9 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import {
-  describeEnvProblem,
-  loadContactMailEnv,
-  loadGithubOAuthEnv,
-} from "./env";
+import { describeEnvProblem, loadContactMailEnv, loadGithubOAuthEnv } from "./env";
 
 const CONTACT_ENV = {
   RESEND_API_KEY: "re_test_key",
@@ -28,7 +24,7 @@ describe("loadContactMailEnv", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect([...result.missing].sort()).toEqual(
-        ["ADMIN_EMAIL", "CONTACT_MAIL_FROM", "RESEND_API_KEY"].sort()
+        ["ADMIN_EMAIL", "CONTACT_MAIL_FROM", "RESEND_API_KEY"].sort(),
       );
       expect(result.invalid).toEqual([]);
     }
@@ -98,5 +94,25 @@ describe("describeEnvProblem", () => {
     expect(message).toContain("ADMIN_EMAIL");
     expect(message).not.toContain("not-an-email");
     expect(message).not.toContain("re_super_secret");
+  });
+});
+
+describe("describeEnvProblem branches", () => {
+  it("mentions only the missing names when nothing is invalid", () => {
+    expect(describeEnvProblem({ missing: ["A"], invalid: [] })).toBe(
+      "Environment variables are not configured correctly (missing: A)",
+    );
+  });
+
+  it("mentions only the invalid names when nothing is missing", () => {
+    expect(describeEnvProblem({ missing: [], invalid: ["B"] })).toBe(
+      "Environment variables are not configured correctly (invalid: B)",
+    );
+  });
+
+  it("mentions both when both exist", () => {
+    expect(describeEnvProblem({ missing: ["A"], invalid: ["B"] })).toContain(
+      "missing: A; invalid: B",
+    );
   });
 });

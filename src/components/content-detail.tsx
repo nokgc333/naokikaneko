@@ -27,7 +27,7 @@ export default function ContentDetail({
   eyecatchMaxWidth = 736,
 }: ContentDetailProps) {
   return (
-    <main className={`mx-auto w-full ${mainMaxWidthClassName} lg:px-20 py-6 lg:py-9`}>
+    <main className={`mx-auto w-full ${mainMaxWidthClassName} py-6 lg:px-20 lg:py-9`}>
       {sidebar}
       <h1 className="text-2xl font-bold">{entry.title}</h1>
       <hr className="my-6 border-border" />

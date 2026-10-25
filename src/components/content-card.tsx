@@ -9,7 +9,10 @@ type ContentCardProps = {
 
 export default function ContentCard({ entry, href }: ContentCardProps) {
   return (
-    <Link href={href} className="group flex h-[288px] flex-col overflow-hidden border border-border">
+    <Link
+      href={href}
+      className="group flex h-[288px] flex-col overflow-hidden border border-border"
+    >
       <div className="relative min-h-0 flex-1 overflow-hidden">
         <Image
           src={entry.thumbnail ?? "/images/placeholder.svg"}

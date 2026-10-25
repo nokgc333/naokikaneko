@@ -46,9 +46,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="ja"
       className={`${roboto.variable} ${notoSansJP.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="flex min-h-full flex-col">
         <SiteHeader />
-        <div className="flex-1 pb-10 pt-20 px-5 lg:px-10">{children}</div>
+        <div className="flex-1 px-5 pt-20 pb-10 lg:px-10">{children}</div>
         <SiteFooter />
         <ContactWidget />
       </body>

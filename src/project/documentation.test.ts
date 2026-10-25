@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { describe, it, expect } from "vitest";
+import { contentFrontmatterSchema } from "@/lib/content/schema";
+import { workCategories } from "@/lib/content/work-categories";
 
 const read = (file: string) => fs.readFileSync(path.join(process.cwd(), file), "utf-8");
 
@@ -57,5 +59,36 @@ describe("license files", () => {
 
     expect(readme).toContain("`LICENSE`");
     expect(readme).toContain("`CONTENT_LICENSE.md`");
+  });
+});
+
+describe("content guide", () => {
+  const guide = read("CONTENT_GUIDE.md");
+
+  it("documents every frontmatter field of the schema", () => {
+    for (const key of Object.keys(contentFrontmatterSchema.shape)) {
+      expect(guide, key).toContain(`\`${key}\``);
+    }
+  });
+
+  it("lists every category", () => {
+    for (const category of workCategories) {
+      expect(guide, category).toContain(category);
+    }
+  });
+
+  it("explains both ways of adding content and the checker", () => {
+    expect(guide).toContain("/admin/index.html");
+    expect(guide).toContain("content/work/<slug>.mdx");
+    expect(guide).toContain("npm run content:check");
+  });
+
+  it("is linked from the README and the checker is a package script", () => {
+    expect(read("README.md")).toContain("CONTENT_GUIDE.md");
+    expect(JSON.parse(read("package.json")).scripts["content:check"]).toBeDefined();
+  });
+
+  it("runs the checker in CI", () => {
+    expect(read(".github/workflows/ci.yml")).toContain("npm run content:check");
   });
 });

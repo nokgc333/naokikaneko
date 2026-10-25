@@ -18,7 +18,7 @@ Next.js（App Router）+ TypeScript + Tailwind CSSで構築したフルスクラ
 | Work（実績）一覧・詳細 | カテゴリ絞り込み、MDXによる本文レンダリング |
 | Blog（技術記事）一覧・詳細 | グリッド/リスト表示切替、新しい順・古い順の並び替え、見出し目次（TOC）、関連記事サイドバー |
 | お問い合わせフォーム | React Hook Form + Zodバリデーション、Resend経由のメール送信（独自ドメインでDKIM/SPF/DMARC認証済み） |
-| コンテンツ管理 | Decap CMS（`/admin`からのWeb編集）と、Gitへの直接コミットの両方でMarkdown/MDXコンテンツを追加可能 |
+| コンテンツ管理 | Decap CMS（`/admin`からのWeb編集）と、Gitへの直接コミットの両方でMarkdown/MDXコンテンツを追加可能。手順と書式は `CONTENT_GUIDE.md`、検査は `npm run content:check` |
 | SEO | 動的サイトマップ・robots.txt、Open Graph / Twitter Card対応 |
 
 ## 技術スタック
@@ -66,6 +66,7 @@ npm run type-check   # tsc --noEmit
 npm run test         # Vitest（単体・結合テスト）
 npm run test:coverage
 npm run test:e2e     # Playwright（E2E）
+npm run content:check # コンテンツ（frontmatter・画像・slug）の検査
 ```
 
 GitHub Actions上でPull Requestごとに上記すべてを自動実行している（`.github/workflows/ci.yml`）。

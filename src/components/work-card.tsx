@@ -26,9 +26,9 @@ export default function WorkCard({ entry, href, priority = false }: WorkCardProp
         className="object-cover transition-transform duration-[500ms] ease-out group-hover:scale-110"
       />
       <div className="absolute inset-x-0 bottom-0 bg-background/80 p-2 backdrop-blur-sm transition-colors duration-500 ease-out group-hover:bg-black/80">
-        <h3 className="line-clamp-1 text-base font-semibold group-hover:text-white">
+        <h2 className="line-clamp-1 text-base font-semibold group-hover:text-white">
           {entry.title}
-        </h3>
+        </h2>
         <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground group-hover:text-white">
           {entry.tags.map((tag) => (
             <span key={tag}>#{tag}</span>

@@ -15,7 +15,7 @@ export default function SiteHeader() {
       <Link href="/about" className="text-lg font-bold tracking-wide whitespace-nowrap" lang="en">
         NAOKI KANEKO
       </Link>
-      <nav className="flex gap-6">
+      <nav aria-label="メイン" className="flex gap-6">
         {navLinks.map((link) => (
           <Link key={link.href} href={link.href} className="text-sm font-light" lang="en">
             {link.label}

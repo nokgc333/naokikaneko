@@ -33,6 +33,22 @@ describe("RootLayout fonts", () => {
   });
 });
 
+describe("RootLayout accessibility landmarks", () => {
+  it("puts a skip link to the main content before everything else", () => {
+    const html = renderLayout();
+
+    expect(html.indexOf('href="#main-content"')).toBeGreaterThan(-1);
+    expect(html.indexOf('href="#main-content"')).toBeLessThan(html.indexOf("header"));
+    expect(html).toContain("Skip to main content");
+  });
+
+  it("makes the content wrapper a focus target for the skip link", () => {
+    const html = renderLayout();
+
+    expect(html).toMatch(/<div id="main-content" tabindex="-1"/);
+  });
+});
+
 describe("RootLayout", () => {
   it("renders a Japanese document with the font variables on the html element", () => {
     const html = renderLayout();

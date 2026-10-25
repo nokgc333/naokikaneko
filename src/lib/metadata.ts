@@ -10,22 +10,22 @@ export function buildEntryMetadata(collection: Collection, slug: string): Metada
     return {};
   }
 
-  const image = entry.thumbnail ?? "/images/placeholder.svg";
+  const path = `/${collection}/${slug}`;
 
   return {
     title: entry.title,
     description: entry.description,
+    alternates: { canonical: path },
     openGraph: {
       title: entry.title,
       description: entry.description,
       type: "article",
-      images: [image],
+      url: path,
     },
     twitter: {
       card: "summary_large_image",
       title: entry.title,
       description: entry.description,
-      images: [image],
     },
   };
 }

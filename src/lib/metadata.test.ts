@@ -35,23 +35,30 @@ vi.mock("@/lib/content", () => ({
 const { buildEntryMetadata } = await import("./metadata");
 
 describe("buildEntryMetadata", () => {
-  it("generates metadata from the entry title, description and thumbnail", () => {
+  it("generates metadata from the entry title and description", () => {
     const metadata = buildEntryMetadata("blog", "sample-post");
 
     expect(metadata.title).toBe("Sample Post");
     expect(metadata.description).toBe("動作確認用のサンプル記事");
-    expect(metadata.openGraph?.images).toEqual(["/images/uploads/sample.png"]);
+    expect(metadata.openGraph).toMatchObject({ title: "Sample Post", type: "article" });
+    expect(metadata.twitter).toMatchObject({ card: "summary_large_image", title: "Sample Post" });
   });
 
-  it("uses the placeholder image when no thumbnail is set", () => {
+  it("sets the canonical URL and og:url to the entry path", () => {
     const metadata = buildEntryMetadata("work", "sample-project");
 
-    expect(metadata.openGraph?.images).toEqual(["/images/placeholder.svg"]);
+    expect(metadata.alternates?.canonical).toBe("/work/sample-project");
+    expect(metadata.openGraph?.url).toBe("/work/sample-project");
+  });
+
+  it("leaves the share image to the opengraph-image file of the route", () => {
+    const metadata = buildEntryMetadata("blog", "sample-post");
+
+    expect(metadata.openGraph).not.toHaveProperty("images");
+    expect(metadata.twitter).not.toHaveProperty("images");
   });
 
   it("returns empty metadata for a slug that does not exist", () => {
-    const metadata = buildEntryMetadata("blog", "not-found");
-
-    expect(metadata).toEqual({});
+    expect(buildEntryMetadata("blog", "not-found")).toEqual({});
   });
 });

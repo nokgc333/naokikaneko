@@ -28,3 +28,28 @@ test("does not apply the page CSP to the CMS entry page", async ({ request }) =>
 
   expect(headers["content-security-policy"]).toBeUndefined();
 });
+
+const pagesToCheck = [
+  "/",
+  "/about",
+  "/blog",
+  "/blog/mdx-markdown-differences",
+  "/work/naokikaneko-com",
+];
+
+for (const path of pagesToCheck) {
+  test(`${path} loads without Content Security Policy violations`, async ({ page }) => {
+    const violations: string[] = [];
+    page.on("console", (message) => {
+      if (/Content Security Policy|Refused to/i.test(message.text())) {
+        violations.push(message.text());
+      }
+    });
+
+    await page.goto(path);
+    await page.getByRole("heading").first().waitFor();
+    await page.waitForLoadState("networkidle");
+
+    expect(violations).toEqual([]);
+  });
+}

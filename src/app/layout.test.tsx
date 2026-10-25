@@ -2,8 +2,13 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, it, expect, vi } from "vitest";
 import RootLayout, { metadata } from "./layout";
 
+const fontOptions = vi.hoisted(() => new Map<string, Record<string, unknown>>());
+
 vi.mock("next/font/google", () => {
-  const font = (name: string) => () => ({ variable: `--font-${name}` });
+  const font = (name: string) => (options: Record<string, unknown>) => {
+    fontOptions.set(name, options);
+    return { variable: `--font-${name}` };
+  };
   return { Roboto: font("roboto"), Noto_Sans_JP: font("noto"), Geist_Mono: font("mono") };
 });
 vi.mock("./globals.css", () => ({}));
@@ -16,6 +21,17 @@ function renderLayout() {
     <RootLayout {...({ children: <p>page body</p> } as React.ComponentProps<typeof RootLayout>)} />,
   );
 }
+
+describe("RootLayout fonts", () => {
+  it("never swaps the Japanese web font in after first paint, to avoid layout shift", () => {
+    expect(fontOptions.get("noto")?.display).toBe("optional");
+  });
+
+  it("does not preload the fonts that are not needed for the first paint", () => {
+    expect(fontOptions.get("noto")?.preload).toBe(false);
+    expect(fontOptions.get("mono")?.preload).toBe(false);
+  });
+});
 
 describe("RootLayout", () => {
   it("renders a Japanese document with the font variables on the html element", () => {

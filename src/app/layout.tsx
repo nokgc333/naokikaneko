@@ -15,7 +15,7 @@ const roboto = Roboto({
 const notoSansJP = Noto_Sans_JP({
   variable: "--font-noto-sans-jp",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   preload: false,
 });
 

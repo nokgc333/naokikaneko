@@ -25,6 +25,7 @@ export default defineConfig({
         "src/types/**",
         "src/**/__mocks__/**",
       ],
+      thresholds: { statements: 95, branches: 95, functions: 95, lines: 95 },
     },
   },
 });

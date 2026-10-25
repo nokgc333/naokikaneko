@@ -25,7 +25,7 @@ export default function ContactWidget() {
               aria-label="閉じる"
               className="text-2xl"
             >
-              <MdClose />
+              <MdClose aria-hidden="true" />
             </button>
           </div>
           <ContactForm />
@@ -37,7 +37,7 @@ export default function ContactWidget() {
           aria-label="お問い合わせを開く"
           className="flex h-16 w-16 items-center justify-center text-3xl"
         >
-          <MdOutlineChatBubbleOutline />
+          <MdOutlineChatBubbleOutline aria-hidden="true" />
         </button>
       )}
     </div>

@@ -25,7 +25,7 @@ export default function SiteHeader() {
       <div className="ml-auto hidden items-center gap-6 text-[31.5px] lg:flex">
         {snsLinks.map(({ label, href, Icon }) => (
           <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
-            <Icon />
+            <Icon aria-hidden="true" />
           </a>
         ))}
       </div>

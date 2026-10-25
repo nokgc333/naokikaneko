@@ -4,6 +4,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import type { CompileOptions } from "@mdx-js/mdx";
 import type { ContentEntry } from "@/lib/schemas/content";
+import TaskListCheckbox from "./task-list-checkbox";
 
 type ContentDetailProps = {
   entry: ContentEntry;
@@ -69,7 +70,7 @@ export default function ContentDetail({
       <div className={proseClassName}>
         <MDXRemote
           source={entry.body}
-          components={{}}
+          components={{ input: TaskListCheckbox }}
           options={{
             mdxOptions: {
               remarkPlugins: [remarkGfm],

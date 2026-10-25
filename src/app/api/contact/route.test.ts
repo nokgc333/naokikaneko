@@ -238,3 +238,26 @@ describe("POST /api/contact", () => {
     });
   });
 });
+
+describe("POST /api/contact when Resend rejects the mail", () => {
+  beforeEach(() => {
+    resetRateLimit();
+    vi.stubEnv("RESEND_API_KEY", "test-key");
+    vi.stubEnv("ADMIN_EMAIL", "admin@example.com");
+    vi.stubEnv("CONTACT_MAIL_FROM", "contact@example.com");
+  });
+
+  it("returns 500 and logs the provider error without leaking it to the client", async () => {
+    sendMock.mockResolvedValueOnce({ data: null, error: { message: "provider down" } });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const response = await POST(
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
+    );
+
+    expect(response.status).toBe(500);
+    expect(await response.text()).not.toContain("provider down");
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
+  });
+});

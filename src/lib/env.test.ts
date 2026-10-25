@@ -96,3 +96,23 @@ describe("describeEnvProblem", () => {
     expect(message).not.toContain("re_super_secret");
   });
 });
+
+describe("describeEnvProblem branches", () => {
+  it("mentions only the missing names when nothing is invalid", () => {
+    expect(describeEnvProblem({ missing: ["A"], invalid: [] })).toBe(
+      "Environment variables are not configured correctly (missing: A)",
+    );
+  });
+
+  it("mentions only the invalid names when nothing is missing", () => {
+    expect(describeEnvProblem({ missing: [], invalid: ["B"] })).toBe(
+      "Environment variables are not configured correctly (invalid: B)",
+    );
+  });
+
+  it("mentions both when both exist", () => {
+    expect(describeEnvProblem({ missing: ["A"], invalid: ["B"] })).toContain(
+      "missing: A; invalid: B",
+    );
+  });
+});

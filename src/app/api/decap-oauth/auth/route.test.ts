@@ -41,3 +41,21 @@ describe("GET /api/decap-oauth/auth", () => {
     errorSpy.mockRestore();
   });
 });
+
+describe("GET /api/decap-oauth/auth cookie attributes", () => {
+  it("adds Secure to the state cookie over https", async () => {
+    vi.stubEnv("GITHUB_OAUTH_CLIENT_ID", "test-client-id");
+
+    const response = await GET(new Request("https://example.com/api/decap-oauth/auth"));
+
+    expect(response.headers.get("set-cookie")).toContain("Secure");
+  });
+
+  it("omits Secure over plain http so local development keeps working", async () => {
+    vi.stubEnv("GITHUB_OAUTH_CLIENT_ID", "test-client-id");
+
+    const response = await GET(new Request("http://localhost:3000/api/decap-oauth/auth"));
+
+    expect(response.headers.get("set-cookie")).not.toContain("Secure");
+  });
+});

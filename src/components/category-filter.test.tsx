@@ -110,3 +110,22 @@ describe("CategoryFilter", () => {
     expect(links()[0]).toHaveAttribute("href", "/blog/tools-entry");
   });
 });
+
+describe("CategoryFilter view toggle", () => {
+  it("returns to the grid view after switching to the list view", async () => {
+    const user = userEvent.setup();
+    render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
+
+    await user.click(screen.getByRole("button", { name: "リスト表示" }));
+    expect(screen.getByRole("button", { name: "リスト表示" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await user.click(screen.getByRole("button", { name: "グリッド表示" }));
+
+    expect(screen.getByRole("button", { name: "グリッド表示" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+});

@@ -71,3 +71,33 @@ describe("TableOfContents", () => {
     expect(screen.getByRole("link", { name: "見出し2" })).toHaveClass("text-foreground");
   });
 });
+
+describe("TableOfContents observer edge cases", () => {
+  beforeEach(() => {
+    vi.stubGlobal("IntersectionObserver", MockIntersectionObserver);
+  });
+
+  afterEach(() => {
+    document.body.innerHTML = "";
+    vi.unstubAllGlobals();
+  });
+
+  it("keeps the current highlight when no heading is intersecting", () => {
+    const el = document.createElement("h2");
+    el.id = headings[0].id;
+    document.body.appendChild(el);
+    render(<TableOfContents headings={headings} />);
+
+    act(() => {
+      observeCallback?.([{ isIntersecting: false, target: el }]);
+    });
+
+    for (const link of screen.getAllByRole("link")) {
+      expect(link).toHaveClass("text-muted-foreground");
+    }
+  });
+
+  it("does not fail when a heading element is missing from the page", () => {
+    expect(() => render(<TableOfContents headings={headings} />)).not.toThrow();
+  });
+});

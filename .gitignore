@@ -40,7 +40,8 @@ yarn-error.log*
 .vercel
 
 # internal docs (not published)
-/docs
+/docs/*
+!/docs/adr/
 
 # local dev preview config
 /.claude

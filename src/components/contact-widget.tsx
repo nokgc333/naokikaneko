@@ -11,7 +11,8 @@ export default function ContactWidget() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div
+    <aside
+      aria-label="お問い合わせ"
       className={`fixed z-50 overflow-y-auto border border-border bg-background shadow-lg ${
         isOpen
           ? "inset-x-4 top-24 bottom-16 rounded-2xl p-6 sm:inset-x-auto sm:top-auto sm:right-8 sm:bottom-8 sm:h-[648px] sm:w-[486px]"
@@ -45,6 +46,6 @@ export default function ContactWidget() {
           <MdOutlineChatBubbleOutline aria-hidden="true" />
         </button>
       )}
-    </div>
+    </aside>
   );
 }

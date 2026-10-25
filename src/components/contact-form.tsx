@@ -33,7 +33,11 @@ export default function ContactForm() {
   }
 
   if (status === "sent") {
-    return <p className="mt-7 pl-6">送信しました</p>;
+    return (
+      <p role="status" className="mt-7 pl-6">
+        送信しました
+      </p>
+    );
   }
 
   return (
@@ -45,30 +49,42 @@ export default function ContactForm() {
         <label htmlFor="name">個人・法人名</label>
         <input
           id="name"
+          aria-invalid={errors.name ? true : undefined}
+          aria-describedby="name-error"
           {...register("name")}
           className="mt-1 block w-full border border-border p-2"
         />
-        <p className="mt-1 min-h-5 text-sm text-destructive">{errors.name?.message}</p>
+        <p id="name-error" role="alert" className="mt-1 min-h-5 text-sm text-destructive">
+          {errors.name?.message}
+        </p>
       </div>
       <div>
         <label htmlFor="email">メールアドレス</label>
         <input
           id="email"
           type="email"
+          aria-invalid={errors.email ? true : undefined}
+          aria-describedby="email-error"
           {...register("email")}
           className="mt-1 block w-full border border-border p-2"
         />
-        <p className="mt-1 min-h-5 text-sm text-destructive">{errors.email?.message}</p>
+        <p id="email-error" role="alert" className="mt-1 min-h-5 text-sm text-destructive">
+          {errors.email?.message}
+        </p>
       </div>
       <div>
         <label htmlFor="message">本文</label>
         <textarea
           id="message"
+          aria-invalid={errors.message ? true : undefined}
+          aria-describedby="message-error"
           {...register("message")}
           rows={5}
           className="mt-1 block w-full border border-border p-2"
         />
-        <p className="mt-1 min-h-5 text-sm text-destructive">{errors.message?.message}</p>
+        <p id="message-error" role="alert" className="mt-1 min-h-5 text-sm text-destructive">
+          {errors.message?.message}
+        </p>
       </div>
       <input
         type="text"
@@ -85,7 +101,7 @@ export default function ContactForm() {
       >
         送信
       </button>
-      <p className="min-h-5 text-sm text-destructive">
+      <p role="alert" className="min-h-5 text-sm text-destructive">
         {status === "error" ? "送信に失敗しました。時間をおいて再度お試しください。" : null}
       </p>
     </form>

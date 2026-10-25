@@ -101,7 +101,10 @@ export default function CategoryFilter({
             <div className="hidden h-6 basis-full sm:order-2 sm:block" />
           </>
         ) : null}
-        <nav className="flex min-h-[30px] flex-wrap items-center gap-6 sm:order-3">
+        <nav
+          aria-label="カテゴリ"
+          className="flex min-h-[30px] flex-wrap items-center gap-6 sm:order-3"
+        >
           {filters.map((filter) => (
             <button
               key={filter}

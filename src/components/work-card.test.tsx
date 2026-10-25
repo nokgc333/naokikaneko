@@ -53,3 +53,11 @@ describe("WorkCard image loading", () => {
     expect(screen.getByRole("img").getAttribute("sizes")).toBe(WORK_CARD_IMAGE_SIZES);
   });
 });
+
+describe("WorkCard heading", () => {
+  it("uses a level-2 heading so the page outline does not skip a level", () => {
+    render(<WorkCard entry={entry} href="/x" />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "Sample Project" })).toBeInTheDocument();
+  });
+});

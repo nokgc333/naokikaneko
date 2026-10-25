@@ -22,9 +22,9 @@ export default function ContentListItem({ entry, href }: ContentListItemProps) {
         />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
-        <h3 className="line-clamp-1 text-sm font-semibold group-hover:underline sm:text-base">
+        <h2 className="line-clamp-1 text-sm font-semibold group-hover:underline sm:text-base">
           {entry.title}
-        </h3>
+        </h2>
         <p className="mt-1 line-clamp-2 min-h-8 text-xs text-muted-foreground sm:min-h-0 sm:text-sm">
           {entry.description}
         </p>

@@ -28,9 +28,9 @@ export default function ContentCard({ entry, href, priority = false }: ContentCa
         />
       </div>
       <div className="bg-background/60 p-2 backdrop-blur-sm transition-colors duration-500 ease-out group-hover:bg-black/80">
-        <h3 className="line-clamp-1 text-base font-semibold group-hover:text-white">
+        <h2 className="line-clamp-1 text-base font-semibold group-hover:text-white">
           {entry.title}
-        </h3>
+        </h2>
         <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground group-hover:text-white">
           {entry.tags.map((tag) => (
             <span key={tag}>#{tag}</span>

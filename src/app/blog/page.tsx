@@ -5,6 +5,7 @@ import CategoryFilter from "@/components/category-filter";
 export const metadata: Metadata = {
   title: "Blog",
   description: "Naoki Kaneko | Tech Blog",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogPage() {

@@ -4,6 +4,7 @@ import { SiGithub } from "react-icons/si";
 export const metadata: Metadata = {
   title: "About",
   description: "Naoki Kaneko | Profile・Skill",
+  alternates: { canonical: "/about" },
 };
 
 const snsLinks = [{ label: "GitHub", href: "https://github.com/nokgc333", Icon: SiGithub }];

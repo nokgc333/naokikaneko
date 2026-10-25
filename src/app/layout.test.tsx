@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, it, expect, vi } from "vitest";
-import RootLayout, { metadata } from "./layout";
+import RootLayout, { metadata, viewport } from "./layout";
 
 const fontOptions = vi.hoisted(() => new Map<string, Record<string, unknown>>());
 
@@ -74,5 +74,17 @@ describe("RootLayout", () => {
     });
     expect(metadata.openGraph).toMatchObject({ locale: "ja_JP", type: "website" });
     expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
+  });
+
+  it("declares the theme color in the viewport", () => {
+    expect(viewport.themeColor).toBe("#ffffff");
+  });
+
+  it("embeds WebSite and Person structured data on every page", () => {
+    const html = renderLayout();
+
+    expect(html.match(/application\/ld\+json/g)).toHaveLength(2);
+    expect(html).toContain("WebSite");
+    expect(html).toContain("Person");
   });
 });

@@ -1,5 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import StatusPage from "@/components/status-page";
+
+export const metadata: Metadata = {
+  title: "404",
+};
 
 export default function NotFound() {
   return (

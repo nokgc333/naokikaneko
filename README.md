@@ -103,6 +103,8 @@ flowchart LR
 | `npm run test:e2e` | E2E（Playwright、アクセシビリティの axe 検査を含む） |
 | `npm run test:perf` | 性能予算（Lighthouse CI） |
 | `npm run content:check` | 記事の frontmatter・slug・日付・画像の検査 |
+| `npm run secrets:check` | 秘密情報の検出（secretlint） |
+| `npm run prepare` | git フック（husky）の有効化。`npm install` / `npm ci` で自動実行される |
 | `npm run cms:proxy` | ローカルの CMS サーバー（ログイン不要で `content/` を編集） |
 
 ## セキュリティ方針
@@ -134,6 +136,20 @@ Lighthouse（モバイル、模擬回線、本番ビルドをローカルで計�
 4. `develop` で作業し、`main` への PR を作る。CI（Lint・型・テスト・E2E・性能予算・セキュリティ）がすべて通ったら、マージコミットで取り込む。`main` への反映で、本番に自動でデプロイされる。
 5. PR ごとに Vercel のプレビューが作られる。
 
+## 開発の進め方（自動化とブランチ保護）
+
+- **コミット前の検査**: `npm ci` で husky が有効になり、コミット時にステージ済みのファイルだけを検査する（ESLint・Prettier・秘密情報の検出 `secretlint`）。全体の秘密情報の検査は `npm run secrets:check`。
+- **依存の自動更新**: Dependabot が毎週月曜に、npm と GitHub Actions の更新 PR を作る（`.github/dependabot.yml`）。CI が通ってからマージする。
+- **ブランチ保護**: `main` は、必須チェックの通過と、force push・削除の禁止。管理者は対象外にしてあり、CMS の保存（`main` への直接コミット）を妨げない。方針は ADR-0008。リポジトリの管理者が、次のコマンドで適用する。
+
+```bash
+gh api -X PUT repos/<owner>/<repo>/branches/main/protection --input .github/branch-protection/main.json
+gh api -X PUT repos/<owner>/<repo>/branches/develop/protection --input .github/branch-protection/develop.json
+gh api -X PUT repos/<owner>/<repo>/automated-security-fixes
+```
+
+3 行目は、Dependabot のセキュリティ更新（脆弱性の修正 PR）を有効にする。
+
 ## 設計記録（ADR）
 
 判断の理由と、見直す条件は `docs/adr/` にある。
@@ -147,6 +163,7 @@ Lighthouse（モバイル、模擬回線、本番ビルドをローカルで計�
 | [0005](docs/adr/0005-keep-unsafe-inline-script-src.md) | CSP の `script-src` に `'unsafe-inline'` を残す（計測あり） |
 | [0006](docs/adr/0006-performance-budgets-and-fonts.md) | 性能予算と、日本語フォントの扱い |
 | [0007](docs/adr/0007-license-split.md) | コードは MIT、コンテンツは権利留保 |
+| [0008](docs/adr/0008-automation-and-branch-protection.md) | 依存の自動更新・pre-commit・ブランチ保護の方針 |
 
 ## テスト・品質管理
 

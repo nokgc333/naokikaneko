@@ -4,6 +4,8 @@ import rehypeSanitize from "rehype-sanitize";
 import { getEntries, getEntry } from "@/lib/content";
 import { buildEntryMetadata } from "@/lib/metadata";
 import ContentDetail from "@/components/content-detail";
+import JsonLd from "@/components/json-ld";
+import { buildCreativeWorkJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
   return getEntries("work").map((entry) => ({ slug: entry.slug }));
@@ -27,20 +29,23 @@ export default async function WorkDetailPage({ params }: { params: Promise<{ slu
   }
 
   return (
-    <ContentDetail
-      entry={entry}
-      rehypePlugins={[rehypeSanitize]}
-      proseClassName="prose mt-6 w-full max-w-none [&_img]:mx-auto [&_img]:block"
-      cropEyecatch
-      mainMaxWidthClassName="max-w-5xl"
-      eyecatchMaxWidth={864}
-      afterMeta={
-        entry.url ? (
-          <a href={entry.url} className="mt-4 inline-block text-primary underline">
-            {entry.url}
-          </a>
-        ) : null
-      }
-    />
+    <>
+      <JsonLd data={buildCreativeWorkJsonLd(entry)} />
+      <ContentDetail
+        entry={entry}
+        rehypePlugins={[rehypeSanitize]}
+        proseClassName="prose mt-6 w-full max-w-none [&_img]:mx-auto [&_img]:block"
+        cropEyecatch
+        mainMaxWidthClassName="max-w-5xl"
+        eyecatchMaxWidth={864}
+        afterMeta={
+          entry.url ? (
+            <a href={entry.url} className="mt-4 inline-block text-primary underline">
+              {entry.url}
+            </a>
+          ) : null
+        }
+      />
+    </>
   );
 }

@@ -8,6 +8,8 @@ import { buildEntryMetadata } from "@/lib/metadata";
 import TableOfContents from "@/components/table-of-contents";
 import RelatedPosts from "@/components/related-posts";
 import ContentDetail from "@/components/content-detail";
+import JsonLd from "@/components/json-ld";
+import { buildBlogPostingJsonLd } from "@/lib/structured-data";
 
 export function generateStaticParams() {
   return getEntries("blog").map((entry) => ({ slug: entry.slug }));
@@ -36,16 +38,19 @@ export default async function BlogDetailPage({ params }: { params: Promise<{ slu
     .slice(0, 5);
 
   return (
-    <ContentDetail
-      entry={entry}
-      rehypePlugins={[rehypeSlug, rehypeSanitize]}
-      proseClassName="prose mt-6 max-w-4xl [&_img]:mx-auto [&_img]:block"
-      sidebar={
-        <>
-          <RelatedPosts posts={relatedPosts} />
-          <TableOfContents headings={headings} />
-        </>
-      }
-    />
+    <>
+      <JsonLd data={buildBlogPostingJsonLd(entry)} />
+      <ContentDetail
+        entry={entry}
+        rehypePlugins={[rehypeSlug, rehypeSanitize]}
+        proseClassName="prose mt-6 max-w-4xl [&_img]:mx-auto [&_img]:block"
+        sidebar={
+          <>
+            <RelatedPosts posts={relatedPosts} />
+            <TableOfContents headings={headings} />
+          </>
+        }
+      />
+    </>
   );
 }

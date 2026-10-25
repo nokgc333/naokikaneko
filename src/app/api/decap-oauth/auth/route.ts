@@ -1,5 +1,5 @@
 import { describeEnvProblem, loadGithubOAuthEnv } from "@/lib/env";
-import { isOauthRateLimited, rateLimitedResponse } from "@/lib/oauth-rate-limit";
+import { isOauthRateLimited, rateLimitedResponse } from "@/lib/security/oauth-rate-limit";
 
 const OAUTH_SCOPE = "public_repo";
 

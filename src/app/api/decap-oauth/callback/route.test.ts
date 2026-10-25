@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { GET } from "./route";
-import { resetRateLimit } from "@/lib/rate-limit";
+import { resetRateLimit } from "@/lib/security/rate-limit";
 
 describe("GET /api/decap-oauth/callback", () => {
   it("returns 400 and does not contact GitHub when state does not match the cookie", async () => {

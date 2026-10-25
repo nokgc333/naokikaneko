@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { GET } from "./route";
-import { checkRateLimit, resetRateLimit } from "@/lib/rate-limit";
+import { checkRateLimit, resetRateLimit } from "@/lib/security/rate-limit";
 
 describe("GET /api/decap-oauth/auth", () => {
   it("redirects to the GitHub authorization URL", async () => {

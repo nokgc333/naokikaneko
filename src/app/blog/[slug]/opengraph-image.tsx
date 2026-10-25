@@ -1,5 +1,5 @@
 import { getEntries, getEntry } from "@/lib/content";
-import { ENTRY_OG_CONTENT_TYPE, ENTRY_OG_SIZE, renderEntryOgImage } from "@/lib/entry-og-image";
+import { ENTRY_OG_CONTENT_TYPE, ENTRY_OG_SIZE, renderEntryOgImage } from "@/lib/seo/entry-og-image";
 
 export const alt = "Blog";
 export const size = ENTRY_OG_SIZE;

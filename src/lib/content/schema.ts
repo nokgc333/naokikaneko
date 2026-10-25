@@ -1,7 +1,7 @@
-import "./zod-config";
+import "../zod-config";
 import { z } from "zod";
 
-import { workCategories } from "../work-categories";
+import { workCategories } from "./work-categories";
 
 export const contentFrontmatterSchema = z.object({
   title: z.string().min(1),

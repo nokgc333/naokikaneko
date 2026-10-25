@@ -1,4 +1,4 @@
-import "./zod-config";
+import "../zod-config";
 import { z } from "zod";
 
 const CONTROL_CHARACTERS = /\p{Cc}/u;

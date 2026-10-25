@@ -1,6 +1,6 @@
 import { describeEnvProblem, loadGithubOAuthEnv } from "@/lib/env";
-import { isOauthRateLimited, rateLimitedResponse } from "@/lib/oauth-rate-limit";
-import { safeEqual } from "@/lib/timing-safe";
+import { isOauthRateLimited, rateLimitedResponse } from "@/lib/security/oauth-rate-limit";
+import { safeEqual } from "@/lib/security/timing-safe";
 
 function toInlineScriptJson(value: unknown): string {
   return JSON.stringify(value)

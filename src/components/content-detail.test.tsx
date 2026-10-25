@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import ContentDetail from "./content-detail";
-import type { ContentEntry } from "@/lib/schemas/content";
+import type { ContentEntry } from "@/lib/content/schema";
 
 vi.mock("next-mdx-remote/rsc", () => ({
   MDXRemote: ({ source }: { source: string }) => <div data-testid="mdx">{source}</div>,

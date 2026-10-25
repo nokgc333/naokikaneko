@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import { buildSecurityHeaders } from "./src/lib/security-headers";
+import { buildSecurityHeaders } from "./src/lib/security/security-headers";
 
 const nextConfig: NextConfig = {
   reactCompiler: true,

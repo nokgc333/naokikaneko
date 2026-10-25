@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import RelatedPosts from "./related-posts";
-import type { ContentEntry } from "@/lib/schemas/content";
+import type { ContentEntry } from "@/lib/content/schema";
 
 const posts: ContentEntry[] = [
   {

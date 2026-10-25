@@ -3,7 +3,7 @@ import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import type { CompileOptions } from "@mdx-js/mdx";
-import type { ContentEntry } from "@/lib/schemas/content";
+import type { ContentEntry } from "@/lib/content/schema";
 import TaskListCheckbox from "./task-list-checkbox";
 
 type ContentDetailProps = {

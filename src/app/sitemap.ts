@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getEntries } from "@/lib/content";
-import { SITE_URL as baseUrl } from "@/lib/site";
+import { SITE_URL as baseUrl } from "@/lib/seo/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [

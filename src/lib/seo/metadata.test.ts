@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import type { ContentEntry } from "@/lib/schemas/content";
+import type { ContentEntry } from "@/lib/content/schema";
 
 const entryWithThumbnail: ContentEntry = {
   title: "Sample Post",

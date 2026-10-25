@@ -1,5 +1,5 @@
-import { SITE_URL } from "@/lib/site";
-import type { ContentEntry } from "@/lib/schemas/content";
+import { SITE_URL } from "@/lib/seo/site";
+import type { ContentEntry } from "@/lib/content/schema";
 
 const AUTHOR_NAME = "Naoki Kaneko";
 const GITHUB_URL = "https://github.com/nokgc333";

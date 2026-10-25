@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { workCategories } from "./work-categories";
-import { contentFrontmatterSchema } from "./schemas/content";
+import { contentFrontmatterSchema } from "./schema";
 
 describe("workCategories", () => {
   it("lists every category the content schema accepts", () => {

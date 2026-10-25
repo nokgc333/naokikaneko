@@ -4,8 +4,8 @@ import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ContactWidget from "@/components/contact-widget";
 import JsonLd from "@/components/json-ld";
-import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/structured-data";
-import { SITE_URL } from "@/lib/site";
+import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/seo/structured-data";
+import { SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
 
 const roboto = Roboto({

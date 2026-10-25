@@ -3,7 +3,7 @@ import { z } from "zod";
 
 describe("zod jitless configuration", () => {
   it("is jitless even when only the content schema is loaded", async () => {
-    await import("./content");
+    await import("./content/schema");
 
     expect(z.config().jitless).toBe(true);
   });

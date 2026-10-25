@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import rehypeSanitize from "rehype-sanitize";
 import { getEntries, getEntry } from "@/lib/content";
-import { buildEntryMetadata } from "@/lib/metadata";
+import { buildEntryMetadata } from "@/lib/seo/metadata";
 import ContentDetail from "@/components/content-detail";
 import JsonLd from "@/components/json-ld";
-import { buildCreativeWorkJsonLd } from "@/lib/structured-data";
+import { buildCreativeWorkJsonLd } from "@/lib/seo/structured-data";
 
 export function generateStaticParams() {
   return getEntries("work").map((entry) => ({ slug: entry.slug }));

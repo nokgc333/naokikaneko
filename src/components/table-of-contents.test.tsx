@@ -1,7 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import TableOfContents from "./table-of-contents";
-import type { TocHeading } from "@/lib/toc";
+import type { TocHeading } from "@/lib/content/toc";
 
 const headings: TocHeading[] = [
   { id: "user-content-heading-1", text: "見出し1", depth: 2 },

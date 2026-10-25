@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { POST } from "./route";
-import { resetRateLimit } from "@/lib/rate-limit";
+import { resetRateLimit } from "@/lib/security/rate-limit";
 
 const sendMock = vi.fn().mockResolvedValue({ data: { id: "test-id" }, error: null });
 

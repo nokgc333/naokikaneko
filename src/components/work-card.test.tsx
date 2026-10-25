@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import WorkCard, { WORK_CARD_IMAGE_SIZES } from "./work-card";
-import type { ContentEntry } from "@/lib/schemas/content";
+import type { ContentEntry } from "@/lib/content/schema";
 
 const entry: ContentEntry = {
   title: "Sample Project",

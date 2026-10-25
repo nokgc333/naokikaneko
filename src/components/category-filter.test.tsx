@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect } from "vitest";
 import CategoryFilter from "./category-filter";
-import type { ContentEntry } from "@/lib/schemas/content";
+import type { ContentEntry } from "@/lib/content/schema";
 
 const entries: ContentEntry[] = [
   {

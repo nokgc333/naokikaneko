@@ -1,18 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { LayoutGrid, List as ListIcon, ArrowUpDown } from "lucide-react";
-import type { ContentEntry } from "@/lib/schemas/content";
-import { workCategories } from "@/lib/work-categories";
+import type { ContentEntry } from "@/lib/content/schema";
+import {
+  filterAndSortEntries,
+  toggleSortOrder,
+  type FilterValue,
+  type SortOrder,
+  type ViewMode,
+} from "@/lib/content/entry-filter";
+import CategoryTabs from "@/components/category-tabs";
+import ViewControls from "@/components/view-controls";
 import ContentCard from "@/components/content-card";
 import ContentListItem from "@/components/content-list-item";
 import WorkCard from "@/components/work-card";
-
-type FilterValue = "All" | (typeof workCategories)[number];
-type ViewMode = "grid" | "list";
-type SortOrder = "desc" | "asc";
-
-const filters: FilterValue[] = ["All", ...workCategories];
 
 const PRIORITY_IMAGE_COUNT = 2;
 
@@ -48,79 +49,21 @@ export default function CategoryFilter({
   const CardComponent = cardComponents[cardType];
   const ListComponent = listComponents[cardType];
 
-  const filteredEntries =
-    activeFilter === "All" ? entries : entries.filter((entry) => entry.category === activeFilter);
-
-  const displayedEntries = sortOrder === "asc" ? [...filteredEntries].reverse() : filteredEntries;
+  const displayedEntries = filterAndSortEntries(entries, activeFilter, sortOrder);
 
   return (
     <div>
       <div className="flex flex-wrap items-center gap-x-4 border-b border-border pb-4">
         {title ? <h1 className="text-3xl font-bold">{title}</h1> : null}
         {ListComponent ? (
-          <>
-            <div className="ml-auto flex flex-wrap items-center gap-4 sm:order-4">
-              <button
-                type="button"
-                onClick={() => setSortOrder(sortOrder === "desc" ? "asc" : "desc")}
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
-              >
-                <ArrowUpDown size={16} />
-                {sortOrder === "desc" ? "新しい順" : "古い順"}
-              </button>
-              <div className="inline-flex divide-x divide-border border border-border">
-                <button
-                  type="button"
-                  onClick={() => setView("grid")}
-                  aria-pressed={view === "grid"}
-                  aria-label="グリッド表示"
-                  className={`flex items-center justify-center p-1.5 ${
-                    view === "grid"
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <LayoutGrid size={16} />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setView("list")}
-                  aria-pressed={view === "list"}
-                  aria-label="リスト表示"
-                  className={`flex items-center justify-center p-1.5 ${
-                    view === "list"
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <ListIcon size={16} />
-                </button>
-              </div>
-            </div>
-            <div className="h-6 basis-full sm:hidden" />
-            <div className="hidden h-6 basis-full sm:order-2 sm:block" />
-          </>
+          <ViewControls
+            view={view}
+            sortOrder={sortOrder}
+            onViewChange={setView}
+            onSortToggle={() => setSortOrder(toggleSortOrder)}
+          />
         ) : null}
-        <nav
-          aria-label="カテゴリ"
-          className="flex min-h-[30px] flex-wrap items-center gap-6 sm:order-3"
-        >
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              type="button"
-              onClick={() => setActiveFilter(filter)}
-              aria-pressed={activeFilter === filter}
-              className={`text-sm font-medium ${
-                activeFilter === filter
-                  ? "text-foreground underline underline-offset-4"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {filter}
-            </button>
-          ))}
-        </nav>
+        <CategoryTabs activeFilter={activeFilter} onChange={setActiveFilter} />
       </div>
       {view === "list" && ListComponent ? (
         <div className="mt-4 flex flex-col">

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { contactFormSchema, type ContactFormData } from "@/lib/schemas/contact";
+import { contactFormSchema, type ContactFormData } from "@/lib/contact/schema";
+import { useContactSubmit } from "@/hooks/use-contact-submit";
+import ContactField from "@/components/contact-field";
 
 export default function ContactForm() {
-  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const { status, submit } = useContactSubmit();
   const {
     register,
     handleSubmit,
@@ -15,22 +16,6 @@ export default function ContactForm() {
     resolver: zodResolver(contactFormSchema),
     defaultValues: { name: "", email: "", message: "", honeypot: "" },
   });
-
-  async function onSubmit(data: ContactFormData) {
-    setStatus("sending");
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) throw new Error("failed");
-      setStatus("sent");
-    } catch (error) {
-      console.error("[ContactForm] 送信に失敗しました:", error);
-      setStatus("error");
-    }
-  }
 
   if (status === "sent") {
     return (
@@ -42,50 +27,29 @@ export default function ContactForm() {
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(submit)}
       className="mt-4 flex flex-col gap-4 rounded-md border-[length:1.25px] border-black p-6"
     >
-      <div>
-        <label htmlFor="name">個人・法人名</label>
-        <input
-          id="name"
-          aria-invalid={errors.name ? true : undefined}
-          aria-describedby="name-error"
-          {...register("name")}
-          className="mt-1 block w-full border border-border p-2"
-        />
-        <p id="name-error" role="alert" className="mt-1 min-h-5 text-sm text-destructive">
-          {errors.name?.message}
-        </p>
-      </div>
-      <div>
-        <label htmlFor="email">メールアドレス</label>
-        <input
-          id="email"
-          type="email"
-          aria-invalid={errors.email ? true : undefined}
-          aria-describedby="email-error"
-          {...register("email")}
-          className="mt-1 block w-full border border-border p-2"
-        />
-        <p id="email-error" role="alert" className="mt-1 min-h-5 text-sm text-destructive">
-          {errors.email?.message}
-        </p>
-      </div>
-      <div>
-        <label htmlFor="message">本文</label>
-        <textarea
-          id="message"
-          aria-invalid={errors.message ? true : undefined}
-          aria-describedby="message-error"
-          {...register("message")}
-          rows={5}
-          className="mt-1 block w-full border border-border p-2"
-        />
-        <p id="message-error" role="alert" className="mt-1 min-h-5 text-sm text-destructive">
-          {errors.message?.message}
-        </p>
-      </div>
+      <ContactField
+        id="name"
+        label="個人・法人名"
+        registration={register("name")}
+        error={errors.name?.message}
+      />
+      <ContactField
+        id="email"
+        label="メールアドレス"
+        type="email"
+        registration={register("email")}
+        error={errors.email?.message}
+      />
+      <ContactField
+        id="message"
+        label="本文"
+        rows={5}
+        registration={register("message")}
+        error={errors.message?.message}
+      />
       <input
         type="text"
         {...register("honeypot")}

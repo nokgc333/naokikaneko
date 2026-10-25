@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import fs from "fs";
 import path from "path";
 import os from "os";
-import { getEntries, getEntry } from "./content";
+import { getEntries, getEntry } from "./index";
 
 describe("getEntries", () => {
   let tempDir: string;

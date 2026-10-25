@@ -13,7 +13,7 @@ vi.mock("@/lib/content", () => ({
   getEntries: (...args: unknown[]) => getEntries(...args),
   getEntry: (...args: unknown[]) => getEntry(...args),
 }));
-vi.mock("@/lib/metadata", () => ({
+vi.mock("@/lib/seo/metadata", () => ({
   buildEntryMetadata: (...args: unknown[]) => buildEntryMetadata(...args),
 }));
 vi.mock("next/navigation", () => ({ notFound: () => notFound() }));

@@ -1,5 +1,5 @@
-import { checkRateLimit } from "@/lib/rate-limit";
-import { getClientIp } from "@/lib/client-ip";
+import { checkRateLimit } from "@/lib/security/rate-limit";
+import { getClientIp } from "@/lib/security/client-ip";
 
 const OAUTH_LIMIT = 10;
 const OAUTH_WINDOW_MS = 10 * 60 * 1000;

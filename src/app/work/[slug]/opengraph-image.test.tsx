@@ -8,7 +8,7 @@ vi.mock("@/lib/content", () => ({
   getEntry: (...args: unknown[]) => getEntry(...args),
   getEntries: (...args: unknown[]) => getEntries(...args),
 }));
-vi.mock("@/lib/entry-og-image", () => ({
+vi.mock("@/lib/seo/entry-og-image", () => ({
   ENTRY_OG_SIZE: { width: 1200, height: 630 },
   ENTRY_OG_CONTENT_TYPE: "image/png",
   renderEntryOgImage: (...args: unknown[]) => renderEntryOgImage(...args),

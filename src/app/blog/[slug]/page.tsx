@@ -3,13 +3,13 @@ import { notFound } from "next/navigation";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
 import { getEntries, getEntry } from "@/lib/content";
-import { extractHeadings } from "@/lib/toc";
-import { buildEntryMetadata } from "@/lib/metadata";
+import { extractHeadings } from "@/lib/content/toc";
+import { buildEntryMetadata } from "@/lib/seo/metadata";
 import TableOfContents from "@/components/table-of-contents";
 import RelatedPosts from "@/components/related-posts";
 import ContentDetail from "@/components/content-detail";
 import JsonLd from "@/components/json-ld";
-import { buildBlogPostingJsonLd } from "@/lib/structured-data";
+import { buildBlogPostingJsonLd } from "@/lib/seo/structured-data";
 
 export function generateStaticParams() {
   return getEntries("blog").map((entry) => ({ slug: entry.slug }));

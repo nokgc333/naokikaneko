@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { z } from "zod";
-import { contactFormSchema, EMAIL_MAX_LENGTH } from "./contact";
+import { contactFormSchema, EMAIL_MAX_LENGTH } from "./schema";
 
 const valid = { name: "Taro", email: "taro@example.com", message: "Hello" };
 

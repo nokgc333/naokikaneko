@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { TocHeading } from "@/lib/toc";
+import type { TocHeading } from "@/lib/content/toc";
 
 type TableOfContentsProps = {
   headings: TocHeading[];

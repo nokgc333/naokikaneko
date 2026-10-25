@@ -41,6 +41,9 @@ export default function ContentDetail({
             src={entry.thumbnail ?? "/images/placeholder.svg"}
             alt={entry.title}
             fill
+            sizes={`${eyecatchMaxWidth}px`}
+            loading="eager"
+            fetchPriority="high"
             className="object-cover"
           />
         </div>
@@ -50,6 +53,9 @@ export default function ContentDetail({
           alt={entry.title}
           width={800}
           height={450}
+          sizes="(min-width: 1024px) 736px, 100vw"
+          loading="eager"
+          fetchPriority="high"
           className="mx-auto mt-4 h-auto w-full object-contain"
         />
       )}

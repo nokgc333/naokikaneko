@@ -5,9 +5,12 @@ import type { ContentEntry } from "@/lib/schemas/content";
 type ContentCardProps = {
   entry: ContentEntry;
   href: string;
+  priority?: boolean;
 };
 
-export default function ContentCard({ entry, href }: ContentCardProps) {
+export const CONTENT_CARD_IMAGE_SIZES = "(min-width: 640px) 424px, 100vw";
+
+export default function ContentCard({ entry, href, priority = false }: ContentCardProps) {
   return (
     <Link
       href={href}
@@ -18,6 +21,9 @@ export default function ContentCard({ entry, href }: ContentCardProps) {
           src={entry.thumbnail ?? "/images/placeholder.svg"}
           alt={entry.title}
           fill
+          sizes={CONTENT_CARD_IMAGE_SIZES}
+          loading={priority ? "eager" : undefined}
+          fetchPriority={priority ? "high" : undefined}
           className="object-cover"
         />
       </div>

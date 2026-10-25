@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   if (!checkRateLimit(getClientIp(request))) {
     return Response.json(
       { error: "リクエストが多すぎます。時間をおいて再度お試しください" },
-      { status: 429 }
+      { status: 429 },
     );
   }
 
@@ -20,15 +20,9 @@ export async function POST(request: Request) {
     body = JSON.parse(await readLimitedText(request, MAX_BODY_BYTES));
   } catch (error) {
     if (error instanceof BodyTooLargeError) {
-      return Response.json(
-        { error: "送信内容が大きすぎます" },
-        { status: 413 }
-      );
+      return Response.json({ error: "送信内容が大きすぎます" }, { status: 413 });
     }
-    return Response.json(
-      { error: "リクエストの形式が正しくありません" },
-      { status: 400 }
-    );
+    return Response.json({ error: "リクエストの形式が正しくありません" }, { status: 400 });
   }
 
   const parsed = contactFormSchema.safeParse(body);

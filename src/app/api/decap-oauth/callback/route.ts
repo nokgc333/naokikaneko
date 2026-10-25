@@ -1,17 +1,17 @@
-import { describeEnvProblem, loadGithubOAuthEnv } from '@/lib/env';
+import { describeEnvProblem, loadGithubOAuthEnv } from "@/lib/env";
 
 function toInlineScriptJson(value: unknown): string {
   return JSON.stringify(value)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026');
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
 }
 
 function getCookie(request: Request, name: string): string | undefined {
-  const cookieHeader = request.headers.get('cookie');
+  const cookieHeader = request.headers.get("cookie");
   if (!cookieHeader) return undefined;
   const match = cookieHeader
-    .split(';')
+    .split(";")
     .map((part) => part.trim())
     .find((part) => part.startsWith(`${name}=`));
   return match?.slice(name.length + 1);
@@ -19,27 +19,27 @@ function getCookie(request: Request, name: string): string | undefined {
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
-  const code = url.searchParams.get('code');
-  const state = url.searchParams.get('state');
-  const cookieState = getCookie(request, 'decap_oauth_state');
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const cookieState = getCookie(request, "decap_oauth_state");
 
   if (!state || !cookieState || state !== cookieState) {
-    return new Response('Invalid state', { status: 400 });
+    return new Response("Invalid state", { status: 400 });
   }
 
   if (!code) {
-    return new Response('Missing code', { status: 400 });
+    return new Response("Missing code", { status: 400 });
   }
 
   const env = loadGithubOAuthEnv();
   if (!env.ok) {
     console.error(`[api/decap-oauth/callback] ${describeEnvProblem(env)}`);
-    return new Response('OAuth is not configured', { status: 500 });
+    return new Response("OAuth is not configured", { status: 500 });
   }
 
-  const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
-    method: 'POST',
-    headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+  const tokenResponse = await fetch("https://github.com/login/oauth/access_token", {
+    method: "POST",
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
     body: JSON.stringify({
       client_id: env.value.GITHUB_OAUTH_CLIENT_ID,
       client_secret: env.value.GITHUB_OAUTH_CLIENT_SECRET,
@@ -50,10 +50,10 @@ export async function GET(request: Request) {
   const { access_token: accessToken, error } = await tokenResponse.json();
 
   if (error || !accessToken) {
-    return new Response(`OAuth error: ${error ?? 'unknown'}`, { status: 400 });
+    return new Response(`OAuth error: ${error ?? "unknown"}`, { status: 400 });
   }
 
-  const payload = `authorization:github:success:${JSON.stringify({ token: accessToken, provider: 'github' })}`;
+  const payload = `authorization:github:success:${JSON.stringify({ token: accessToken, provider: "github" })}`;
   const expectedOrigin = url.origin;
 
   const html = `
@@ -81,8 +81,8 @@ export async function GET(request: Request) {
 
   return new Response(html, {
     headers: {
-      'Content-Type': 'text/html',
-      'Set-Cookie': 'decap_oauth_state=; Path=/api/decap-oauth; Max-Age=0',
+      "Content-Type": "text/html",
+      "Set-Cookie": "decap_oauth_state=; Path=/api/decap-oauth; Max-Age=0",
     },
   });
 }

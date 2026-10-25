@@ -16,12 +16,9 @@ const githubOAuthSchema = z.object({
   GITHUB_OAUTH_CLIENT_SECRET: z.string().min(1),
 });
 
-function load<S extends z.ZodObject>(
-  schema: S,
-  env: EnvSource
-): EnvResult<z.infer<S>> {
+function load<S extends z.ZodObject>(schema: S, env: EnvSource): EnvResult<z.infer<S>> {
   const input = Object.fromEntries(
-    Object.keys(schema.shape).map((name) => [name, env[name] || undefined])
+    Object.keys(schema.shape).map((name) => [name, env[name] || undefined]),
   );
   const parsed = schema.safeParse(input);
   if (parsed.success) return { ok: true, value: parsed.data };

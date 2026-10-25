@@ -21,11 +21,11 @@ describe("getEntries", () => {
   it("validates frontmatter and returns entries sorted by date, newest first", () => {
     fs.writeFileSync(
       path.join(tempDir, "content", "work", "old.md"),
-      `---\ntitle: Old\nslug: old\ndate: "2024-01-01"\nupdatedDate: "2024-01-01"\ndescription: old entry\n---\nOld body`
+      `---\ntitle: Old\nslug: old\ndate: "2024-01-01"\nupdatedDate: "2024-01-01"\ndescription: old entry\n---\nOld body`,
     );
     fs.writeFileSync(
       path.join(tempDir, "content", "work", "new.md"),
-      `---\ntitle: New\nslug: new\ndate: "2025-01-01"\nupdatedDate: "2025-01-01"\ndescription: new entry\n---\nNew body`
+      `---\ntitle: New\nslug: new\ndate: "2025-01-01"\nupdatedDate: "2025-01-01"\ndescription: new entry\n---\nNew body`,
     );
 
     const entries = getEntries("work");
@@ -44,7 +44,7 @@ describe("getEntries", () => {
   it("also reads .mdx files", () => {
     fs.writeFileSync(
       path.join(tempDir, "content", "work", "mdx-entry.mdx"),
-      `---\ntitle: MDX Entry\nslug: mdx-entry\ndate: "2025-06-01"\nupdatedDate: "2025-06-01"\ndescription: mdx entry\n---\nMDX body`
+      `---\ntitle: MDX Entry\nslug: mdx-entry\ndate: "2025-06-01"\nupdatedDate: "2025-06-01"\ndescription: mdx entry\n---\nMDX body`,
     );
 
     const entries = getEntries("work");
@@ -63,7 +63,7 @@ describe("getEntry", () => {
     vi.spyOn(process, "cwd").mockReturnValue(tempDir);
     fs.writeFileSync(
       path.join(tempDir, "content", "work", "target.md"),
-      `---\ntitle: Target\nslug: target\ndate: "2025-01-01"\nupdatedDate: "2025-01-01"\ndescription: target entry\n---\nTarget body`
+      `---\ntitle: Target\nslug: target\ndate: "2025-01-01"\nupdatedDate: "2025-01-01"\ndescription: target entry\n---\nTarget body`,
     );
   });
 

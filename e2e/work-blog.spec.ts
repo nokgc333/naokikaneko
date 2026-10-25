@@ -16,6 +16,6 @@ test("navigates from the blog list to a post detail page", async ({ page }) => {
   await page.getByRole("link", { name: /MDXでできること/ }).click();
   await expect(page).toHaveURL("/blog/mdx-markdown-differences");
   await expect(
-    page.getByRole("heading", { name: "MDXでできること、Markdownとの違いを徹底解説" })
+    page.getByRole("heading", { name: "MDXでできること、Markdownとの違いを徹底解説" }),
   ).toBeVisible();
 });

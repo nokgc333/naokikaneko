@@ -48,11 +48,11 @@ describe("TableOfContents", () => {
 
     expect(screen.getByRole("link", { name: "見出し1" })).toHaveAttribute(
       "href",
-      "#user-content-heading-1"
+      "#user-content-heading-1",
     );
     expect(screen.getByRole("link", { name: "見出し2" })).toHaveAttribute(
       "href",
-      "#user-content-heading-2"
+      "#user-content-heading-2",
     );
   });
 

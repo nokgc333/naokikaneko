@@ -11,8 +11,8 @@ export default function ContactWidget() {
     <div
       className={`fixed z-50 overflow-y-auto border border-border bg-background shadow-lg ${
         isOpen
-          ? "inset-x-4 top-24 bottom-16 rounded-2xl p-6 sm:inset-x-auto sm:bottom-8 sm:top-auto sm:right-8 sm:h-[648px] sm:w-[486px]"
-          : "bottom-8 right-8 h-16 w-16 rounded-full"
+          ? "inset-x-4 top-24 bottom-16 rounded-2xl p-6 sm:inset-x-auto sm:top-auto sm:right-8 sm:bottom-8 sm:h-[648px] sm:w-[486px]"
+          : "right-8 bottom-8 h-16 w-16 rounded-full"
       }`}
     >
       {isOpen ? (

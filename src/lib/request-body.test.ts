@@ -34,17 +34,13 @@ describe("readLimitedText", () => {
   it("rejects without reading the body when Content-Length declares more than the limit", async () => {
     const request = makeRequest("small", { "content-length": "999999" });
 
-    await expect(readLimitedText(request, 100)).rejects.toBeInstanceOf(
-      BodyTooLargeError
-    );
+    await expect(readLimitedText(request, 100)).rejects.toBeInstanceOf(BodyTooLargeError);
   });
 
   it("rejects when the actual byte count exceeds the limit even without Content-Length", async () => {
     const request = makeRequest("x".repeat(101));
 
-    await expect(readLimitedText(request, 100)).rejects.toBeInstanceOf(
-      BodyTooLargeError
-    );
+    await expect(readLimitedText(request, 100)).rejects.toBeInstanceOf(BodyTooLargeError);
   });
 
   it("accepts a body exactly at the limit", async () => {
@@ -56,12 +52,8 @@ describe("readLimitedText", () => {
   it("counts bytes, not characters (Japanese characters take 3 bytes each)", async () => {
     const request = makeRequest("あ".repeat(10));
 
-    await expect(readLimitedText(request, 29)).rejects.toBeInstanceOf(
-      BodyTooLargeError
-    );
-    await expect(
-      readLimitedText(makeRequest("あ".repeat(10)), 30)
-    ).resolves.toBe("あ".repeat(10));
+    await expect(readLimitedText(request, 29)).rejects.toBeInstanceOf(BodyTooLargeError);
+    await expect(readLimitedText(makeRequest("あ".repeat(10)), 30)).resolves.toBe("あ".repeat(10));
   });
 
   it("restores a body whose multibyte characters are split across chunks", async () => {

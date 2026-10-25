@@ -6,9 +6,7 @@ export const metadata: Metadata = {
   description: "Naoki Kaneko | Profile・Skill",
 };
 
-const snsLinks = [
-  { label: "GitHub", href: "https://github.com/nokgc333", Icon: SiGithub },
-];
+const snsLinks = [{ label: "GitHub", href: "https://github.com/nokgc333", Icon: SiGithub }];
 
 const skills = [
   "3D制作ソフト ツール開発（Python, VEX）",
@@ -28,20 +26,18 @@ export default function About() {
           <h1 className="mb-3 text-3xl font-bold" lang="en">
             Naoki Kaneko / Engineer
           </h1>
-          <p className="text-base text-muted-foreground">
-            金子 直樹 / エンジニア
-          </p>
+          <p className="text-base text-muted-foreground">金子 直樹 / エンジニア</p>
         </section>
 
         <section>
-          <p className="mb-2 leading-relaxed">
-            1997年生まれ。千葉県出身。東京都在住。
-          </p>
+          <p className="mb-2 leading-relaxed">1997年生まれ。千葉県出身。東京都在住。</p>
           <p className="mb-2 leading-relaxed">
             銀行営業職の法人融資・金融商品担当として勤務後、オーストラリアでの海外就労経験を経て、システム開発職へ従事。
           </p>
           <p className="leading-relaxed">
-            Webアプリケーション開発を通じたユーザーの業務効率化支援や、3D制作ソフトツール開発を通じたクリエイターの制作効率化支援など、<br className="hidden lg:block" />幅広いアプローチによる課題解決を探求している。
+            Webアプリケーション開発を通じたユーザーの業務効率化支援や、3D制作ソフトツール開発を通じたクリエイターの制作効率化支援など、
+            <br className="hidden lg:block" />
+            幅広いアプローチによる課題解決を探求している。
           </p>
         </section>
 

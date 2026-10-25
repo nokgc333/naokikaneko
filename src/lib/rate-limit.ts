@@ -8,7 +8,7 @@ const DEFAULT_WINDOW_MS = 10 * 60 * 1000;
 export function checkRateLimit(
   key: string,
   limit: number = DEFAULT_LIMIT,
-  windowMs: number = DEFAULT_WINDOW_MS
+  windowMs: number = DEFAULT_WINDOW_MS,
 ): boolean {
   const now = Date.now();
   const entry = store.get(key);

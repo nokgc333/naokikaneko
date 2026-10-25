@@ -9,7 +9,10 @@ type WorkCardProps = {
 
 export default function WorkCard({ entry, href }: WorkCardProps) {
   return (
-    <Link href={href} className="group relative block h-[288px] overflow-hidden border border-border">
+    <Link
+      href={href}
+      className="group relative block h-[288px] overflow-hidden border border-border"
+    >
       <Image
         src={entry.thumbnail ?? "/images/placeholder.svg"}
         alt={entry.title}

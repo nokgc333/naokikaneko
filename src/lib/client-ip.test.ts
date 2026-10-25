@@ -7,9 +7,7 @@ function requestWith(headers: Record<string, string>) {
 
 describe("getClientIp", () => {
   it("returns the value when x-forwarded-for has a single address", () => {
-    expect(getClientIp(requestWith({ "x-forwarded-for": "1.2.3.4" }))).toBe(
-      "1.2.3.4"
-    );
+    expect(getClientIp(requestWith({ "x-forwarded-for": "1.2.3.4" }))).toBe("1.2.3.4");
   });
 
   it("returns the first address, trimmed, when x-forwarded-for has several", () => {
@@ -19,9 +17,7 @@ describe("getClientIp", () => {
   });
 
   it("uses x-real-ip when x-forwarded-for is absent", () => {
-    expect(getClientIp(requestWith({ "x-real-ip": "5.6.7.8" }))).toBe(
-      "5.6.7.8"
-    );
+    expect(getClientIp(requestWith({ "x-real-ip": "5.6.7.8" }))).toBe("5.6.7.8");
   });
 
   it("uses x-real-ip when x-forwarded-for is an empty string", () => {

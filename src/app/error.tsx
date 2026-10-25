@@ -3,11 +3,7 @@
 import { useEffect } from "react";
 import StatusPage from "@/components/status-page";
 
-export default function ErrorPage({
-  error,
-}: {
-  error: Error & { digest?: string };
-}) {
+export default function ErrorPage({ error }: { error: Error & { digest?: string } }) {
   useEffect(() => {
     console.error(error);
   }, [error]);

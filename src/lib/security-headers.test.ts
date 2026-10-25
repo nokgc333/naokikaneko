@@ -15,7 +15,7 @@ describe("buildSecurityHeaders", () => {
         "Strict-Transport-Security",
         "X-Content-Type-Options",
         "X-Frame-Options",
-      ].sort()
+      ].sort(),
     );
   });
 
@@ -53,14 +53,10 @@ describe("buildSecurityHeaders", () => {
   });
 
   it("does not include 'unsafe-eval' in the production CSP", () => {
-    expect(headerMap(false).get("Content-Security-Policy")).not.toContain(
-      "'unsafe-eval'"
-    );
+    expect(headerMap(false).get("Content-Security-Policy")).not.toContain("'unsafe-eval'");
   });
 
   it("allows 'unsafe-eval' in the development CSP only, for hot reloading", () => {
-    expect(headerMap(true).get("Content-Security-Policy")).toContain(
-      "'unsafe-eval'"
-    );
+    expect(headerMap(true).get("Content-Security-Policy")).toContain("'unsafe-eval'");
   });
 });

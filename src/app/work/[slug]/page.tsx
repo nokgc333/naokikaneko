@@ -18,11 +18,7 @@ export async function generateMetadata({
   return buildEntryMetadata("work", slug);
 }
 
-export default async function WorkDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function WorkDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const entry = getEntry("work", slug);
 

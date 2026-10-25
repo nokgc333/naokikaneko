@@ -22,11 +22,7 @@ export async function generateMetadata({
   return buildEntryMetadata("blog", slug);
 }
 
-export default async function BlogDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const entry = getEntry("blog", slug);
 

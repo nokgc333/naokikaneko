@@ -1,9 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import {
-  describeEnvProblem,
-  loadContactMailEnv,
-  loadGithubOAuthEnv,
-} from "./env";
+import { describeEnvProblem, loadContactMailEnv, loadGithubOAuthEnv } from "./env";
 
 const CONTACT_ENV = {
   RESEND_API_KEY: "re_test_key",
@@ -28,7 +24,7 @@ describe("loadContactMailEnv", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) {
       expect([...result.missing].sort()).toEqual(
-        ["ADMIN_EMAIL", "CONTACT_MAIL_FROM", "RESEND_API_KEY"].sort()
+        ["ADMIN_EMAIL", "CONTACT_MAIL_FROM", "RESEND_API_KEY"].sort(),
       );
       expect(result.invalid).toEqual([]);
     }

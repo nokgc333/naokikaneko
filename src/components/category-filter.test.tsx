@@ -37,12 +37,7 @@ describe("CategoryFilter", () => {
 
   it("shows only the matching category when defaultFilter is given", () => {
     render(
-      <CategoryFilter
-        entries={entries}
-        hrefPrefix="/work"
-        cardType="work"
-        defaultFilter="Tool"
-      />
+      <CategoryFilter entries={entries} hrefPrefix="/work" cardType="work" defaultFilter="Tool" />,
     );
     expect(screen.getByText("Tools Entry")).toBeInTheDocument();
     expect(screen.queryByText("HDA Entry")).not.toBeInTheDocument();
@@ -62,7 +57,7 @@ describe("CategoryFilter", () => {
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
     expect(screen.getByRole("link", { name: /Tools Entry/ })).toHaveAttribute(
       "href",
-      "/blog/tools-entry"
+      "/blog/tools-entry",
     );
   });
 
@@ -90,7 +85,8 @@ describe("CategoryFilter", () => {
   it("shows the sort button in grid view too, and clicking it reverses the order", async () => {
     const user = userEvent.setup();
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
-    const links = () => screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
+    const links = () =>
+      screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
 
     expect(screen.getByText("新しい順")).toBeInTheDocument();
     expect(links()[0]).toHaveAttribute("href", "/blog/hda-entry");
@@ -104,7 +100,8 @@ describe("CategoryFilter", () => {
   it("keeps the sort result when switching to list view", async () => {
     const user = userEvent.setup();
     render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
-    const links = () => screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
+    const links = () =>
+      screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
 
     await user.click(screen.getByText("新しい順"));
     await user.click(screen.getByLabelText("リスト表示"));

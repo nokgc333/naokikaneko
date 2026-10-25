@@ -14,7 +14,8 @@
     "test:coverage": "vitest run --coverage",
     "type-check": "next typegen && tsc --noEmit",
     "cms:proxy": "decap-server",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:perf": "lhci autorun"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -45,6 +46,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",

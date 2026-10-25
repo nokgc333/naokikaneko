@@ -54,3 +54,4 @@ content/work/dummy-*.md
 content/work/dummy-*.mdx
 content/blog/dummy-*.mdx
 public/images/uploads/dummy/
+.lighthouseci

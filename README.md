@@ -58,18 +58,100 @@ Markdown/MDXのfrontmatterをZodスキーマでパースし、不正なコンテ
 
 アイコンのみのUIには`aria-label`を付与し、視覚的な省略とスクリーンリーダー向けの情報を両立している。
 
-## テスト・品質管理
+## アーキテクチャ
 
-```bash
-npm run lint         # ESLint
-npm run type-check   # tsc --noEmit
-npm run test         # Vitest（単体・結合テスト）
-npm run test:coverage
-npm run test:e2e     # Playwright（E2E）
-npm run content:check # コンテンツ（frontmatter・画像・slug）の検査
+```mermaid
+flowchart LR
+  visitor([訪問者]) --> cdn[Vercel Edge / CDN]
+  cdn --> pages["静的ページ<br/>(SSG: Work / Blog / About)"]
+  visitor -- 問い合わせ --> contact["/api/contact"]
+  contact --> resend[(Resend)]
+  editor([編集者]) --> admin["/admin<br/>(Decap CMS)"]
+  admin --> oauth["/api/decap-oauth/*"]
+  oauth --> github[(GitHub OAuth)]
+  admin -- 記事の保存 --> repo[(GitHub リポジトリ main)]
+  repo -- push で再ビルド --> cdn
+  content["content/*.mdx<br/>(frontmatter + MDX)"] --> pages
 ```
 
-GitHub Actions上でPull Requestごとに上記すべてを自動実行している（`.github/workflows/ci.yml`）。
+- ページは、ビルド時に `content/` の MDX から静的に生成される。実行時に動くサーバー処理は、お問い合わせと CMS のログインの 3 つの API ルートだけ。
+- 記事を保存すると `main` にコミットされ、Vercel が再ビルドして公開する。
+
+### `src/lib/` の構成
+
+| フォルダ | 責務 |
+|---|---|
+| `content/` | 記事の読み込みと検証（`index.ts`、`schema.ts`）、目次（`toc.ts`）、カテゴリと絞り込み、コンテンツ検査（`check.ts`） |
+| `contact/` | お問い合わせの処理: 入力スキーマ、メール組み立て（純関数）、ハンドラ、API の型（クライアントとサーバーで共有） |
+| `security/` | レート制限、クライアント IP、本文サイズの上限、セキュリティヘッダ、定数時間比較 |
+| `seo/` | ページのメタデータ、構造化データ（JSON-LD）、共有用の OG 画像、サイトの URL |
+| `env.ts` | 環境変数のスキーマと検証（不足・不正は変数名だけを報告し、値は出さない） |
+
+ルート（`src/app/api/*`）は薄く、ロジックは `lib/` の関数に置く。`/api/contact` のルートは 5 行。
+
+## スクリプト一覧
+
+| コマンド | 内容 |
+|---|---|
+| `npm run dev` | 開発サーバー（`http://localhost:3000`） |
+| `npm run build` / `npm run start` | 本番ビルド / 本番サーバー |
+| `npm run lint` | ESLint（複雑度 10 以下、関数 80 行以下を含む） |
+| `npm run type-check` | 型検査（`tsc --noEmit`） |
+| `npm run format` / `npm run format:check` | Prettier での整形 / 検査 |
+| `npm run test` / `npm run test:watch` | 単体・結合テスト（Vitest） |
+| `npm run test:coverage` | カバレッジ付き（Stmts / Branch / Funcs / Lines が 95% 未満なら失敗） |
+| `npm run test:e2e` | E2E（Playwright、アクセシビリティの axe 検査を含む） |
+| `npm run test:perf` | 性能予算（Lighthouse CI） |
+| `npm run content:check` | 記事の frontmatter・slug・日付・画像の検査 |
+| `npm run cms:proxy` | ローカルの CMS サーバー（ログイン不要で `content/` を編集） |
+
+## セキュリティ方針
+
+- **入力**: お問い合わせは `zod` で検証し、制御文字（件名への注入）・長さ・本文サイズ（16KB）を制限する。honeypot とレート制限（IP ごと）で連投を防ぐ。
+- **出力**: 記事の HTML は `rehype-sanitize` で取り除く。JSON-LD は `<` `>` `&` をエスケープする。
+- **ヘッダ**: CSP・HSTS（`includeSubDomains` なし）・`X-Frame-Options`・`X-Content-Type-Options`・`Referrer-Policy`・`Permissions-Policy`。`X-Powered-By` は出さない。CSP の `script-src` に `'unsafe-inline'` が残る理由は ADR-0005。
+- **CMS のログイン**: スコープは `public_repo` のみ。`state` は定数時間で比較し、認可とコールバックにレート制限。トークンはログに出さない（ADR-0002）。
+- **依存と秘密情報**: CI で `npm audit`（high 以上で失敗）、Dependency Review、CodeQL を実行し、毎週も実行する。GitHub のシークレットスキャンとプッシュ保護が有効。秘密情報はコミットしない（`.env*` は `.gitignore`）。
+
+## 性能
+
+Lighthouse（モバイル、模擬回線、本番ビルドをローカルで計測、2026-10-25）。
+
+| ページ | 性能 | LCP | 備考 |
+|---|---|---|---|
+| トップ | 0.96〜0.97 | 2.6〜2.7s | 未使用 JS 29KiB、総転送約 350KB |
+| ブログ一覧 | 0.91 | 3.2s | |
+| Work 詳細 | 0.8 | 4.4s | 日本語フォントで総転送が約 0.6MB |
+| ブログ記事 | 0.81〜0.85 | 3.8〜4.1s | 日本語フォントで総転送が約 1.2MB |
+
+アクセシビリティ・ベストプラクティス・SEO は、主要 5 ページのモバイル・デスクトップの両方で 100。予算と、改善の経緯・採用しなかった案は ADR-0006。
+
+## デプロイ
+
+1. Vercel で GitHub のリポジトリを接続する（フレームワークは Next.js が自動で検出される）。
+2. 環境変数を Production と Preview に登録する（「セットアップ」の表）。
+3. 独自ドメインを設定し、Resend 側で同じドメインを認証する。
+4. `develop` で作業し、`main` への PR を作る。CI（Lint・型・テスト・E2E・性能予算・セキュリティ）がすべて通ったら、マージコミットで取り込む。`main` への反映で、本番に自動でデプロイされる。
+5. PR ごとに Vercel のプレビューが作られる。
+
+## 設計記録（ADR）
+
+判断の理由と、見直す条件は `docs/adr/` にある。
+
+| ADR | 内容 |
+|---|---|
+| [0001](docs/adr/0001-mdx-content-pipeline.md) | コンテンツは MDX + `next-mdx-remote`（RSC）で描画する |
+| [0002](docs/adr/0002-decap-cms-with-own-github-oauth.md) | Decap CMS と、自前の GitHub OAuth ルート |
+| [0003](docs/adr/0003-in-memory-rate-limiting.md) | レート制限は、プロセス内メモリの固定窓 |
+| [0004](docs/adr/0004-react-compiler.md) | React Compiler を有効のままにする（計測あり） |
+| [0005](docs/adr/0005-keep-unsafe-inline-script-src.md) | CSP の `script-src` に `'unsafe-inline'` を残す（計測あり） |
+| [0006](docs/adr/0006-performance-budgets-and-fonts.md) | 性能予算と、日本語フォントの扱い |
+| [0007](docs/adr/0007-license-split.md) | コードは MIT、コンテンツは権利留保 |
+
+## テスト・品質管理
+
+- 単体・結合テスト（Vitest、カバレッジ 95% 以上を CI で強制）、E2E（Playwright、axe によるアクセシビリティ検査）、性能予算（Lighthouse CI）、コンテンツ検査（`content:check`）。コマンドは「スクリプト一覧」。
+- GitHub Actions で Pull Request ごとに、Lint・整形・コンテンツ検査・型検査・単体テスト・E2E・性能予算（`.github/workflows/ci.yml`）と、依存の監査・Dependency Review・CodeQL（`.github/workflows/security.yml`）を実行する。Node のバージョンは `.nvmrc` から読む。
 
 ## セットアップ
 
@@ -135,10 +217,14 @@ npm run dev                  # http://localhost:3000
 src/
   app/            # App Router（ページ・APIルート）
   components/     # UIコンポーネント
-  lib/            # コンテンツ取得・バリデーション等のロジック
+  hooks/          # クライアントのフック
+  lib/            # ロジック（content / contact / security / seo、env.ts）
+  project/        # リポジトリの設定・文書を検査するテスト
 content/
   work/           # Work記事（.mdx）
   blog/           # Blog記事（.mdx）
 public/admin/     # Decap CMS設定
 e2e/              # Playwright E2Eテスト
+scripts/          # content:check
+docs/adr/         # 設計記録
 ```

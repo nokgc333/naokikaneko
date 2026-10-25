@@ -1,6 +1,11 @@
 import { describeEnvProblem, loadGithubOAuthEnv } from "@/lib/env";
+import { isOauthRateLimited, rateLimitedResponse } from "@/lib/oauth-rate-limit";
+
+const OAUTH_SCOPE = "public_repo";
 
 export async function GET(request: Request) {
+  if (isOauthRateLimited(request)) return rateLimitedResponse();
+
   const env = loadGithubOAuthEnv();
   if (!env.ok) {
     console.error(`[api/decap-oauth/auth] ${describeEnvProblem(env)}`);
@@ -14,7 +19,7 @@ export async function GET(request: Request) {
   const authorizeUrl = new URL("https://github.com/login/oauth/authorize");
   authorizeUrl.searchParams.set("client_id", clientId);
   authorizeUrl.searchParams.set("redirect_uri", redirectUri);
-  authorizeUrl.searchParams.set("scope", "repo,user");
+  authorizeUrl.searchParams.set("scope", OAUTH_SCOPE);
   authorizeUrl.searchParams.set("state", state);
 
   const cookieAttributes = [

@@ -1,4 +1,6 @@
 import { describeEnvProblem, loadGithubOAuthEnv } from "@/lib/env";
+import { isOauthRateLimited, rateLimitedResponse } from "@/lib/oauth-rate-limit";
+import { safeEqual } from "@/lib/timing-safe";
 
 function toInlineScriptJson(value: unknown): string {
   return JSON.stringify(value)
@@ -18,12 +20,14 @@ function getCookie(request: Request, name: string): string | undefined {
 }
 
 export async function GET(request: Request) {
+  if (isOauthRateLimited(request)) return rateLimitedResponse();
+
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
   const cookieState = getCookie(request, "decap_oauth_state");
 
-  if (!state || !cookieState || state !== cookieState) {
+  if (!state || !cookieState || !safeEqual(state, cookieState)) {
     return new Response("Invalid state", { status: 400 });
   }
 

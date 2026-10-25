@@ -105,3 +105,37 @@ describe("ContentDetail cropped eyecatch", () => {
     );
   });
 });
+
+describe("ContentDetail eyecatch loading", () => {
+  it("loads the eyecatch eagerly with high priority because it is the main image", () => {
+    render(
+      <ContentDetail
+        entry={{ ...entry, thumbnail: "/images/uploads/sample.png" }}
+        rehypePlugins={[]}
+        proseClassName="p"
+      />,
+    );
+
+    const image = screen.getByRole("img", { name: "Sample Title" });
+    expect(image).toHaveAttribute("loading", "eager");
+    expect(image).toHaveAttribute("fetchpriority", "high");
+    expect(image.getAttribute("sizes")).toBe("(min-width: 1024px) 736px, 100vw");
+  });
+
+  it("does the same for the cropped eyecatch and sizes it to its frame", () => {
+    render(
+      <ContentDetail
+        entry={{ ...entry, thumbnail: "/images/uploads/sample.png" }}
+        rehypePlugins={[]}
+        proseClassName="p"
+        cropEyecatch
+        eyecatchMaxWidth={864}
+      />,
+    );
+
+    const image = screen.getByRole("img", { name: "Sample Title" });
+    expect(image).toHaveAttribute("loading", "eager");
+    expect(image).toHaveAttribute("fetchpriority", "high");
+    expect(image.getAttribute("sizes")).toBe("864px");
+  });
+});

@@ -12,3 +12,4 @@ package-lock.json
 next-env.d.ts
 tsconfig.tsbuildinfo
 *.md
+.lighthouseci

@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import WorkCard from "./work-card";
+import WorkCard, { WORK_CARD_IMAGE_SIZES } from "./work-card";
 import type { ContentEntry } from "@/lib/schemas/content";
 
 const entry: ContentEntry = {
@@ -25,5 +25,31 @@ describe("WorkCard", () => {
   it("has a link to the detail page", () => {
     render(<WorkCard entry={entry} href="/work/sample-project" />);
     expect(screen.getByRole("link")).toHaveAttribute("href", "/work/sample-project");
+  });
+});
+
+describe("WorkCard image loading", () => {
+  it("loads the image lazily by default", () => {
+    render(<WorkCard entry={entry} href="/work/sample-project" />);
+
+    expect(screen.getByRole("img")).toHaveAttribute("loading", "lazy");
+  });
+
+  it("loads the image with high priority when it is above the fold", () => {
+    render(<WorkCard entry={entry} href="/work/sample-project" priority />);
+
+    expect(screen.getByRole("img")).toHaveAttribute("fetchpriority", "high");
+    expect(screen.getByRole("img")).toHaveAttribute("loading", "eager");
+  });
+
+  it("describes the rendered width so the browser does not fetch an oversized image", () => {
+    render(
+      <WorkCard
+        entry={{ ...entry, thumbnail: "/images/uploads/sample.png" }}
+        href="/work/sample-project"
+      />,
+    );
+
+    expect(screen.getByRole("img").getAttribute("sizes")).toBe(WORK_CARD_IMAGE_SIZES);
   });
 });

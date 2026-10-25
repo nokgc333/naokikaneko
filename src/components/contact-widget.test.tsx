@@ -16,9 +16,21 @@ describe("ContactWidget", () => {
     render(<ContactWidget />);
 
     await user.click(screen.getByRole("button", { name: "お問い合わせを開く" }));
-    expect(screen.getByLabelText("個人・法人名")).toBeInTheDocument();
+    expect(await screen.findByLabelText("個人・法人名")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "閉じる" }));
     expect(screen.queryByLabelText("個人・法人名")).not.toBeInTheDocument();
+  });
+});
+
+describe("ContactWidget code loading", () => {
+  it("starts loading the form when the open button is hovered or focused", async () => {
+    const user = userEvent.setup();
+    render(<ContactWidget />);
+
+    await user.hover(screen.getByRole("button", { name: "お問い合わせを開く" }));
+    await user.click(screen.getByRole("button", { name: "お問い合わせを開く" }));
+
+    expect(await screen.findByRole("button", { name: "送信" })).toBeInTheDocument();
   });
 });

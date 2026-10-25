@@ -80,7 +80,7 @@ export default function About() {
                 rel="noopener noreferrer"
                 aria-label={label}
               >
-                <Icon />
+                <Icon aria-hidden="true" />
               </a>
             ))}
           </div>

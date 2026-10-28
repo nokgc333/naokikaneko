@@ -15,6 +15,13 @@
 - 上位の制約で更新できない 4 つの major（`@hookform/resolvers`、`eslint`、`typescript`、`@types/node`）は、major の提案を無視する。理由は `docs/TASKLIST.md` の NK-20 に記録している（`@types/node` は、実行環境の Node 24 に合わせるため）。
 - PR は CI（性能予算・監査・Dependency Review・CodeQL を含む）が通ってからマージする。
 
+### 脆弱な推移的依存（`overrides`）
+
+- 親パッケージが古い版に固定していて、Dependabot のセキュリティ更新が PR を作れないときは、`package.json` の `overrides` で、**親を限定して**修正版へ上げる（全体への上書きはしない。別の用途の、別のメジャー版を巻き込むため）。
+- 現在: `@lhci/cli` 配下の `tmp`（0.2.6 以上）と `uuid`（11.1.1 以上）、`@tailwindcss/typography` 配下の `postcss-selector-parser`（6.1.5 以上）。いずれも開発依存で、本番の依存には入らない。
+- 上げたあとは、Lint・型・単体・build・E2E と、`lhci collect` の動作を確かめる。親が修正版に追随したら、`overrides` を外す。
+- **修正版が存在しないもの**（`deepmerge`・`@hapi/joi`・`extract-zip`）は、上げられない。いずれも開発依存で、親（`shadcn`・`decap-server`・`lighthouse`）の対応を待つ。
+
 ### コミット前の検査（husky + lint-staged + secretlint）
 
 - コミット時に、ステージされたファイルだけを検査する: TypeScript は ESLint と Prettier、JSON・CSS・YAML は Prettier、**すべてのファイルに secretlint**（API キー・トークンなどの秘密情報の検出）。

@@ -12,8 +12,6 @@ updates:
       minor-and-patch:
         update-types: [minor, patch]
     ignore:
-      - dependency-name: "@hookform/resolvers"
-        update-types: [version-update:semver-major]
       - dependency-name: eslint
         update-types: [version-update:semver-major]
       - dependency-name: typescript

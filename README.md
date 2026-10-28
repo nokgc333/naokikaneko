@@ -174,7 +174,7 @@ gh api -X PUT repos/<owner>/<repo>/automated-security-fixes
 
 ### 前提
 
-- Node.js 24（`.nvmrc` で固定。`nvm use` で切り替える）。別の版では `npm install` が失敗する（`engine-strict`）。
+- Node.js 24.15 以上（`.nvmrc` は `24`。`nvm install 24 && nvm use` で最新の 24 系にする。jsdom 30 の要求）。別の版では `npm install` が失敗する（`engine-strict`）。
 - npm 11 以上。
 
 ### 起動

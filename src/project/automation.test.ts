@@ -19,7 +19,7 @@ describe("Dependabot", () => {
   });
 
   it("ignores the major versions that upstream constraints block", () => {
-    for (const name of ["@hookform/resolvers", "eslint", "typescript", "@types/node"]) {
+    for (const name of ["eslint", "typescript", "@types/node"]) {
       expect(config, name).toContain(name);
     }
     expect(config).toContain("version-update:semver-major");

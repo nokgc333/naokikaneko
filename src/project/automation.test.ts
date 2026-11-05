@@ -50,3 +50,35 @@ describe("pre-commit checks", () => {
     expect(read(".secretlintignore")).toContain("package-lock.json");
   });
 });
+
+describe("branch protection policy", () => {
+  const jobNames = [...read(".github/workflows/ci.yml").matchAll(/^\s{4}name: (.+)$/gm)]
+    .concat([...read(".github/workflows/security.yml").matchAll(/^\s{4}name: (.+)$/gm)])
+    .map((match) => match[1].trim());
+
+  it("requires only checks that really exist as jobs", () => {
+    const required = json(".github/branch-protection/main.json").required_status_checks.contexts;
+
+    expect(required.length).toBeGreaterThan(0);
+    for (const name of required) {
+      expect(jobNames, name).toContain(name);
+    }
+  });
+
+  it("forbids force pushes and deletions on both branches", () => {
+    for (const branch of ["main", "develop"]) {
+      const policy = json(`.github/branch-protection/${branch}.json`);
+
+      expect(policy.allow_force_pushes, branch).toBe(false);
+      expect(policy.allow_deletions, branch).toBe(false);
+    }
+  });
+
+  it("does not enforce the rules on admins, so the CMS can commit to main", () => {
+    expect(json(".github/branch-protection/main.json").enforce_admins).toBe(false);
+  });
+
+  it("does not require a pull request on main, because the CMS commits directly", () => {
+    expect(json(".github/branch-protection/main.json").required_pull_request_reviews).toBeNull();
+  });
+});

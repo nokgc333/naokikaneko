@@ -1,3 +1,4 @@
+import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import WorkDetailPage, { generateMetadata, generateStaticParams } from "./page";
 
@@ -25,6 +26,15 @@ vi.mock("@/components/content-detail", () => ({
   ),
 }));
 
+const baseEntry = {
+  title: "Tool",
+  slug: "tool",
+  date: "2025-06-01",
+  updatedDate: "2025-06-02",
+  description: "A tool",
+  tags: [] as string[],
+};
+
 const params = (slug: string) => ({ params: Promise.resolve({ slug }) });
 
 describe("work detail page", () => {
@@ -51,5 +61,35 @@ describe("work detail page", () => {
 
     await expect(WorkDetailPage(params("missing"))).rejects.toThrow("NEXT_NOT_FOUND");
     expect(notFound).toHaveBeenCalled();
+  });
+
+  it("shows the external link when the entry has a url", async () => {
+    getEntry.mockReturnValue({ ...baseEntry, url: "https://example.com/tool" });
+
+    render(await WorkDetailPage(params("tool")));
+
+    expect(screen.getByRole("link", { name: "https://example.com/tool" })).toHaveAttribute(
+      "href",
+      "https://example.com/tool",
+    );
+  });
+
+  it("omits the external link when the entry has no url", async () => {
+    getEntry.mockReturnValue(baseEntry);
+
+    render(await WorkDetailPage(params("tool")));
+
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("embeds CreativeWork structured data for the entry", async () => {
+    getEntry.mockReturnValue(baseEntry);
+
+    const { container } = render(await WorkDetailPage(params("tool")));
+
+    const data = JSON.parse(
+      container.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}",
+    );
+    expect(data).toMatchObject({ "@type": "CreativeWork", name: "Tool" });
   });
 });

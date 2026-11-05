@@ -1,0 +1,36 @@
+---
+title: "pipeinit"
+slug: "pipeinit"
+date: "2026-10-01"
+updatedDate: "2026-10-01"
+tags: ["Python", "Click", "CLI"]
+category: "Tool"
+thumbnail: "/images/uploads/pipeinit.svg"
+url: "https://github.com/nokgc333/pipeinit"
+description: "CG/ゲームパイプライン向けのプロジェクトフォルダ自動生成・命名規則バリデーション・バージョン採番CLI。YAML駆動のルールエンジンで標準化する。"
+---
+
+CG/ゲームパイプライン向けの、プロジェクトフォルダ自動生成・命名規則バリデーション・バージョン採番CLIツール。実務ワークフローの一番最初、プロジェクト立ち上げ時に使う位置づけのツールとして制作した。
+
+## 背景
+
+プロジェクト立ち上げ時のフォルダ構成バラつきと、`SHOT010_lighting_v003.hip` のような命名規則違反・バージョン番号の重複や飛びは、現場で最初に問題化する「地味だが全員が困る」領域。手作業でフォルダ階層を1つずつ作成し命名規則を目視確認すると数分かかる作業を、`pipeinit init` は実測0.06秒（5フォルダ生成、Python起動込み）で完了する。
+
+## 主な機能
+
+- `pipeinit init --type game|film|generic`：プロジェクト種別に応じたフォルダツリーを生成
+- `pipeinit validate`：命名規則違反を検出（exit code 0/1、JSON出力対応）
+- `pipeinit bump`：バージョン番号のインクリメント（既定はドライラン、`--apply`で実際にリネーム）
+
+各種別のルールは`rules/`配下のYAMLで定義し、スタジオごとに規則を差し替える場合もコード変更は不要。
+
+## 技術スタック
+
+- Python 3.11+ / Click（CLIフレームワーク）
+- PyYAML（`yaml.safe_load`のみ使用し、任意コード実行を防止）
+- pytest / mypy(strict) / black / isort / flake8 / pip-audit
+
+## 設計判断
+
+- 正規表現+YAML方式を採用し、専用パーサーは自作していない（命名規則は構文木を要しない文字列パターンの集合のため）
+- `bump`は既定でドライラン、`--apply`で明示的にオプトイン（ファイルシステムを変更する操作は誤操作時の被害が大きいため、fail-safeな既定動作を優先）

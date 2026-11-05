@@ -85,4 +85,16 @@ describe("blog detail page", () => {
     expect(screen.getByTestId("toc")).toHaveTextContent("First,Second");
     expect(screen.getByTestId("related")).toHaveTextContent("p1,p2,p3,p4,p5");
   });
+
+  it("embeds BlogPosting structured data for the entry", async () => {
+    getEntry.mockReturnValue({ ...basePost, body: "" });
+    getEntries.mockReturnValue([]);
+
+    const { container } = render(await BlogDetailPage(params("current")));
+
+    const data = JSON.parse(
+      container.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}",
+    );
+    expect(data).toMatchObject({ "@type": "BlogPosting", headline: "Post" });
+  });
 });

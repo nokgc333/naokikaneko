@@ -29,3 +29,13 @@
 - `npm run lint`、`npm run format:check`、`npm run type-check`、`npm run build` を実行する。
 - pull request の Foundation Checks の成功を確認してから、次の機能へ進む。
 - ビルド失敗時は foundation-build-log を取得し、履歴を書き換えず後続コミットで修正する。
+
+## 問い合わせ設定
+
+- `.env.example` を参考に、実行環境へ変数を設定する。値をリポジトリや検査ログへ含めない。
+- `RESEND_API_KEY`: メール送信サービスの API キー。
+- `ADMIN_EMAIL`: 通知の宛先メールアドレス。
+- `CONTACT_MAIL_FROM`: 通知の送信元。
+- 問い合わせの入力スキーマとレスポンス型、機能別の環境変数検証を単体テストで確認できる。
+- メール設定がなくても既存の一覧・記事・プロフィールは閲覧できる。
+- OAuth 設定の変数名は `GITHUB_OAUTH_CLIENT_ID` と `GITHUB_OAUTH_CLIENT_SECRET`。

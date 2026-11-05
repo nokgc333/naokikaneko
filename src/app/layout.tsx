@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Geist_Mono, Noto_Sans_JP, Roboto } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ContactWidget from "@/components/contact-widget";
@@ -6,6 +7,25 @@ import JsonLd from "@/components/json-ld";
 import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/seo/structured-data";
 import { SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
+
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const notoSansJP = Noto_Sans_JP({
+  variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  display: "optional",
+  preload: false,
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  preload: false,
+});
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
@@ -28,10 +48,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ja">
-      <body className="antialiased">
+    <html
+      lang="ja"
+      className={`${roboto.variable} ${notoSansJP.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="flex min-h-full flex-col">
         <a
           href="#main-content"
           lang="en"
@@ -40,7 +63,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <SiteHeader />
-        <div id="main-content" tabIndex={-1} className="px-5 pt-20 pb-8 lg:px-10 lg:pb-10">
+        <div
+          id="main-content"
+          tabIndex={-1}
+          className="flex-1 px-5 pt-20 pb-10 outline-none lg:px-10"
+        >
           {children}
         </div>
         <SiteFooter />

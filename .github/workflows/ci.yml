@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feature/*"]
   pull_request:
     branches: [main]
 
@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  foundation:
-    name: Foundation Checks
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -23,24 +23,24 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm install --global npm@11.19.1
       - run: npm ci
       - run: npm run lint
-      - run: npm run content:check
       - run: npm run format:check
-      - run: npm run type-check
-      - name: Build
-        shell: bash
-        run: |
-          set -o pipefail
-          npm run build 2>&1 | tee build.log
-      - name: Upload build log
-        if: always()
-        uses: actions/upload-artifact@v7
+      - run: npm run content:check
+
+  type-check:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          name: foundation-build-log
-          path: build.log
-  unit:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run type-check
+
+  unit-test:
     name: Unit & Integration Tests
     runs-on: ubuntu-latest
     steps:
@@ -49,21 +49,25 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm install --global npm@11.19.1
       - run: npm ci
-      - run: npm test
+      - run: npm run test:coverage
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: coverage-report
+          path: coverage/
 
   e2e-test:
     name: E2E Tests
     runs-on: ubuntu-latest
-    needs: [foundation, unit]
+    needs: [lint, type-check, unit-test]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm install --global npm@11.19.1
       - run: npm ci
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
@@ -78,14 +82,13 @@ jobs:
   performance:
     name: Performance Budget
     runs-on: ubuntu-latest
-    needs: [foundation, unit]
+    needs: [lint, type-check, unit-test]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
-      - run: npm install --global npm@11.19.1
       - run: npm ci
       - run: npm run build
       - run: npm run test:perf

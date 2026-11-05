@@ -5,7 +5,7 @@
 - Node.js 24.15.0 以上と npm 11.19.1 を使用する。
 - `nvm use` で `.nvmrc` の Node.js を選び、`npm ci` で依存を導入する。
 - `npm run dev` の後、ブラウザで `http://localhost:3000` を開く。
-- Work の見出しが表示される空のページを確認する。
+- Work 一覧から作品・関連記事へ移動できることを確認する。
 
 ## スクリプト
 
@@ -19,7 +19,7 @@
 
 - `npm run format` で現存するファイルを整形する。
 - `npm run lint`、`npm run type-check`、`npm run format:check`、`npm run build` の順に確認する。
-- `npm start` の後、狭い画面と広い画面で Work の見出しと余白を確認する。
+- `npm start` の後、狭い画面と広い画面で一覧・記事・プロフィールを確認する。
 - 横スクロールや文字の欠けがないことを確認する。
 
 ## 初回 CI の確認
@@ -49,3 +49,34 @@
 - `/api/decap-oauth/auth` が認可を開始し、callback が state cookie を照合して認可コードを交換する。
 - 編集後は `npm run content:check`、`npm run lint`、`npm run type-check`、`npm test`、`npm run build` を実行する。
 - 認証境界と CMS 設定は単体テストで確認する。公開環境でのログインと保存は、OAuth 設定後にブラウザで確認する。
+
+## 現在の全スクリプト
+
+- `npm run dev`: `next dev`。
+- `npm run build`: `next build`。
+- `npm run start`: `next start`。
+- `npm run lint`: `eslint`。
+- `npm run type-check`: `next typegen && tsc --noEmit`。
+- `npm run format`: `prettier --write .`。
+- `npm run format:check`: `prettier --check .`。
+- `npm run test`: `vitest run`。
+- `npm run test:watch`: `vitest`。
+- `npm run content:check`: `tsx scripts/content-check.ts`。
+- `npm run cms:proxy`: `decap-server`。
+- `npm run test:e2e`: `playwright test`。
+- `npm run test:perf`: `lhci autorun`。
+- `npm run prepare`: `husky`。
+- `npm run secrets:check`: `secretlint "**/*" --secretlintignore .secretlintignore`。
+
+## コミット前の検査
+
+- `npm ci` の prepare で Husky のフックを有効にする。
+- `npm run lint`、`npm run format:check`、`npm run type-check`、`npm test`、`npm run content:check`、`npm run build`、`npm run secrets:check` を実行する。
+- ブラウザ検査には `npm run test:e2e`、本番性能検査には `npm run test:perf` を実行する。
+- `git add src/components/contact-widget.tsx src/components/contact-widget.test.tsx` のように変更ファイルを列挙して stage する。
+- コミット時に pre-commit が lint-staged を実行し、対象コードの ESLint・Prettier と全 staged ファイルの secretlint を確認する。
+- フックの失敗原因を修正して、検査してからコミットする。
+- `.gitignore` に従い依存・ビルド・カバレッジ・Playwright・Lighthouse の生成物を含めない。
+- 秘密の値はソース・ログ・検査結果へ書かず、環境変数として設定する。検出された値をそのまま出力・転載しない。
+- E2E は Chromium でページ横断・フォーム・キーボード・モバイル・アクセシビリティを確認する。
+- CSP は `npm run build` と `npm start` で本番を起動し、`npx playwright test e2e/security.spec.ts` を既存サーバーに対して実行する。

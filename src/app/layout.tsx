@@ -32,8 +32,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ja">
       <body className="antialiased">
+        <a
+          href="#main-content"
+          lang="en"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[60] focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium"
+        >
+          Skip to main content
+        </a>
         <SiteHeader />
-        <div className="px-5 pt-20 pb-8 lg:px-10 lg:pb-10">{children}</div>
+        <div id="main-content" tabIndex={-1} className="px-5 pt-20 pb-8 lg:px-10 lg:pb-10">
+          {children}
+        </div>
         <SiteFooter />
         <ContactWidget />
         <JsonLd data={buildWebSiteJsonLd()} />

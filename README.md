@@ -14,3 +14,10 @@
 - `npm start`: 本番サーバー。
 - `npm run lint`: ESLint。
 - `npm run type-check`: Next.js の型生成と TypeScript 検査。
+
+## 静的検査
+
+- `npm run format` で現存するファイルを整形する。
+- `npm run lint`、`npm run type-check`、`npm run format:check`、`npm run build` の順に確認する。
+- `npm start` の後、狭い画面と広い画面で Work の見出しと余白を確認する。
+- 横スクロールや文字の欠けがないことを確認する。

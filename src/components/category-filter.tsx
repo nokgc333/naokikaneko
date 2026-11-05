@@ -15,6 +15,8 @@ import ContentCard from "@/components/content-card";
 import ContentListItem from "@/components/content-list-item";
 import WorkCard from "@/components/work-card";
 
+const PRIORITY_IMAGE_COUNT = 2;
+
 const cardComponents = {
   work: WorkCard,
   blog: ContentCard,
@@ -71,8 +73,13 @@ export default function CategoryFilter({
         </div>
       ) : (
         <div className={`mt-4 grid ${gridClassName}`}>
-          {displayedEntries.map((entry) => (
-            <CardComponent key={entry.slug} entry={entry} href={`${hrefPrefix}/${entry.slug}`} />
+          {displayedEntries.map((entry, index) => (
+            <CardComponent
+              key={entry.slug}
+              entry={entry}
+              href={`${hrefPrefix}/${entry.slug}`}
+              priority={index < PRIORITY_IMAGE_COUNT}
+            />
           ))}
         </div>
       )}

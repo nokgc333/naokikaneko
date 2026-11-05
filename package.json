@@ -15,7 +15,9 @@
     "content:check": "tsx scripts/content-check.ts",
     "cms:proxy": "decap-server",
     "test:e2e": "playwright test",
-    "test:perf": "lhci autorun"
+    "test:perf": "lhci autorun",
+    "prepare": "husky",
+    "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

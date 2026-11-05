@@ -1,82 +1,261 @@
-# Application
+# naokikaneko.com
 
-## 起動
+[![CI](https://github.com/nokgc333/naokikaneko/actions/workflows/ci.yml/badge.svg)](https://github.com/nokgc333/naokikaneko/actions/workflows/ci.yml)
 
-- Node.js 24.15.0 以上と npm 11.19.1 を使用する。
-- `nvm use` で `.nvmrc` の Node.js を選び、`npm ci` で依存を導入する。
-- `npm run dev` の後、ブラウザで `http://localhost:3000` を開く。
-- Work 一覧から作品・関連記事へ移動できることを確認する。
+個人用ポートフォリオ・名刺サイト。プロフィール / 実績（Work） / 技術ブログ（Blog） / お問い合わせを1つのサイトに集約。
 
-## スクリプト
+- **公開URL**: https://naokikaneko.com
+- **リポジトリ**: https://github.com/nokgc333/naokikaneko
 
-- `npm run dev`: 開発サーバー。
-- `npm run build`: 本番ビルド。
-- `npm start`: 本番サーバー。
-- `npm run lint`: ESLint。
-- `npm run type-check`: Next.js の型生成と TypeScript 検査。
+## 概要
 
-## 静的検査
+Next.js（App Router）+ TypeScript + Tailwind CSSで構築したフルスクラッチのポートフォリオサイト。
+コンテンツはMarkdown/MDXで管理し、Decap CMSによるノーコード編集とGitベースの手動運用の両方に対応している。
+単なる静的な自己紹介ページではなく、実務を想定した設計判断・テスト・CI/CDまで一通り実装した。
 
-- `npm run format` で現存するファイルを整形する。
-- `npm run lint`、`npm run type-check`、`npm run format:check`、`npm run build` の順に確認する。
-- `npm start` の後、狭い画面と広い画面で一覧・記事・プロフィールを確認する。
-- 横スクロールや文字の欠けがないことを確認する。
+## 主な機能
 
-## 初回 CI の確認
+- **Work（実績）一覧・詳細:** カテゴリ絞り込み、MDXによる本文レンダリング
+- **Blog（技術記事）一覧・詳細:** グリッド/リスト表示切替、新しい順・古い順の並び替え、見出し目次（TOC）、関連記事サイドバー
+- **お問い合わせフォーム:** React Hook Form + Zodバリデーション、Resend経由のメール送信（独自ドメインでDKIM/SPF/DMARC認証済み）
+- **コンテンツ管理:** Decap CMS（`/admin`からのWeb編集）と、Gitへの直接コミットの両方でMarkdown/MDXコンテンツを追加可能。手順と書式は `CONTENT_GUIDE.md`、検査は `npm run content:check`
+- **SEO:** 動的サイトマップ・robots.txt、Open Graph / Twitter Card対応
 
-- main 向けの pull request と main の push で CI の Foundation Checks が動作する。
-- クリーンな複製で `nvm use`、`npm install --global npm@11.19.1`、`npm ci` を実行する。
-- `npm run lint`、`npm run format:check`、`npm run type-check`、`npm run build` を実行する。
-- pull request の Foundation Checks の成功を確認してから、次の機能へ進む。
-- ビルド失敗時は foundation-build-log を取得し、履歴を書き換えず後続コミットで修正する。
+## 技術スタック
 
-## 問い合わせ設定
+- **フレームワーク:** Next.js 16（App Router / Turbopack）
+- **言語:** TypeScript
+- **スタイリング:** Tailwind CSS v4, shadcn/ui
+- **コンテンツ:** Markdown / MDX（`next-mdx-remote`, `remark`/`rehype`系プラグイン）, Decap CMS
+- **バリデーション:** Zod
+- **フォーム:** React Hook Form
+- **メール送信:** Resend
+- **テスト:** Vitest（単体・結合）, Playwright（E2E）
+- **CI:** GitHub Actions（Lint / 型チェック / テスト / E2E）
+- **ホスティング:** Vercel
 
-- `.env.example` を参考に、実行環境へ変数を設定する。値をリポジトリや検査ログへ含めない。
-- `RESEND_API_KEY`: メール送信サービスの API キー。
-- `ADMIN_EMAIL`: 通知の宛先メールアドレス。
-- `CONTACT_MAIL_FROM`: 通知の送信元。
-- 問い合わせの入力スキーマとレスポンス型、機能別の環境変数検証を単体テストで確認できる。
-- メール設定がなくても既存の一覧・記事・プロフィールは閲覧できる。
-- OAuth 設定の変数名は `GITHUB_OAUTH_CLIENT_ID` と `GITHUB_OAUTH_CLIENT_SECRET`。
+## 設計・実装上のポイント
 
-## コンテンツ編集
+- **レンダリング方式の統一**: 
 
-- `npm run cms:proxy` と `npm run dev` を別のターミナルで起動し、`/admin` を開いてローカル原稿を編集する。
-- CMS の入力項目・カテゴリ・画像の配置は `CONTENT_GUIDE.md` を参照する。
-- 公開環境では GitHub OAuth App の callback URL をサイトと同じ origin の `/api/decap-oauth/callback` に設定する。
-- `GITHUB_OAUTH_CLIENT_ID` と `GITHUB_OAUTH_CLIENT_SECRET` をサーバー環境へ設定し、秘密の値をクライアントやログへ含めない。
-- `/api/decap-oauth/auth` が認可を開始し、callback が state cookie を照合して認可コードを交換する。
-- 編集後は `npm run content:check`、`npm run lint`、`npm run type-check`、`npm test`、`npm run build` を実行する。
-- 認証境界と CMS 設定は単体テストで確認する。公開環境でのログインと保存は、OAuth 設定後にブラウザで確認する。
+Work・Blog双方の詳細ページを`MDXRemote`ベースに統一し、コンテンツ種別によるレンダリングロジックの分岐をなくした。
 
-## 現在の全スクリプト
+- **コンテナクエリによるレスポンシブ画像**:
 
-- `npm run dev`: `next dev`。
-- `npm run build`: `next build`。
-- `npm run start`: `next start`。
-- `npm run lint`: `eslint`。
-- `npm run type-check`: `next typegen && tsc --noEmit`。
-- `npm run format`: `prettier --write .`。
-- `npm run format:check`: `prettier --check .`。
-- `npm run test`: `vitest run`。
-- `npm run test:watch`: `vitest`。
-- `npm run content:check`: `tsx scripts/content-check.ts`。
-- `npm run cms:proxy`: `decap-server`。
-- `npm run test:e2e`: `playwright test`。
-- `npm run test:perf`: `lhci autorun`。
-- `npm run prepare`: `husky`。
-- `npm run secrets:check`: `secretlint "**/*" --secretlintignore .secretlintignore`。
+サムネイルの`object-fit`を、ビューポート幅ではなくカード自身の実測アスペクト比に応じて切り替え、多カラムレイアウトでも崩れないようにした。
 
-## コミット前の検査
+- **フォールバック込みのフォント設計**:
 
-- `npm ci` の prepare で Husky のフックを有効にする。
-- `npm run lint`、`npm run format:check`、`npm run type-check`、`npm test`、`npm run content:check`、`npm run build`、`npm run secrets:check` を実行する。
-- ブラウザ検査には `npm run test:e2e`、本番性能検査には `npm run test:perf` を実行する。
-- `git add src/components/contact-widget.tsx src/components/contact-widget.test.tsx` のように変更ファイルを列挙して stage する。
-- コミット時に pre-commit が lint-staged を実行し、対象コードの ESLint・Prettier と全 staged ファイルの secretlint を確認する。
-- フックの失敗原因を修正して、検査してからコミットする。
-- `.gitignore` に従い依存・ビルド・カバレッジ・Playwright・Lighthouse の生成物を含めない。
-- 秘密の値はソース・ログ・検査結果へ書かず、環境変数として設定する。検出された値をそのまま出力・転載しない。
-- E2E は Chromium でページ横断・フォーム・キーボード・モバイル・アクセシビリティを確認する。
-- CSP は `npm run build` と `npm start` で本番を起動し、`npx playwright test e2e/security.spec.ts` を既存サーバーに対して実行する。
+Google Fonts（Roboto / Noto Sans JP）にOSフォントの完全なフォールバックスタックを付与し、フォント読み込み前後でのレイアウトシフトを抑制している。
+
+- **Zodによるフロントマター検証**:
+
+Markdown/MDXのfrontmatterをZodスキーマでパースし、不正なコンテンツをビルド時に検知できるようにした。
+
+- **アクセシビリティへの配慮**:
+
+アイコンのみのUIには`aria-label`を付与し、視覚的な省略とスクリーンリーダー向けの情報を両立している。
+
+## アーキテクチャ
+
+```mermaid
+flowchart LR
+  visitor([訪問者]) --> cdn[Vercel Edge / CDN]
+  cdn --> pages["静的ページ<br/>(SSG: Work / Blog / About)"]
+  visitor -- 問い合わせ --> contact["/api/contact"]
+  contact --> resend[(Resend)]
+  editor([編集者]) --> admin["/admin<br/>(Decap CMS)"]
+  admin --> oauth["/api/decap-oauth/*"]
+  oauth --> github[(GitHub OAuth)]
+  admin -- 記事の保存 --> repo[(GitHub リポジトリ main)]
+  repo -- push で再ビルド --> cdn
+  content["content/*.mdx<br/>(frontmatter + MDX)"] --> pages
+```
+
+- ページは、ビルド時に `content/` の MDX から静的に生成される。実行時に動くサーバー処理は、お問い合わせと CMS のログインの 3 つの API ルートだけ。
+- 記事を保存すると `main` にコミットされ、Vercel が再ビルドして公開する。
+
+### `src/lib/` の構成
+
+- **`content/`:** 記事の読み込みと検証（`index.ts`、`schema.ts`）、目次（`toc.ts`）、カテゴリと絞り込み、コンテンツ検査（`check.ts`）
+- **`contact/`:** お問い合わせの処理: 入力スキーマ、メール組み立て（純関数）、ハンドラ、API の型（クライアントとサーバーで共有）
+- **`security/`:** レート制限、クライアント IP、本文サイズの上限、セキュリティヘッダ、定数時間比較
+- **`seo/`:** ページのメタデータ、構造化データ（JSON-LD）、共有用の OG 画像、サイトの URL
+- **`env.ts`:** 環境変数のスキーマと検証（不足・不正は変数名だけを報告し、値は出さない）
+
+ルート（`src/app/api/*`）は薄く、ロジックは `lib/` の関数に置く。`/api/contact` のルートは 5 行。
+
+## スクリプト一覧
+
+- **`npm run dev`:** 開発サーバー（`http://localhost:3000`）
+- **`npm run build` / `npm run start`:** 本番ビルド / 本番サーバー
+- **`npm run lint`:** ESLint（複雑度 10 以下、関数 80 行以下を含む）
+- **`npm run type-check`:** 型検査（`tsc --noEmit`）
+- **`npm run format` / `npm run format:check`:** Prettier での整形 / 検査
+- **`npm run test` / `npm run test:watch`:** 単体・結合テスト（Vitest）
+- **`npm run test:coverage`:** カバレッジ付き（Stmts / Branch / Funcs / Lines が 95% 未満なら失敗）
+- **`npm run test:e2e`:** E2E（Playwright、アクセシビリティの axe 検査を含む）
+- **`npm run test:perf`:** 性能予算（Lighthouse CI）
+- **`npm run content:check`:** 記事の frontmatter・slug・日付・画像の検査
+- **`npm run secrets:check`:** 秘密情報の検出（secretlint）
+- **`npm run prepare`:** git フック（husky）の有効化。`npm install` / `npm ci` で自動実行される
+- **`npm run cms:proxy`:** ローカルの CMS サーバー（ログイン不要で `content/` を編集）
+
+## セキュリティ方針
+
+- **入力**: お問い合わせは `zod` で検証し、制御文字（件名への注入）・長さ・本文サイズ（16KB）を制限する。honeypot とレート制限（IP ごと）で連投を防ぐ。
+- **出力**: 記事の HTML は `rehype-sanitize` で取り除く。JSON-LD は `<` `>` `&` をエスケープする。
+- **ヘッダ**: CSP・HSTS（`includeSubDomains` なし）・`X-Frame-Options`・`X-Content-Type-Options`・`Referrer-Policy`・`Permissions-Policy`。`X-Powered-By` は出さない。CSP の `script-src` に `'unsafe-inline'` が残る理由は ADR-0005。
+- **CMS のログイン**: スコープは `public_repo` のみ。`state` は定数時間で比較し、認可とコールバックにレート制限。トークンはログに出さない（ADR-0002）。
+- **依存と秘密情報**: CI で `npm audit`（high 以上で失敗）、Dependency Review、CodeQL を実行し、毎週も実行する。GitHub のシークレットスキャンとプッシュ保護が有効。秘密情報はコミットしない（`.env*` は `.gitignore`）。
+
+## 性能
+
+Lighthouse（モバイル、模擬回線、本番ビルドをローカルで計測、2026-10-25）。
+
+- **トップ**
+  - 性能: 0.96〜0.97
+  - LCP: 2.6〜2.7s
+  - 備考: 未使用 JS 29KiB、総転送約 350KB
+- **ブログ一覧**
+  - 性能: 0.91
+  - LCP: 3.2s
+- **Work 詳細**
+  - 性能: 0.8
+  - LCP: 4.4s
+  - 備考: 日本語フォントで総転送が約 0.6MB
+- **ブログ記事**
+  - 性能: 0.81〜0.85
+  - LCP: 3.8〜4.1s
+  - 備考: 日本語フォントで総転送が約 1.2MB
+
+アクセシビリティ・ベストプラクティス・SEO は、主要 5 ページのモバイル・デスクトップの両方で 100。予算と、改善の経緯・採用しなかった案は ADR-0006。
+
+## デプロイ
+
+1. Vercel で GitHub のリポジトリを接続する（フレームワークは Next.js が自動で検出される）。
+2. 環境変数を Production と Preview に登録する（「セットアップ」の表）。
+3. 独自ドメインを設定し、Resend 側で同じドメインを認証する。
+4. `develop` で作業し、`main` への PR を作る。CI（Lint・型・テスト・E2E・性能予算・セキュリティ）がすべて通ったら、マージコミットで取り込む。`main` への反映で、本番に自動でデプロイされる。
+5. PR ごとに Vercel のプレビューが作られる。
+
+## 開発の進め方（自動化とブランチ保護）
+
+- **コミット前の検査**: `npm ci` で husky が有効になり、コミット時にステージ済みのファイルだけを検査する（ESLint・Prettier・秘密情報の検出 `secretlint`）。全体の秘密情報の検査は `npm run secrets:check`。
+- **依存の自動更新**: Dependabot が毎週月曜に、npm と GitHub Actions の更新 PR を作る（`.github/dependabot.yml`）。CI が通ってからマージする。
+- **ブランチ保護**: `main` は、必須チェックの通過と、force push・削除の禁止。管理者は対象外にしてあり、CMS の保存（`main` への直接コミット）を妨げない。方針は ADR-0008。リポジトリの管理者が、次のコマンドで適用する。
+
+```bash
+gh api -X PUT repos/<owner>/<repo>/branches/main/protection --input .github/branch-protection/main.json
+gh api -X PUT repos/<owner>/<repo>/branches/develop/protection --input .github/branch-protection/develop.json
+gh api -X PUT repos/<owner>/<repo>/automated-security-fixes
+```
+
+3 行目は、Dependabot のセキュリティ更新（脆弱性の修正 PR）を有効にする。
+
+## 設計記録（ADR）
+
+判断の理由と、見直す条件は `docs/adr/` にある。
+
+- **[0001](docs/adr/0001-mdx-content-pipeline.md):** コンテンツは MDX + `next-mdx-remote`（RSC）で描画する
+- **[0002](docs/adr/0002-decap-cms-with-own-github-oauth.md):** Decap CMS と、自前の GitHub OAuth ルート
+- **[0003](docs/adr/0003-in-memory-rate-limiting.md):** レート制限は、プロセス内メモリの固定窓
+- **[0004](docs/adr/0004-react-compiler.md):** React Compiler を有効のままにする（計測あり）
+- **[0005](docs/adr/0005-keep-unsafe-inline-script-src.md):** CSP の `script-src` に `'unsafe-inline'` を残す（計測あり）
+- **[0006](docs/adr/0006-performance-budgets-and-fonts.md):** 性能予算と、日本語フォントの扱い
+- **[0007](docs/adr/0007-license-split.md):** コードは MIT、コンテンツは権利留保
+- **[0008](docs/adr/0008-automation-and-branch-protection.md):** 依存の自動更新・pre-commit・ブランチ保護の方針
+
+## テスト・品質管理
+
+- 単体・結合テスト（Vitest、カバレッジ 95% 以上を CI で強制）、E2E（Playwright、axe によるアクセシビリティ検査）、性能予算（Lighthouse CI）、コンテンツ検査（`content:check`）。コマンドは「スクリプト一覧」。
+- GitHub Actions で Pull Request ごとに、Lint・整形・コンテンツ検査・型検査・単体テスト・E2E・性能予算（`.github/workflows/ci.yml`）と、依存の監査・Dependency Review・CodeQL（`.github/workflows/security.yml`）を実行する。Node のバージョンは `.nvmrc` から読む。
+
+## セットアップ
+
+### 前提
+
+- Node.js 24.15 以上（`.nvmrc` は `24`。`nvm install 24 && nvm use` で最新の 24 系にする。jsdom 30 の要求）。別の版では `npm install` が失敗する（`engine-strict`）。
+- npm 11 以上。
+
+### 起動
+
+```bash
+nvm use
+npm ci
+cp .env.example .env.local   # 値は次の節を見て埋める
+npm run dev                  # http://localhost:3000
+```
+
+環境変数が空でも、サイトの閲覧は動く。お問い合わせの送信と CMS のログインだけが、それぞれの設定を必要とする（未設定の機能は 500 を返し、ログに不足している変数名が出る）。
+
+### 環境変数
+
+- **`RESEND_API_KEY`**
+  - 必要な機能: お問い合わせ
+  - 値: Resend の API キー
+  - Vercel での種別: シークレット（Sensitive）
+- **`ADMIN_EMAIL`**
+  - 必要な機能: お問い合わせ
+  - 値: 問い合わせの届け先（自分のメール）
+  - Vercel での種別: 通常
+- **`CONTACT_MAIL_FROM`**
+  - 必要な機能: お問い合わせ
+  - 値: 送信元。`名前 <address@your-domain>` の形。ドメインは Resend で認証済みであること
+  - Vercel での種別: 通常
+- **`GITHUB_OAUTH_CLIENT_ID`**
+  - 必要な機能: CMS のログイン
+  - 値: GitHub OAuth App の Client ID
+  - Vercel での種別: 通常
+- **`GITHUB_OAUTH_CLIENT_SECRET`**
+  - 必要な機能: CMS のログイン
+  - 値: GitHub OAuth App の Client Secret
+  - Vercel での種別: シークレット（Sensitive）
+
+- 本番（Vercel）では、同じ名前を Project Settings > Environment Variables に登録する。Production と Preview の両方に設定する。
+- 値はコミットしない（`.env*` は `.gitignore` 済みで、`.env.example` だけが追跡される）。
+- 値が不正（形式が違う）な場合も、不足と同じく該当機能が 500 を返し、ログに変数名だけが出る（値は出ない）。
+
+### 外部サービスの設定
+
+**Resend（お問い合わせのメール送信）**
+
+1. Resend でドメインを追加し、DNS に DKIM / SPF / DMARC のレコードを登録して認証する。
+2. API キーを発行し、`RESEND_API_KEY` に設定する。
+3. `CONTACT_MAIL_FROM` に、認証済みドメインの送信元アドレスを設定する。
+
+**GitHub OAuth App（CMS のログイン）**
+
+1. GitHub > Settings > Developer settings > OAuth Apps で、新しい OAuth App を作る。
+2. Homepage URL にサイトの URL、Authorization callback URL に `<サイトの URL>/api/decap-oauth/callback` を設定する。
+3. Client ID と、発行した Client Secret を、`GITHUB_OAUTH_CLIENT_ID` / `GITHUB_OAUTH_CLIENT_SECRET` に設定する。
+4. 要求するスコープは `public_repo` のみ（公開リポジトリへの書き込み）。
+
+**Decap CMS**
+
+- 設定は `public/admin/config.yml`。`backend.repo` / `branch` / `base_url` / `auth_endpoint` を自分のリポジトリとサイトに合わせる。
+- 本番: `<サイトの URL>/admin` を開き、GitHub でログインする。記事を保存すると、`main` に直接コミットされる。
+- ローカル（ログイン不要）: 別のターミナルで `npm run cms:proxy` を起動し、`http://localhost:3000/admin` を開く（`local_backend: true`）。ローカルの `content/` を直接編集する。
+
+## ライセンス
+
+- ソースコードは MIT License（`LICENSE`）。
+- `content/`（記事）、`public/images/uploads/`（画像）、About ページのプロフィール文は対象外で、すべての権利を留保する（`CONTENT_LICENSE.md`）。
+
+## ディレクトリ構成
+
+```
+src/
+  app/            # App Router（ページ・APIルート）
+  components/     # UIコンポーネント
+  hooks/          # クライアントのフック
+  lib/            # ロジック（content / contact / security / seo、env.ts）
+  project/        # リポジトリの設定・文書を検査するテスト
+content/
+  work/           # Work記事（.mdx）
+  blog/           # Blog記事（.mdx）
+public/admin/     # Decap CMS設定
+e2e/              # Playwright E2Eテスト
+scripts/          # content:check
+docs/adr/         # 設計記録
+```

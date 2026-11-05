@@ -28,4 +28,14 @@ jobs:
       - run: npm run lint
       - run: npm run format:check
       - run: npm run type-check
-      - run: npm run build
+      - name: Build
+        shell: bash
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee build.log
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: foundation-build-log
+          path: build.log

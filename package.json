@@ -2,16 +2,20 @@
   "name": "naokikaneko",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=24.15.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "type-check": "next typegen && tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "next typegen && tsc --noEmit",
     "content:check": "tsx scripts/content-check.ts",
     "cms:proxy": "decap-server",
     "test:e2e": "playwright test",
@@ -61,6 +65,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^5.0.5",
     "babel-plugin-react-compiler": "1.0.0",
     "daisyui": "^5.7.39",
     "decap-server": "^3.11.2",
@@ -78,16 +83,13 @@
     "typescript": "~6.0.3",
     "vitest": "^5.0.5"
   },
-  "engines": {
-    "node": ">=24.15.0"
-  },
   "overrides": {
-    "@tailwindcss/typography": {
-      "postcss-selector-parser": "^6.1.5"
-    },
     "@lhci/cli": {
       "tmp": "^0.2.6",
       "uuid": "^11.1.1"
+    },
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "^6.1.5"
     }
   }
 }

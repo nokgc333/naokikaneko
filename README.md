@@ -21,3 +21,11 @@
 - `npm run lint`、`npm run type-check`、`npm run format:check`、`npm run build` の順に確認する。
 - `npm start` の後、狭い画面と広い画面で Work の見出しと余白を確認する。
 - 横スクロールや文字の欠けがないことを確認する。
+
+## 初回 CI の確認
+
+- main 向けの pull request と main の push で CI の Foundation Checks が動作する。
+- クリーンな複製で `nvm use`、`npm install --global npm@11.19.1`、`npm ci` を実行する。
+- `npm run lint`、`npm run format:check`、`npm run type-check`、`npm run build` を実行する。
+- pull request の Foundation Checks の成功を確認してから、次の機能へ進む。
+- ビルド失敗時は foundation-build-log を取得し、履歴を書き換えず後続コミットで修正する。

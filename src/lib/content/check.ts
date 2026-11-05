@@ -88,10 +88,20 @@ export function checkCollection(
   fileExists: (publicPath: string) => boolean,
 ): CheckIssue[] {
   const issues: CheckIssue[] = [];
+  const seen = new Map<string, string>();
 
   for (const entry of entries) {
     for (const message of checkOne(collection, entry, fileExists)) {
       issues.push({ file: entry.file, message });
+    }
+    const slug = entry.data.slug;
+    if (typeof slug === "string") {
+      const first = seen.get(slug);
+      if (first !== undefined) {
+        issues.push({ file: entry.file, message: `duplicated slug "${slug}" (also used by ${first})` });
+      } else {
+        seen.set(slug, entry.file);
+      }
     }
   }
   return issues;

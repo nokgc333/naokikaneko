@@ -37,6 +37,11 @@ describe("checkCollection", () => {
     expect(messages([entry({ slug: "other" })]).join()).toContain("must match the file name");
   });
 
+  it("reports a duplicated slug", () => {
+    const result = messages([entry({}, "sample.mdx"), entry({ slug: "sample" }, "sample.md")]);
+
+    expect(result.join()).toContain("duplicated slug");
+  });
 
   it("rejects a slug that is not URL friendly", () => {
     expect(messages([entry({ slug: "Bad Slug" }, "Bad Slug.mdx")]).join()).toContain(
@@ -81,13 +86,43 @@ describe("checkCollection", () => {
     );
   });
 
+  it("accepts an entry without a thumbnail", () => {
+    const { thumbnail: _omit, ...withoutThumbnail } = base;
+    void _omit;
 
+    expect(
+      checkCollection("work", [{ file: "sample.mdx", data: withoutThumbnail }], exists),
+    ).toEqual([]);
+  });
+
+  it("rejects a thumbnail with an unsupported extension", () => {
+    expect(
+      messages([entry({ thumbnail: "/images/uploads/sample.bmp" })]).join(),
+    ).toContain("png, jpg, jpeg, webp or svg");
+  });
 
   it("requires url to be an http(s) address", () => {
     expect(messages([entry({ url: "javascript:alert(1)" })]).join()).toContain("http");
     expect(messages([entry({ url: "https://example.com" })])).toEqual([]);
   });
 
+  it("rejects empty or padded tags", () => {
+    expect(messages([entry({ tags: ["ok", " "] })]).join()).toContain("tags");
+    expect(messages([entry({ tags: [" padded"] })]).join()).toContain("tags");
+  });
 
+  it("does not require a category for blog posts", () => {
+    const { category: _omit, ...withoutCategory } = base;
+    void _omit;
 
+    expect(
+      checkCollection("blog", [{ file: "sample.mdx", data: withoutCategory }], exists),
+    ).toEqual([]);
+  });
+
+  it("names the file in every issue", () => {
+    const issues = checkCollection("work", [entry({ description: "" }, "broken.mdx")], exists);
+
+    expect(issues.every((issue) => issue.file === "broken.mdx")).toBe(true);
+  });
 });

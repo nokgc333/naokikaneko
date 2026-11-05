@@ -13,7 +13,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "content:check": "tsx scripts/content-check.ts",
-    "cms:proxy": "decap-server"
+    "cms:proxy": "decap-server",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -43,6 +44,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
     "@testing-library/dom": "^10.4.2",

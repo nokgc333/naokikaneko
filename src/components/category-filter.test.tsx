@@ -129,3 +129,19 @@ describe("CategoryFilter view toggle", () => {
     );
   });
 });
+
+describe("CategoryFilter image priority", () => {
+  const many: ContentEntry[] = Array.from({ length: 4 }, (_, index) => ({
+    ...entries[1],
+    title: `Entry ${index}`,
+    slug: `entry-${index}`,
+    date: `2025-06-0${4 - index}`,
+  }));
+
+  it("prioritizes only the first two images, which are above the fold", () => {
+    render(<CategoryFilter entries={many} hrefPrefix="/work" cardType="work" />);
+
+    const priorities = screen.getAllByRole("img").map((img) => img.getAttribute("fetchpriority"));
+    expect(priorities).toEqual(["high", "high", null, null]);
+  });
+});

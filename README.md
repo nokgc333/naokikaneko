@@ -39,3 +39,13 @@
 - 問い合わせの入力スキーマとレスポンス型、機能別の環境変数検証を単体テストで確認できる。
 - メール設定がなくても既存の一覧・記事・プロフィールは閲覧できる。
 - OAuth 設定の変数名は `GITHUB_OAUTH_CLIENT_ID` と `GITHUB_OAUTH_CLIENT_SECRET`。
+
+## コンテンツ編集
+
+- `npm run cms:proxy` と `npm run dev` を別のターミナルで起動し、`/admin` を開いてローカル原稿を編集する。
+- CMS の入力項目・カテゴリ・画像の配置は `CONTENT_GUIDE.md` を参照する。
+- 公開環境では GitHub OAuth App の callback URL をサイトと同じ origin の `/api/decap-oauth/callback` に設定する。
+- `GITHUB_OAUTH_CLIENT_ID` と `GITHUB_OAUTH_CLIENT_SECRET` をサーバー環境へ設定し、秘密の値をクライアントやログへ含めない。
+- `/api/decap-oauth/auth` が認可を開始し、callback が state cookie を照合して認可コードを交換する。
+- 編集後は `npm run content:check`、`npm run lint`、`npm run type-check`、`npm test`、`npm run build` を実行する。
+- 認証境界と CMS 設定は単体テストで確認する。公開環境でのログインと保存は、OAuth 設定後にブラウザで確認する。

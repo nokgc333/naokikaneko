@@ -18,6 +18,12 @@ describe("next.config", () => {
     expect(pattern.test("/admin/index.html")).toBe(false);
   });
 
+  it("serves the CMS entry page at /admin", async () => {
+    const rules = (await nextConfig.rewrites?.()) ?? [];
+
+    expect(rules).toEqual([{ source: "/admin", destination: "/admin/index.html" }]);
+  });
+
   it("includes HSTS and Permissions-Policy among the applied headers", async () => {
     const rules = (await nextConfig.headers?.()) ?? [];
     const keys = rules[0].headers.map((h) => h.key);

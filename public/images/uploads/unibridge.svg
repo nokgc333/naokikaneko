@@ -1,0 +1,16 @@
+<svg viewBox="0 0 800 450" width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="450" fill="#0a0a0a" />
+
+  <text x="400" y="100" font-family="Arial, sans-serif" font-size="15" fill="#777777" text-anchor="middle" letter-spacing="3">DCC DATA BRIDGE</text>
+
+  <g text-anchor="middle">
+    <text x="230" y="220" font-family="ui-monospace, monospace" font-size="34" font-weight="700" fill="#888888">Houdini</text>
+    <text x="400" y="212" font-family="Arial, sans-serif" font-size="34" fill="#555555">&#8596;</text>
+    <text x="570" y="220" font-family="ui-monospace, monospace" font-size="34" font-weight="700" fill="#888888">Blender</text>
+  </g>
+
+  <text x="400" y="255" font-family="ui-monospace, monospace" font-size="44" font-weight="700" fill="#ffffff" text-anchor="middle">unibridge</text>
+
+  <rect x="220" y="290" width="360" height="1" fill="#333333" />
+  <text x="400" y="322" font-family="ui-monospace, monospace" font-size="16" fill="#aaaaaa" text-anchor="middle">USD upAxis / metersPerUnit diff</text>
+</svg>

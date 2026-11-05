@@ -1,12 +1,31 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import ContactWidget from "@/components/contact-widget";
+import JsonLd from "@/components/json-ld";
+import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/seo/structured-data";
+import { SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
 
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+};
+
 export const metadata: Metadata = {
-  title: "Portfolio",
-  description: "Profile and work",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "naokikaneko.com",
+    template: "%s | naokikaneko.com",
+  },
+  description: "Naoki Kaneko | Portfolio Website",
+  openGraph: {
+    siteName: "naokikaneko.com",
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -17,6 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div className="px-5 pt-20 pb-8 lg:px-10 lg:pb-10">{children}</div>
         <SiteFooter />
         <ContactWidget />
+        <JsonLd data={buildWebSiteJsonLd()} />
+        <JsonLd data={buildPersonJsonLd()} />
       </body>
     </html>
   );

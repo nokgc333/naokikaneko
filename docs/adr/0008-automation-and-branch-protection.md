@@ -12,7 +12,7 @@
 ### 依存の自動更新（Dependabot）
 
 - npm と GitHub Actions を、毎週月曜に確認する。npm は、minor と patch を 1 つの PR にまとめる（PR の数を抑える）。
-- 上位の制約で更新できない 4 つの major（`@hookform/resolvers`、`eslint`、`typescript`、`@types/node`）は、major の提案を無視する。理由は `docs/TASKLIST.md` の NK-20 に記録している（`@types/node` は、実行環境の Node 24 に合わせるため）。
+- 上位の制約で更新できない 3 つの major（`eslint`、`typescript`、`@types/node`）は、major の提案を無視する。`eslint` と `typescript` は、lint のプラグインが新しい major にまだ対応していないため。`@types/node` は、実行環境の Node 24 に合わせるため。
 - PR は CI（性能予算・監査・Dependency Review・CodeQL を含む）が通ってからマージする。
 
 ### 脆弱な推移的依存（`overrides`）
@@ -31,7 +31,6 @@
 ### ブランチ保護
 
 - `main`: 必須のステータスチェック（Lint、Type Check、Unit & Integration Tests、E2E Tests、Performance Budget、Dependency Audit、CodeQL）、force push と削除を禁止。
-- `develop`: force push と削除の禁止だけ。作業ブランチなので、チェックは要求しない。
 - **管理者は保護の対象外**（`enforce_admins: false`）。CMS は、管理者である編集者のトークンで `main` に直接コミットする。PR 必須やチェック必須を管理者にも強制すると、CMS の保存が失敗する。
 - 設定は `.github/branch-protection/*.json` にバージョン管理し、`gh api` で適用する（手順は README）。
 

@@ -136,7 +136,7 @@ Lighthouse（モバイル、模擬回線、本番ビルドをローカルで計�
 1. Vercel で GitHub のリポジトリを接続する（フレームワークは Next.js が自動で検出される）。
 2. 環境変数を Production と Preview に登録する（「セットアップ」の表）。
 3. 独自ドメインを設定し、Resend 側で同じドメインを認証する。
-4. `develop` で作業し、`main` への PR を作る。CI（Lint・型・テスト・E2E・性能予算・セキュリティ）がすべて通ったら、マージコミットで取り込む。`main` への反映で、本番に自動でデプロイされる。
+4. 短命ブランチで作業し、`main` への PR を作る。CI（Lint・型・テスト・E2E・性能予算・セキュリティ）がすべて通ったら、マージコミットで取り込む。`main` への反映で、本番に自動でデプロイされる。
 5. PR ごとに Vercel のプレビューが作られる。
 
 ## 開発の進め方（自動化とブランチ保護）
@@ -147,7 +147,6 @@ Lighthouse（モバイル、模擬回線、本番ビルドをローカルで計�
 
 ```bash
 gh api -X PUT repos/<owner>/<repo>/branches/main/protection --input .github/branch-protection/main.json
-gh api -X PUT repos/<owner>/<repo>/branches/develop/protection --input .github/branch-protection/develop.json
 gh api -X PUT repos/<owner>/<repo>/automated-security-fixes
 ```
 

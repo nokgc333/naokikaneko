@@ -14,13 +14,13 @@ CMS のフォームにない項目は、保存時に消える。そのため、�
 
 ### B. ローカルから（Git）
 
-1. `develop` にいることを確認する（`git switch develop`）。
+1. 最新の `main` から、短命ブランチを切る（`git switch main && git pull && git switch -c content/<slug>`）。
 2. `content/work/<slug>.mdx`（または `content/blog/<slug>.mdx`）を作る。ファイル名は slug と同じにする。
 3. 画像は `public/images/uploads/` に置く。
 4. `npm run content:check` で検査する（下の「検査」）。
 5. コミットして PR を作り、CI が通ったらマージする。
 
-CMS の編集は `main` に直接入るため、ローカルで大きな作業をする前に、`develop` で `git pull origin main` を実行して取り込む。
+CMS の編集は `main` に直接入るため、ローカルで作業を始める前に、必ず最新の `main` から切る（古い `main` から切ると、CMS の編集とぶつかる）。
 
 ### ローカルで CMS を使う
 

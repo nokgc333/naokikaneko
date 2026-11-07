@@ -22,7 +22,7 @@
 ## 結果
 
 - 良い: 追加の契約や常駐サーバーが要らない。ログインの全処理がこのリポジトリのテスト対象になる。CMS 経由でも Git の履歴が残る。
-- 悪い: CMS の保存が `main` に直接入るため、`develop` が `main` より古くなる（大きな作業の前に `git pull origin main` を実行する運用で吸収）。CMS の設定にない frontmatter は、保存時に消える（`src/project/cms-config.test.ts` がずれを検出する）。
+- 悪い: CMS の保存が `main` に直接入るため、手元の `main` が古くなりうる（作業ブランチは、必ず最新の `main` から切る運用で吸収）。CMS の設定にない frontmatter は、保存時に消える（`src/project/cms-config.test.ts` がずれを検出する）。
 - 本番での確認は、GitHub への実際のログインに依存するため、自動テストでは代替できない。
 
 ## 検討した代替案

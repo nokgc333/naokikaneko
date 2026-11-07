@@ -65,13 +65,11 @@ describe("branch protection policy", () => {
     }
   });
 
-  it("forbids force pushes and deletions on both branches", () => {
-    for (const branch of ["main", "develop"]) {
-      const policy = json(`.github/branch-protection/${branch}.json`);
+  it("forbids force pushes and deletions on main", () => {
+    const policy = json(".github/branch-protection/main.json");
 
-      expect(policy.allow_force_pushes, branch).toBe(false);
-      expect(policy.allow_deletions, branch).toBe(false);
-    }
+    expect(policy.allow_force_pushes).toBe(false);
+    expect(policy.allow_deletions).toBe(false);
   });
 
   it("does not enforce the rules on admins, so the CMS can commit to main", () => {

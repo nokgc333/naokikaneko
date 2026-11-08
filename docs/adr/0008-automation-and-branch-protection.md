@@ -18,7 +18,7 @@
 ### 脆弱な推移的依存（`overrides`）
 
 - 親パッケージが古い版に固定していて、Dependabot のセキュリティ更新が PR を作れないときは、`package.json` の `overrides` で、**親を限定して**修正版へ上げる（全体への上書きはしない。別の用途の、別のメジャー版を巻き込むため）。
-- 現在: `@tailwindcss/typography` 配下の `postcss-selector-parser`（6.1.5 以上）。開発依存で、本番の依存には入らない。
+- 現在: `@lhci/cli` 配下の `tmp`（0.2.6 以上）と `uuid`（11.1.1 以上）、`@tailwindcss/typography` 配下の `postcss-selector-parser`（6.1.5 以上）。いずれも開発依存で、本番の依存には入らない。
 - 上げたあとは、Lint・型・単体・build・E2E と、`lhci collect` の動作を確かめる。親が修正版に追随したら、`overrides` を外す。
 - **修正版が存在しないもの**（`deepmerge`・`@hapi/joi`・`extract-zip`）は、上げられない。いずれも開発依存で、親（`shadcn`・`decap-server`・`lighthouse`）の対応を待つ。
 
@@ -30,7 +30,7 @@
 
 ### ブランチ保護
 
-- `main`: 必須のステータスチェック（Lint、Type Check、Unit & Integration Tests、Build、E2E Tests、Performance Budget、Dependency Audit、CodeQL）、force push と削除を禁止。
+- `main`: 必須のステータスチェック（Lint、Type Check、Unit & Integration Tests、E2E Tests、Performance Budget、Dependency Audit、CodeQL）、force push と削除を禁止。
 - **管理者は保護の対象外**（`enforce_admins: false`）。CMS は、管理者である編集者のトークンで `main` に直接コミットする。PR 必須やチェック必須を管理者にも強制すると、CMS の保存が失敗する。
 - 設定は `.github/branch-protection/*.json` にバージョン管理し、`gh api` で適用する（手順は README）。
 

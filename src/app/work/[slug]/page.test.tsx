@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import WorkDetailPage, { generateStaticParams } from "./page";
+import WorkDetailPage, { generateMetadata, generateStaticParams } from "./page";
 
 const getEntries = vi.fn();
 const getEntry = vi.fn();
@@ -49,6 +49,13 @@ describe("work detail page", () => {
     expect(getEntries).toHaveBeenCalledWith("work");
   });
 
+  it("builds metadata for the requested slug", async () => {
+    buildEntryMetadata.mockReturnValue({ title: "T" });
+
+    await expect(generateMetadata(params("a"))).resolves.toEqual({ title: "T" });
+    expect(buildEntryMetadata).toHaveBeenCalledWith("work", "a");
+  });
+
   it("calls notFound when the entry does not exist", async () => {
     getEntry.mockReturnValue(undefined);
 
@@ -73,5 +80,16 @@ describe("work detail page", () => {
     render(await WorkDetailPage(params("tool")));
 
     expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
+
+  it("embeds CreativeWork structured data for the entry", async () => {
+    getEntry.mockReturnValue(baseEntry);
+
+    const { container } = render(await WorkDetailPage(params("tool")));
+
+    const data = JSON.parse(
+      container.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}",
+    );
+    expect(data).toMatchObject({ "@type": "CreativeWork", name: "Tool" });
   });
 });

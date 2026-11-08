@@ -1,0 +1,16 @@
+<svg viewBox="0 0 800 400" width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="400" fill="#0a0a0a" />
+
+  <!-- top label -->
+  <text x="400" y="70" font-family="Arial, sans-serif" font-size="15" fill="#777777" text-anchor="middle" letter-spacing="2">DESIGN DECISION: RATE LIMIT</text>
+
+  <!-- main -->
+  <text x="400" y="200" font-family="ui-monospace, monospace" font-size="56" font-weight="700" fill="#ffffff" text-anchor="middle">in-memory</text>
+
+  <!-- subline -->
+  <text x="400" y="245" font-family="Arial, sans-serif" font-size="17" fill="#dddddd" text-anchor="middle">fixed window · no external store</text>
+
+  <!-- code line -->
+  <rect x="220" y="285" width="360" height="1" fill="#333333" />
+  <text x="400" y="315" font-family="ui-monospace, monospace" font-size="17" fill="#aaaaaa" text-anchor="middle">5 requests / 10 min / IP</text>
+</svg>

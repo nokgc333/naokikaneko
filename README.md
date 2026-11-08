@@ -32,3 +32,18 @@ Pull requests and pushes to main or feature branches run lint, formatting, type 
 
 - `npm test`: run unit tests once.
 - `npm run test:watch`: watch unit tests.
+
+## Repository automation
+
+Dependabot checks npm and GitHub Actions weekly. Husky runs lint-staged after `npm ci`; staged files are checked for secrets and formatting, and source files are linted.
+
+- `npm run secrets:check`: scan tracked project content for secrets, excluding generated files.
+- After merging the initial protection policy, apply it before starting the next branch:
+
+```sh
+gh api --method PUT repos/{owner}/{repo}/branches/main/protection --input .github/branch-protection/main.json
+```
+
+Required checks are Lint, Type Check, Unit & Integration Tests and Build. The policy disables force pushes and deletions. Enable the dependency graph, vulnerability alerts, automatic security fixes, secret scanning, push protection and deletion of merged branches in repository settings.
+
+See [ADR-0008](docs/adr/0008-automation-and-branch-protection.md).

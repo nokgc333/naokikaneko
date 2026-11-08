@@ -64,6 +64,7 @@ describe("branch protection policy", () => {
       "Type Check",
       "Unit & Integration Tests",
       "Build",
+      "E2E Tests",
       "Dependency Audit",
       "CodeQL",
     ]);

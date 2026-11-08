@@ -44,7 +44,7 @@ Dependabot checks npm and GitHub Actions weekly. Husky runs lint-staged after `n
 gh api --method PUT repos/{owner}/{repo}/branches/main/protection --input .github/branch-protection/main.json
 ```
 
-Required checks are Lint, Type Check, Unit & Integration Tests and Build. The policy disables force pushes and deletions. Enable the dependency graph, vulnerability alerts, automatic security fixes, secret scanning, push protection and deletion of merged branches in repository settings.
+Required checks are Lint, Type Check, Unit & Integration Tests, Build, E2E Tests, Dependency Audit and CodeQL. The policy disables force pushes and deletions. Enable the dependency graph, vulnerability alerts, automatic security fixes, secret scanning, push protection and deletion of merged branches in repository settings.
 
 See [ADR-0008](docs/adr/0008-automation-and-branch-protection.md).
 
@@ -81,3 +81,10 @@ CMS settings live in `public/admin/config.yml`: set the repository, branch, base
 - [0005](docs/adr/0005-keep-unsafe-inline-script-src.md)
 - [0007](docs/adr/0007-license-split.md)
 - [0008](docs/adr/0008-automation-and-branch-protection.md)
+
+## Browser checks
+
+- `npm run test:e2e`: run Playwright checks in Chromium.
+- Install Chromium first with `npx playwright install --with-deps chromium`.
+
+CI runs browser checks after lint, type checking and unit tests, and uploads the Playwright report.

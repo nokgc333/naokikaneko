@@ -131,3 +131,23 @@ describe("design records", () => {
     }
   });
 });
+
+describe("README coverage of scripts", () => {
+  it("lists every npm script in the script table", () => {
+    const readme = read("README.md");
+    const scripts = Object.keys(JSON.parse(read("package.json")).scripts);
+
+    for (const name of scripts) {
+      expect(readme, name).toContain(`npm run ${name}`);
+    }
+  });
+
+  it("describes the architecture, security policy, performance and deployment", () => {
+    const readme = read("README.md");
+
+    for (const heading of ["## アーキテクチャ", "## セキュリティ方針", "## 性能", "## デプロイ"]) {
+      expect(readme, heading).toContain(heading);
+    }
+    expect(readme).toContain("```mermaid");
+  });
+});

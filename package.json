@@ -49,6 +49,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.63.0",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
     "@tailwindcss/postcss": "^4",

@@ -16,7 +16,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "prepare": "husky",
-    "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore"
+    "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore",
+    "content:check": "tsx scripts/content-check.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -53,6 +54,7 @@
     "secretlint": "^13.0.7",
     "shadcn": "^4.22.1",
     "tailwindcss": "^4",
+    "tsx": "^4.23.15",
     "typescript": "~6.0.3",
     "vitest": "^5.0.5"
   },

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Noto_Sans_JP, Roboto } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
+import ContactWidget from "@/components/contact-widget";
 import JsonLd from "@/components/json-ld";
 import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/seo/structured-data";
 import { SITE_URL } from "@/lib/seo/site";
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </div>
         <SiteFooter />
+        <ContactWidget />
         <JsonLd data={buildWebSiteJsonLd()} />
         <JsonLd data={buildPersonJsonLd()} />
       </body>

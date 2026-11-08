@@ -15,6 +15,8 @@ vi.mock("./globals.css", () => ({}));
 vi.mock("@/components/site-header", () => ({ default: () => <header>header</header> }));
 vi.mock("@/components/site-footer", () => ({ default: () => <footer>footer</footer> }));
 
+vi.mock("@/components/contact-widget", () => ({ default: () => <aside>widget</aside> }));
+
 function renderLayout() {
   return renderToStaticMarkup(
     <RootLayout {...({ children: <p>page body</p> } as React.ComponentProps<typeof RootLayout>)} />,
@@ -58,10 +60,10 @@ describe("RootLayout", () => {
     expect(html).toContain("--font-mono");
   });
 
-  it("places the header, page content, footer in order", () => {
+  it("places the header, page content, footer and contact widget in order", () => {
     const html = renderLayout();
 
-    const order = ["header", "page body", "footer"].map((text) => html.indexOf(text));
+    const order = ["header", "page body", "footer", "widget"].map((text) => html.indexOf(text));
     expect(order.every((index) => index >= 0)).toBe(true);
     expect([...order].sort((a, b) => a - b)).toEqual(order);
   });

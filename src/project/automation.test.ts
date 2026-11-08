@@ -26,6 +26,31 @@ describe("Dependabot", () => {
   });
 });
 
+describe("pre-commit checks", () => {
+  it("runs lint-staged from the husky pre-commit hook", () => {
+    expect(read(".husky/pre-commit")).toContain("lint-staged");
+  });
+
+  it("enables the hooks on install", () => {
+    expect(json("package.json").scripts.prepare).toBe("husky");
+  });
+
+  it("checks every staged file for secrets and formats code", () => {
+    const config = json(".lintstagedrc.json");
+
+    expect(config["*"]).toContain("secretlint");
+    expect(config["*.{ts,tsx,mjs,cjs}"].join(" ")).toContain("eslint");
+    expect(config["*.{ts,tsx,mjs,cjs}"].join(" ")).toContain("prettier");
+  });
+
+  it("uses the recommended secretlint rules and skips generated files", () => {
+    expect(json(".secretlintrc.json").rules[0].id).toBe(
+      "@secretlint/secretlint-rule-preset-recommend",
+    );
+    expect(read(".secretlintignore")).toContain("package-lock.json");
+  });
+});
+
 describe("branch protection policy", () => {
   const jobNames = [...read(".github/workflows/ci.yml").matchAll(/^\s{4}name: (.+)$/gm)].map(
     (match) => match[1].trim(),

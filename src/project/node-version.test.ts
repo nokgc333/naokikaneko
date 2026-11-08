@@ -27,4 +27,19 @@ describe("pinned Node version", () => {
   it("runs the tests on the pinned major version", () => {
     expect(Number(process.versions.node.split(".")[0])).toBe(nvmrcMajor);
   });
+
+  it("reads the version from .nvmrc in every workflow instead of hard-coding it", () => {
+    const workflows = fs
+      .readdirSync(path.join(root, ".github", "workflows"))
+      .filter((file) => file.endsWith(".yml"));
+
+    expect(workflows.length).toBeGreaterThan(0);
+    for (const file of workflows) {
+      const text = read(path.join(".github", "workflows", file));
+      expect(text, file).not.toMatch(/^\s*node-version:\s/m);
+      if (text.includes("actions/setup-node")) {
+        expect(text, file).toContain("node-version-file: .nvmrc");
+      }
+    }
+  });
 });

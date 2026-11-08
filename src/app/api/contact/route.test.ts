@@ -171,5 +171,93 @@ describe("POST /api/contact", () => {
       expect(response.status).toBe(422);
       expect(sendMock).not.toHaveBeenCalled();
     });
+
+    it("returns 422 and sends nothing when the name contains a line break (prevents subject injection)", async () => {
+      const response = await POST(
+        makeRequest({ ...valid, name: "Taro\r\nBcc: attacker@example.com" }),
+      );
+
+      expect(response.status).toBe(422);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it("returns 422 when the email address exceeds 254 characters", async () => {
+      const longEmail = `${"a".repeat(250)}@example.com`;
+
+      const response = await POST(makeRequest({ ...valid, email: longEmail }));
+
+      expect(response.status).toBe(422);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it("trims surrounding whitespace from the name and message before sending", async () => {
+      await POST(makeRequest({ ...valid, name: "  Taro  ", message: " Hi \n" }));
+
+      const callArgs = sendMock.mock.calls[0][0];
+      expect(callArgs.subject).toBe("【お問い合わせ】Taro様より");
+      expect(callArgs.text).toContain("お名前: Taro\n");
+      expect(callArgs.text.endsWith("Hi")).toBe(true);
+    });
+
+    it("returns 422 for a whitespace-only message because it is required", async () => {
+      const response = await POST(makeRequest({ ...valid, message: "   " }));
+
+      expect(response.status).toBe(422);
+    });
+
+    it("counts the rate limit by x-real-ip when x-forwarded-for is absent", async () => {
+      const body = JSON.stringify(valid);
+      const send = () =>
+        POST(
+          new Request("http://localhost:3000/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-real-ip": "7.7.7.7" },
+            body,
+          }),
+        );
+
+      for (let i = 0; i < 5; i++) expect((await send()).status).toBe(200);
+
+      expect((await send()).status).toBe(429);
+    });
+
+    it("counts different x-real-ip values as separate senders", async () => {
+      const sendFrom = (ip: string) =>
+        POST(
+          new Request("http://localhost:3000/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "x-real-ip": ip },
+            body: JSON.stringify(valid),
+          }),
+        );
+
+      for (let i = 0; i < 5; i++) await sendFrom("1.1.1.1");
+
+      expect((await sendFrom("1.1.1.1")).status).toBe(429);
+      expect((await sendFrom("2.2.2.2")).status).toBe(200);
+    });
+  });
+});
+
+describe("POST /api/contact when Resend rejects the mail", () => {
+  beforeEach(() => {
+    resetRateLimit();
+    vi.stubEnv("RESEND_API_KEY", "test-key");
+    vi.stubEnv("ADMIN_EMAIL", "admin@example.com");
+    vi.stubEnv("CONTACT_MAIL_FROM", "contact@example.com");
+  });
+
+  it("returns 500 and logs the provider error without leaking it to the client", async () => {
+    sendMock.mockResolvedValueOnce({ data: null, error: { message: "provider down" } });
+    const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const response = await POST(
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
+    );
+
+    expect(response.status).toBe(500);
+    expect(await response.text()).not.toContain("provider down");
+    expect(errorSpy).toHaveBeenCalled();
+    errorSpy.mockRestore();
   });
 });

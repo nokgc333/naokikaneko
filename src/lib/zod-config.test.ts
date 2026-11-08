@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { z } from "zod";
 
 describe("zod jitless configuration", () => {
-  it("disables runtime code generation", async () => {
-    await import("./zod-config");
+  it("is jitless even when only the content schema is loaded", async () => {
+    await import("./content/schema");
 
     expect(z.config().jitless).toBe(true);
   });

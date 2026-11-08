@@ -65,4 +65,83 @@ describe("CategoryFilter", () => {
     render(<CategoryFilter entries={entries} hrefPrefix="/work" cardType="work" />);
     expect(screen.queryByLabelText("リスト表示")).not.toBeInTheDocument();
   });
+
+  it("always shows both the grid and list toggle buttons when cardType is blog, and they switch the view", async () => {
+    const user = userEvent.setup();
+    render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
+
+    const gridButton = screen.getByLabelText("グリッド表示");
+    const listButton = screen.getByLabelText("リスト表示");
+    expect(gridButton).toHaveAttribute("aria-pressed", "true");
+    expect(listButton).toHaveAttribute("aria-pressed", "false");
+
+    await user.click(listButton);
+
+    expect(screen.getByText("A tools entry")).toBeInTheDocument();
+    expect(gridButton).toHaveAttribute("aria-pressed", "false");
+    expect(listButton).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("shows the sort button in grid view too, and clicking it reverses the order", async () => {
+    const user = userEvent.setup();
+    render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
+    const links = () =>
+      screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
+
+    expect(screen.getByText("新しい順")).toBeInTheDocument();
+    expect(links()[0]).toHaveAttribute("href", "/blog/hda-entry");
+
+    await user.click(screen.getByText("新しい順"));
+
+    expect(screen.getByText("古い順")).toBeInTheDocument();
+    expect(links()[0]).toHaveAttribute("href", "/blog/tools-entry");
+  });
+
+  it("keeps the sort result when switching to list view", async () => {
+    const user = userEvent.setup();
+    render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
+    const links = () =>
+      screen.getAllByRole("link").filter((link) => link.getAttribute("href")?.startsWith("/blog/"));
+
+    await user.click(screen.getByText("新しい順"));
+    await user.click(screen.getByLabelText("リスト表示"));
+
+    expect(screen.getByText("古い順")).toBeInTheDocument();
+    expect(links()[0]).toHaveAttribute("href", "/blog/tools-entry");
+  });
+});
+
+describe("CategoryFilter view toggle", () => {
+  it("returns to the grid view after switching to the list view", async () => {
+    const user = userEvent.setup();
+    render(<CategoryFilter entries={entries} hrefPrefix="/blog" cardType="blog" />);
+
+    await user.click(screen.getByRole("button", { name: "リスト表示" }));
+    expect(screen.getByRole("button", { name: "リスト表示" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    await user.click(screen.getByRole("button", { name: "グリッド表示" }));
+
+    expect(screen.getByRole("button", { name: "グリッド表示" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+  });
+});
+
+describe("CategoryFilter image priority", () => {
+  const many: ContentEntry[] = Array.from({ length: 4 }, (_, index) => ({
+    ...entries[1],
+    title: `Entry ${index}`,
+    slug: `entry-${index}`,
+    date: `2025-06-0${4 - index}`,
+  }));
+
+  it("prioritizes only the first two images, which are above the fold", () => {
+    render(<CategoryFilter entries={many} hrefPrefix="/work" cardType="work" />);
+
+    const priorities = screen.getAllByRole("img").map((img) => img.getAttribute("fetchpriority"));
+    expect(priorities).toEqual(["high", "high", null, null]);
+  });
 });

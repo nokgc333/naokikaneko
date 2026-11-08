@@ -1,7 +1,24 @@
+import type { Metadata } from "next";
+import { getEntries } from "@/lib/content";
+import CategoryFilter from "@/components/category-filter";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
 export default function Home() {
+  const entries = getEntries("work");
+
   return (
-    <main>
-      <h1>Work</h1>
+    <main className="mx-auto w-full max-w-7xl py-6 lg:py-9">
+      <h1 className="mb-6 text-3xl font-bold">Work</h1>
+      <CategoryFilter
+        entries={entries}
+        hrefPrefix="/work"
+        cardType="work"
+        defaultFilter="Tool"
+        gridClassName="grid-cols-1 md:grid-cols-2 gap-1"
+      />
     </main>
   );
 }

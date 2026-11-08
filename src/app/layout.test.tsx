@@ -14,7 +14,6 @@ vi.mock("next/font/google", () => {
 vi.mock("./globals.css", () => ({}));
 vi.mock("@/components/site-header", () => ({ default: () => <header>header</header> }));
 vi.mock("@/components/site-footer", () => ({ default: () => <footer>footer</footer> }));
-
 vi.mock("@/components/contact-widget", () => ({ default: () => <aside>widget</aside> }));
 
 function renderLayout() {

@@ -122,4 +122,54 @@ describe("POST /api/contact", () => {
     expect(response.status).toBe(429);
     expect(sendMock).toHaveBeenCalledTimes(5);
   });
+
+  describe("resilience to malformed and oversized requests", () => {
+    const valid = { name: "Taro", email: "taro@example.com", message: "Hello" };
+
+    function makeRawRequest(raw: string, headers: Record<string, string> = {}) {
+      return new Request("http://localhost:3000/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...headers },
+        body: raw,
+      });
+    }
+
+    it("returns 400 and sends nothing when the body is not valid JSON", async () => {
+      const response = await POST(makeRawRequest("{not json"));
+
+      expect(response.status).toBe(400);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it("returns 400 when the body is empty", async () => {
+      const response = await POST(makeRawRequest(""));
+
+      expect(response.status).toBe(400);
+    });
+
+    it("returns 413 when Content-Length declares more than the limit", async () => {
+      const response = await POST(
+        makeRawRequest(JSON.stringify(valid), { "content-length": "100000" }),
+      );
+
+      expect(response.status).toBe(413);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it("returns 413 when the actual body exceeds the limit even without Content-Length", async () => {
+      const huge = JSON.stringify({ ...valid, message: "a".repeat(20_000) });
+
+      const response = await POST(makeRawRequest(huge));
+
+      expect(response.status).toBe(413);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it("returns 422 when the JSON is not an object (null)", async () => {
+      const response = await POST(makeRawRequest("null"));
+
+      expect(response.status).toBe(422);
+      expect(sendMock).not.toHaveBeenCalled();
+    });
+  });
 });

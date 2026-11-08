@@ -20,6 +20,8 @@ After merging this policy, apply `.github/branch-protection/main.json` before st
 
 The security workflow audits production dependencies for high severity vulnerabilities, reviews dependencies in pull requests and scans JavaScript and TypeScript with CodeQL. It also runs weekly. Dependency Review only runs for pull requests and is not a required context.
 
+The typography plugin uses a parent-scoped override for postcss-selector-parser (^6.1.5), preserving the fixed patched dependency version without overriding unrelated consumers.
+
 ## Consequences
 
 Protection follows the jobs currently provided by CI. New jobs require a corresponding policy update. Local hooks supplement CI and can be bypassed; they do not replace required checks.

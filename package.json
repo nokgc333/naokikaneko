@@ -12,15 +12,16 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "type-check": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "husky",
-    "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "next typegen && tsc --noEmit",
     "content:check": "tsx scripts/content-check.ts",
     "cms:proxy": "decap-server",
     "test:e2e": "playwright test",
-    "test:coverage": "vitest run --coverage"
+    "test:perf": "lhci autorun",
+    "prepare": "husky",
+    "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -51,6 +52,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@lhci/cli": "^0.16.0",
     "@playwright/test": "^1.63.0",
     "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
     "@tailwindcss/postcss": "^4",

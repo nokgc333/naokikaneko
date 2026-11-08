@@ -30,6 +30,7 @@ describe("CI workflow", () => {
       "npm run build",
       "npm run content:check",
       "npm run test:e2e",
+      "npm run test:perf",
     ]) {
       expect(ci).toContain(command);
     }
@@ -39,6 +40,7 @@ describe("CI workflow", () => {
       "Unit & Integration Tests",
       "Build",
       "E2E Tests",
+      "Performance Budget",
     ]);
   });
 

@@ -18,6 +18,9 @@ Work と Blog の原稿を Git で管理し、誤った frontmatter を公開前
 - Work の詳細ページは `rehype-sanitize` を渡して安全でない HTML を取り除く。
 - `src/app/work/[slug]/page.tsx` の `generateStaticParams` が Work の slug を列挙し、詳細を静的生成する。存在しない slug は `notFound` で扱う。
 
+- `src/lib/content/toc.ts` は `remark-parse` で見出しを抽出し、`github-slugger` で重複する見出しにも一意なアンカーを割り当てる。
+- アンカーには `user-content-` を付ける。`TableOfContents` は見出しへのリンクを描画し、`IntersectionObserver` で表示中の見出しを示す。
+
 ## 結果
 
 原稿の検証と本文の描画を分離し、描画に使うプラグインを呼び出し側から指定できる。

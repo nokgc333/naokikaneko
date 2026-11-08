@@ -19,7 +19,8 @@
     "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore",
     "content:check": "tsx scripts/content-check.ts",
     "cms:proxy": "decap-server",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -62,6 +63,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.1",
+    "@vitest/coverage-v8": "^5.0.5",
     "babel-plugin-react-compiler": "1.0.0",
     "daisyui": "^5.7.39",
     "decap-server": "^3.11.2",

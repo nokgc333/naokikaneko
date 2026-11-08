@@ -88,3 +88,9 @@ CMS settings live in `public/admin/config.yml`: set the repository, branch, base
 - Install Chromium first with `npx playwright install --with-deps chromium`.
 
 CI runs browser checks after lint, type checking and unit tests, and uploads the Playwright report.
+
+## Unit coverage
+
+- `npm run test:coverage`: collect unit coverage; statements, branches, functions and lines must each reach 95%.
+
+CI uploads the coverage report after running the unit tests.

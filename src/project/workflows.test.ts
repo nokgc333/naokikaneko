@@ -28,6 +28,8 @@ describe("CI workflow", () => {
       "npm run type-check",
       "npm test",
       "npm run build",
+      "npm run content:check",
+      "npm run test:e2e",
     ]) {
       expect(ci).toContain(command);
     }
@@ -36,7 +38,14 @@ describe("CI workflow", () => {
       "Type Check",
       "Unit & Integration Tests",
       "Build",
+      "E2E Tests",
     ]);
+  });
+
+  it("installs the browser and uploads results after the existing checks", () => {
+    expect(ci).toContain("needs: [lint, type-check, unit-test]");
+    expect(ci).toContain("npx playwright install --with-deps chromium");
+    expect(ci).toContain("path: playwright-report/");
   });
 });
 

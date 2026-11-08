@@ -22,6 +22,8 @@ The security workflow audits production dependencies for high severity vulnerabi
 
 The typography plugin uses a parent-scoped override for postcss-selector-parser (^6.1.5), preserving the fixed patched dependency version without overriding unrelated consumers.
 
+Administrators are exempt from branch protection so Decap CMS can save content directly to main. The public editor configuration targets main; local editing uses npm run cms:proxy.
+
 ## Consequences
 
 Protection follows the jobs currently provided by CI. New jobs require a corresponding policy update. Local hooks supplement CI and can be bypassed; they do not replace required checks.

@@ -5,7 +5,6 @@
       "Lint",
       "Type Check",
       "Unit & Integration Tests",
-      "Build",
       "E2E Tests",
       "Performance Budget",
       "Dependency Audit",

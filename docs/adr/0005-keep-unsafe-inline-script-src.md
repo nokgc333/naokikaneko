@@ -1,7 +1,7 @@
 # ADR-0005: CSP の `script-src` に `'unsafe-inline'` を残す
 
 - 状態: 採用（2026-10-25、計測のうえで決定）
-- 関連: `src/lib/security/security-headers.ts`
+- 関連: `src/lib/security/security-headers.ts`、`e2e/security.spec.ts`
 
 ## 背景
 
@@ -19,14 +19,15 @@ CSP の `script-src` から `'unsafe-inline'` を外すと、XSS への防御が
 
 `script-src 'self' 'unsafe-inline'` を維持する。
 
-- 現在の静的ページはユーザー入力を HTML に反映しない。
+- このサイトは、作者本人のファイルとサニタイズ済みの MDX だけを配信し、ユーザー入力を HTML に反映しない。XSS の現実的な経路がなく、防御上の利益は小さい。
 - 速さを見せる作品であり、静的配信（CDN キャッシュ）を失うコストが大きい。
 - 他のディレクティブ（`default-src 'self'`、`object-src 'none'`、`frame-ancestors 'none'`、`base-uri 'self'`、`form-action 'self'`）は厳格なまま。
 
 ## 結果
 
 - 良い: 静的配信と性能を保てる。
-- 悪い: インラインスクリプトの注入に対する防御は、CSP では得られない（入力を HTML に反映しない設計で守る）。
+- 悪い: インラインスクリプトの注入に対する防御は、CSP では得られない（入力を HTML に反映しない設計と、サニタイズで守る）。
+- 回帰の検出: 主要 5 ページで CSP 違反が出ないことを、E2E が検査する。
 
 ## 見直す条件
 

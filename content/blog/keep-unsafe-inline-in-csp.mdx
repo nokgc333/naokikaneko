@@ -1,0 +1,39 @@
+---
+title: "CSP の script-src に 'unsafe-inline' を残した理由（計測して決めた）"
+slug: "keep-unsafe-inline-in-csp"
+date: "2026-11-08"
+updatedDate: "2026-11-08"
+tags: ["Security", "Next.js", "Performance"]
+category: "Others"
+thumbnail: "/images/uploads/keep-unsafe-inline-in-csp.svg"
+description: "CSP の script-src から 'unsafe-inline' を外す 3 つの方式を、本番ビルドで試して計測した。外さない、と決めた根拠と、見直す条件を書いた。"
+---
+
+CSP の `script-src` から `'unsafe-inline'` を外すと、XSS への防御が強くなる。ただ、Next.js の静的ページには、起動処理と RSC のペイロードのインラインスクリプトが含まれる。外すには、nonce かハッシュで許可する必要がある。
+
+3 つの方式を、本番ビルドで試した。結論は、`'unsafe-inline'` を残す、だった。判断の記録は [ADR-0005](https://github.com/nokgc333/naokikaneko/blob/main/docs/adr/0005-keep-unsafe-inline-script-src.md) にある。
+
+## 試した 3 つの方式
+
+- **SRI（`experimental.sri`）と `script-src 'self'`:** 使えなかった。インラインスクリプトが違反になり、ハイドレーションが壊れた（ボタンが効かない）。
+- **nonce（`proxy.ts` と、ルートレイアウトの `await connection()`）:** 違反 0 件で動いた。ただし、全ページが動的レンダリングになり、`Cache-Control: no-store` になる。TTFB（中央値）は、トップが 1.4ms から 4.6ms、ブログ記事が 1.4ms から 21.3ms になった（MDX を毎回コンパイルするため）。Vercel では、さらにサーバーレスの起動時間と、エッジのキャッシュを失うコストが加わる。
+- **ハッシュ:** インラインスクリプトの内容が、ページとビルドごとに変わる。静的な `headers()` では、表現できない。
+
+## なぜ残したか
+
+このサイトは、作者本人のファイルと、サニタイズ済みの MDX だけを配信している。ユーザーの入力を HTML に反映しないので、XSS の現実的な経路がない。防御上の利益は小さい。
+
+一方、速さを見せるサイトなので、静的配信（CDN のキャッシュ）を失うコストは大きい。この比較で、残すほうを選んだ。
+
+他のディレクティブは、厳格なままにしてある（`default-src 'self'`、`object-src 'none'`、`frame-ancestors 'none'`、`base-uri 'self'`、`form-action 'self'`）。
+
+## 弱点と、見直す条件
+
+インラインスクリプトの注入に対する防御は、CSP では得られない。入力を HTML に反映しない設計と、サニタイズで守っている。主要 5 ページで CSP 違反が出ないことは、E2E で検査している。
+
+次のどれかが起きたら、見直す。
+
+- ユーザーの入力や外部のコンテンツを、HTML に反映する機能を足す。
+- 第三者のスクリプトを読み込む。
+- Vercel 上の実測で、動的レンダリングの TTFB が許容できると確認できる。
+- Next.js が、静的ページ向けのハッシュ方式の CSP に対応する。

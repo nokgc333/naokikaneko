@@ -1,7 +1,10 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist_Mono, Noto_Sans_JP, Roboto } from "next/font/google";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
+import JsonLd from "@/components/json-ld";
+import { buildPersonJsonLd, buildWebSiteJsonLd } from "@/lib/seo/structured-data";
+import { SITE_URL } from "@/lib/seo/site";
 import "./globals.css";
 
 const roboto = Roboto({
@@ -27,6 +30,23 @@ export const viewport: Viewport = {
   themeColor: "#ffffff",
 };
 
+export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "naokikaneko.com",
+    template: "%s | naokikaneko.com",
+  },
+  description: "Naoki Kaneko | Portfolio Website",
+  openGraph: {
+    siteName: "naokikaneko.com",
+    type: "website",
+    locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -50,6 +70,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </div>
         <SiteFooter />
+        <JsonLd data={buildWebSiteJsonLd()} />
+        <JsonLd data={buildPersonJsonLd()} />
       </body>
     </html>
   );

@@ -1,9 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import BlogDetailPage, { generateStaticParams } from "./page";
+import BlogDetailPage, { generateMetadata, generateStaticParams } from "./page";
 
 const getEntries = vi.fn();
 const getEntry = vi.fn();
+const buildEntryMetadata = vi.fn();
 const notFound = vi.fn(() => {
   throw new Error("NEXT_NOT_FOUND");
 });
@@ -11,6 +12,9 @@ const notFound = vi.fn(() => {
 vi.mock("@/lib/content", () => ({
   getEntries: (...args: unknown[]) => getEntries(...args),
   getEntry: (...args: unknown[]) => getEntry(...args),
+}));
+vi.mock("@/lib/seo/metadata", () => ({
+  buildEntryMetadata: (...args: unknown[]) => buildEntryMetadata(...args),
 }));
 vi.mock("next/navigation", () => ({ notFound: () => notFound() }));
 vi.mock("@/components/content-detail", () => ({
@@ -55,6 +59,13 @@ describe("blog detail page", () => {
     expect(getEntries).toHaveBeenCalledWith("blog");
   });
 
+  it("builds metadata for the requested slug", async () => {
+    buildEntryMetadata.mockReturnValue({ title: "T" });
+
+    await expect(generateMetadata(params("a"))).resolves.toEqual({ title: "T" });
+    expect(buildEntryMetadata).toHaveBeenCalledWith("blog", "a");
+  });
+
   it("calls notFound when the entry does not exist", async () => {
     getEntry.mockReturnValue(undefined);
 
@@ -73,5 +84,17 @@ describe("blog detail page", () => {
     expect(screen.getByRole("heading", { level: 1, name: "Post" })).toBeInTheDocument();
     expect(screen.getByTestId("toc")).toHaveTextContent("First,Second");
     expect(screen.getByTestId("related")).toHaveTextContent("p1,p2,p3,p4,p5");
+  });
+
+  it("embeds BlogPosting structured data for the entry", async () => {
+    getEntry.mockReturnValue({ ...basePost, body: "" });
+    getEntries.mockReturnValue([]);
+
+    const { container } = render(await BlogDetailPage(params("current")));
+
+    const data = JSON.parse(
+      container.querySelector('script[type="application/ld+json"]')?.textContent ?? "{}",
+    );
+    expect(data).toMatchObject({ "@type": "BlogPosting", headline: "Post" });
   });
 });

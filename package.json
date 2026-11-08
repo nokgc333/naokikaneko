@@ -17,7 +17,8 @@
     "test:watch": "vitest",
     "prepare": "husky",
     "secrets:check": "secretlint \"**/*\" --secretlintignore .secretlintignore",
-    "content:check": "tsx scripts/content-check.ts"
+    "content:check": "tsx scripts/content-check.ts",
+    "cms:proxy": "decap-server"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -60,6 +61,7 @@
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "1.0.0",
     "daisyui": "^5.7.39",
+    "decap-server": "^3.11.2",
     "eslint": "^9.39.5",
     "eslint-config-next": "16.4.3",
     "husky": "^9.1.7",

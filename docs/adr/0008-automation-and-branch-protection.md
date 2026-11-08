@@ -1,29 +1,50 @@
-# ADR-0008: Automation and branch protection
+# ADR-0008: 依存の自動更新・pre-commit・ブランチ保護の方針
 
-## Status
+- 状態: 採用（2026-10-25）
+- 関連: `.github/dependabot.yml`、`.husky/pre-commit`、`.lintstagedrc.json`、`.secretlintrc.json`、`.github/branch-protection/`
 
-Accepted.
+## 背景
 
-## Context
+依存の更新を人が思い出して行う運用では、脆弱性への対応が遅れる。秘密情報のコミットや、整形・lint の漏れは、CI で気づいても履歴に残ってしまう。また、`main` は本番に直結しており、誤った push や force push を機械的に防ぎたい。ただし、CMS（Decap）は編集者のトークンで `main` に直接コミットするため、保護が CMS の保存を妨げてはならない。
 
-The initial CI provides static checks, unit tests and a production build. Repository protection must require checks that exist.
+## 決定
 
-## Decision
+### 依存の自動更新（Dependabot）
 
-Dependabot checks npm and GitHub Actions weekly. Minor and patch npm updates are grouped; blocked major versions are excluded.
+- npm と GitHub Actions を、毎週月曜に確認する。npm は、minor と patch を 1 つの PR にまとめる（PR の数を抑える）。
+- 上位の制約で更新できない 3 つの major（`eslint`、`typescript`、`@types/node`）は、major の提案を無視する。`eslint` と `typescript` は、lint のプラグインが新しい major にまだ対応していないため。`@types/node` は、実行環境の Node 24 に合わせるため。
+- PR は CI（性能予算・監査・Dependency Review・CodeQL を含む）が通ってからマージする。
 
-Husky runs lint-staged before committing. Staged source files are linted and formatted; all staged files are checked with the recommended secretlint rules.
+### 脆弱な推移的依存（`overrides`）
 
-The main protection record requires Lint, Type Check, Unit & Integration Tests, Build, E2E Tests, Performance Budget, Dependency Audit and CodeQL. These eight required checks include browser navigation checks using Playwright and production performance budgets using Lighthouse CI. Force pushes and deletions are disabled. Administrator enforcement and required pull request reviews are disabled.
+- 親パッケージが古い版に固定していて、Dependabot のセキュリティ更新が PR を作れないときは、`package.json` の `overrides` で、**親を限定して**修正版へ上げる（全体への上書きはしない。別の用途の、別のメジャー版を巻き込むため）。
+- 現在: `@tailwindcss/typography` 配下の `postcss-selector-parser`（6.1.5 以上）。開発依存で、本番の依存には入らない。
+- 上げたあとは、Lint・型・単体・build・E2E と、`lhci collect` の動作を確かめる。親が修正版に追随したら、`overrides` を外す。
+- **修正版が存在しないもの**（`deepmerge`・`@hapi/joi`・`extract-zip`）は、上げられない。いずれも開発依存で、親（`shadcn`・`decap-server`・`lighthouse`）の対応を待つ。
 
-After merging this policy, apply `.github/branch-protection/main.json` before starting the next branch. Enable the dependency graph, vulnerability alerts, automated security fixes, secret scanning, push protection and deletion of merged branches in repository settings.
+### コミット前の検査（husky + lint-staged + secretlint）
 
-The security workflow audits production dependencies for high severity vulnerabilities, reviews dependencies in pull requests and scans JavaScript and TypeScript with CodeQL. It also runs weekly. Dependency Review only runs for pull requests and is not a required context.
+- コミット時に、ステージされたファイルだけを検査する: TypeScript は ESLint と Prettier、JSON・CSS・YAML は Prettier、**すべてのファイルに secretlint**（API キー・トークンなどの秘密情報の検出）。
+- 秘密情報の検出は、npm で完結する secretlint を選んだ（`gitleaks` は別途インストールが必要で、再現性が下がるため）。GitHub 側のシークレットスキャン・プッシュ保護、GitGuardian が、サーバー側の二重の備えになる。
+- `npm install` / `npm ci` の `prepare` が husky を有効にする。CI でも害はない。
 
-The typography plugin uses a parent-scoped override for postcss-selector-parser (^6.1.5), preserving the fixed patched dependency version without overriding unrelated consumers.
+### ブランチ保護
 
-Administrators are exempt from branch protection so Decap CMS can save content directly to main. The public editor configuration targets main; local editing uses npm run cms:proxy.
+- `main`: 必須のステータスチェック（Lint、Type Check、Unit & Integration Tests、Build、E2E Tests、Performance Budget、Dependency Audit、CodeQL）、force push と削除を禁止。
+- **管理者は保護の対象外**（`enforce_admins: false`）。CMS は、管理者である編集者のトークンで `main` に直接コミットする。PR 必須やチェック必須を管理者にも強制すると、CMS の保存が失敗する。
+- 設定は `.github/branch-protection/*.json` にバージョン管理し、`gh api` で適用する（手順は README）。
 
-## Consequences
+## 結果
 
-Protection follows the jobs currently provided by CI. New jobs require a corresponding policy update. Local hooks supplement CI and can be bypassed; they do not replace required checks.
+- 良い: 脆弱性への対応が定期的に PR として届く。秘密情報と整形の漏れを、コミット時点で止められる。force push を防げる。
+- 悪い: 管理者は保護をすり抜けられる（CMS の運用との両立のため）。`prepare` で husky が入る。Dependabot の PR が増える（グループ化で抑える）。
+- 保護の設定そのものは、GitHub の設定変更であり、リポジトリ管理者が手元で実行する。
+
+## 検討した代替案
+
+- Renovate: 設定の自由度は高いが、GitHub App の導入が必要。Dependabot は標準機能で足りる。
+- CMS を `editorial_workflow`（PR 経由）にして、管理者にも保護を強制する: 保存のたびに PR が立ち、運用が重くなる。
+
+## 見直す条件
+
+編集者が増える、または CMS を PR 経由にする場合は、`enforce_admins` を有効にし、PR を必須にする。

@@ -92,3 +92,62 @@ describe("content guide", () => {
     expect(read(".github/workflows/ci.yml")).toContain("npm run content:check");
   });
 });
+
+describe("design records", () => {
+  const adrDir = path.join(process.cwd(), "docs", "adr");
+  const adrFiles = fs
+    .readdirSync(adrDir)
+    .filter((file) => /^\d{4}-.+\.md$/.test(file))
+    .sort();
+
+  it("keeps at least four records", () => {
+    expect(adrFiles.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("numbers the records consecutively from 0001", () => {
+    adrFiles.forEach((file, index) => {
+      expect(file.slice(0, 4)).toBe(String(index + 1).padStart(4, "0"));
+    });
+  });
+
+  it.each(adrFiles)(
+    "%s states its status, context, decision, consequences and when to revisit",
+    (file) => {
+      const text = fs.readFileSync(path.join(adrDir, file), "utf-8");
+
+      expect(text).toMatch(/^# ADR-\d{4}: .+/m);
+      expect(text).toMatch(/^- 状態: /m);
+      for (const heading of ["## 背景", "## 決定", "## 結果", "## 見直す条件"]) {
+        expect(text, heading).toContain(heading);
+      }
+    },
+  );
+
+  it("links every record from the README", () => {
+    const readme = read("README.md");
+
+    for (const file of adrFiles) {
+      expect(readme, file).toContain(`docs/adr/${file}`);
+    }
+  });
+});
+
+describe("README coverage of scripts", () => {
+  it("lists every npm script in the script table", () => {
+    const readme = read("README.md");
+    const scripts = Object.keys(JSON.parse(read("package.json")).scripts);
+
+    for (const name of scripts) {
+      expect(readme, name).toContain(`npm run ${name}`);
+    }
+  });
+
+  it("describes the architecture, security policy, performance and deployment", () => {
+    const readme = read("README.md");
+
+    for (const heading of ["## アーキテクチャ", "## セキュリティ方針", "## 性能", "## デプロイ"]) {
+      expect(readme, heading).toContain(heading);
+    }
+    expect(readme).toContain("```mermaid");
+  });
+});

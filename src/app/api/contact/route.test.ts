@@ -56,4 +56,70 @@ describe("POST /api/contact", () => {
     expect(response.status).toBe(422);
     expect(sendMock).not.toHaveBeenCalled();
   });
+
+  it("returns 200 but sends nothing when the honeypot is filled", async () => {
+    const response = await POST(
+      makeRequest({
+        name: "Bot",
+        email: "bot@example.com",
+        message: "spam",
+        honeypot: "filled",
+      }),
+    );
+
+    expect(response.status).toBe(200);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("returns 500 without calling Resend when ADMIN_EMAIL is not set", async () => {
+    vi.stubEnv("ADMIN_EMAIL", "");
+
+    const response = await POST(
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
+    );
+
+    expect(response.status).toBe(500);
+    expect(sendMock).not.toHaveBeenCalled();
+  });
+
+  it("uses the CONTACT_MAIL_FROM environment variable as the sender", async () => {
+    await POST(makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }));
+
+    expect(sendMock.mock.calls[0][0].from).toBe("お問い合わせ <contact@example.com>");
+  });
+
+  it.each(["RESEND_API_KEY", "CONTACT_MAIL_FROM"])(
+    "returns 500 without calling Resend and logs only the variable name when %s is not set",
+    async (name) => {
+      vi.stubEnv(name, "");
+      const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+
+      const response = await POST(
+        makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }),
+      );
+
+      expect(response.status).toBe(500);
+      expect(sendMock).not.toHaveBeenCalled();
+      const logged = errorSpy.mock.calls.flat().join(" ");
+      expect(logged).toContain(name);
+      expect(logged).not.toContain("test-key");
+      errorSpy.mockRestore();
+    },
+  );
+
+  it("returns 429 when one IP exceeds the send limit", async () => {
+    for (let i = 0; i < 5; i++) {
+      const response = await POST(
+        makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }, "9.9.9.9"),
+      );
+      expect(response.status).toBe(200);
+    }
+
+    const response = await POST(
+      makeRequest({ name: "Taro", email: "taro@example.com", message: "Hello" }, "9.9.9.9"),
+    );
+
+    expect(response.status).toBe(429);
+    expect(sendMock).toHaveBeenCalledTimes(5);
+  });
 });

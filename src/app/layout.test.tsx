@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, it, expect, vi } from "vitest";
-import RootLayout, { viewport } from "./layout";
+import RootLayout, { metadata, viewport } from "./layout";
 
 const fontOptions = vi.hoisted(() => new Map<string, Record<string, unknown>>());
 
@@ -58,7 +58,7 @@ describe("RootLayout", () => {
     expect(html).toContain("--font-mono");
   });
 
-  it("places the header, page content and footer in order", () => {
+  it("places the header, page content, footer in order", () => {
     const html = renderLayout();
 
     const order = ["header", "page body", "footer"].map((text) => html.indexOf(text));
@@ -66,7 +66,24 @@ describe("RootLayout", () => {
     expect([...order].sort((a, b) => a - b)).toEqual(order);
   });
 
+  it("exports the site-wide metadata", () => {
+    expect(metadata.title).toEqual({
+      default: "naokikaneko.com",
+      template: "%s | naokikaneko.com",
+    });
+    expect(metadata.openGraph).toMatchObject({ locale: "ja_JP", type: "website" });
+    expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
+  });
+
   it("declares the theme color in the viewport", () => {
     expect(viewport.themeColor).toBe("#ffffff");
+  });
+
+  it("embeds WebSite and Person structured data on every page", () => {
+    const html = renderLayout();
+
+    expect(html.match(/application\/ld\+json/g)).toHaveLength(2);
+    expect(html).toContain("WebSite");
+    expect(html).toContain("Person");
   });
 });

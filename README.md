@@ -18,3 +18,10 @@ Next.js App Router application.
 
 - [Source license](LICENSE).
 - [Content license](CONTENT_LICENSE.md).
+
+## Quality checks
+
+- `npm run lint`: lint source files.
+- `npm run format`: format files.
+- `npm run format:check`: check formatting.
+- `npm run type-check`: generate route types and check TypeScript.

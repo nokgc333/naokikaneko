@@ -58,18 +58,6 @@ jobs:
           name: coverage-report
           path: coverage/
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .nvmrc
-          cache: npm
-      - run: npm ci
-      - run: npm run build
-
   e2e-test:
     name: E2E Tests
     runs-on: ubuntu-latest

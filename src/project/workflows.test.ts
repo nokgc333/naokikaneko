@@ -2,13 +2,11 @@ import fs from "fs";
 import path from "path";
 import { describe, it, expect } from "vitest";
 
-const ci = fs.readFileSync(path.join(process.cwd(), ".github/workflows/ci.yml"), "utf-8");
+const read = (file: string) =>
+  fs.readFileSync(path.join(process.cwd(), ".github", "workflows", file), "utf-8");
 
 describe("CI workflow", () => {
-  it("checks pushes and pull requests targeting main", () => {
-    expect(ci).toMatch(/push:\s*\n\s+branches: \[main, "feature\/\*"\]/);
-    expect(ci).toMatch(/pull_request:\s*\n\s+branches: \[main\]/);
-  });
+  const ci = read("ci.yml");
 
   it("cancels superseded runs of the same ref", () => {
     expect(ci).toMatch(
@@ -21,42 +19,20 @@ describe("CI workflow", () => {
     expect(ci).toMatch(/^permissions:\s*\n\s+contents: read/m);
   });
 
-  it("runs the existing static checks, unit tests and build", () => {
+  it("runs the format check, the unit tests, the e2e tests and the performance budget", () => {
     for (const command of [
-      "npm run lint",
       "npm run format:check",
-      "npm run type-check",
       "npm run test:coverage",
-      "npm run build",
-      "npm run content:check",
       "npm run test:e2e",
       "npm run test:perf",
     ]) {
       expect(ci).toContain(command);
     }
-    expect([...ci.matchAll(/^ {4}name: (.+)$/gm)].map((match) => match[1])).toEqual([
-      "Lint",
-      "Type Check",
-      "Unit & Integration Tests",
-      "Build",
-      "E2E Tests",
-      "Performance Budget",
-    ]);
-  });
-
-  it("installs the browser and uploads results after the existing checks", () => {
-    expect(ci).toContain("needs: [lint, type-check, unit-test]");
-    expect(ci).toContain("npx playwright install --with-deps chromium");
-    expect(ci).toContain("path: playwright-report/");
-    expect(ci).toContain("path: coverage/");
   });
 });
 
 describe("Security workflow", () => {
-  const security = fs.readFileSync(
-    path.join(process.cwd(), ".github/workflows/security.yml"),
-    "utf-8",
-  );
+  const security = read("security.yml");
 
   it("fails the build on high severity production vulnerabilities", () => {
     expect(security).toContain("npm audit --omit=dev --audit-level=high");

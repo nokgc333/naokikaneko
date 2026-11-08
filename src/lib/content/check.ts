@@ -6,6 +6,9 @@ export type Collection = "work" | "blog";
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+const UPLOAD_PREFIX = "/images/uploads/";
+const THUMBNAIL_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "svg"];
+
 function isRealDate(value: unknown): value is string {
   if (typeof value !== "string" || !DATE_PATTERN.test(value)) return false;
   const parsed = new Date(`${value}T00:00:00Z`);
@@ -23,6 +26,33 @@ function checkDates(data: Record<string, unknown>): string[] {
   return problems;
 }
 
+function checkThumbnail(
+  thumbnail: unknown,
+  fileExists: (publicPath: string) => boolean,
+): string[] {
+  if (thumbnail === undefined) return [];
+  if (typeof thumbnail !== "string" || !thumbnail.startsWith(UPLOAD_PREFIX)) {
+    return [`thumbnail must be under ${UPLOAD_PREFIX}`];
+  }
+  const extension = thumbnail.split(".").pop()?.toLowerCase() ?? "";
+  if (!THUMBNAIL_EXTENSIONS.includes(extension)) {
+    return ["thumbnail must be a png, jpg, jpeg, webp or svg file"];
+  }
+  return fileExists(thumbnail) ? [] : [`thumbnail does not exist: public${thumbnail}`];
+}
+
+function checkTagsAndUrl(data: Record<string, unknown>): string[] {
+  const problems: string[] = [];
+  const tags = Array.isArray(data.tags) ? data.tags : [];
+  if (tags.some((tag) => typeof tag !== "string" || tag.trim() === "" || tag !== tag.trim())) {
+    problems.push("tags must not contain empty values or surrounding spaces");
+  }
+  if (typeof data.url === "string" && !/^https?:\/\//.test(data.url)) {
+    problems.push("url must start with http:// or https://");
+  }
+  return problems;
+}
+
 function checkSlug(file: string, slug: unknown): string[] {
   if (typeof slug !== "string") return [];
   const problems: string[] = [];
@@ -35,6 +65,7 @@ function checkSlug(file: string, slug: unknown): string[] {
 function checkOne(
   collection: Collection,
   { file, data }: RawEntry,
+  fileExists: (publicPath: string) => boolean,
 ): string[] {
   const problems: string[] = [];
   const parsed = contentFrontmatterSchema.safeParse(data);
@@ -47,18 +78,20 @@ function checkOne(
     problems.push("category is required for Work entries");
   }
   problems.push(...checkSlug(file, data.slug), ...checkDates(data));
+  problems.push(...checkThumbnail(data.thumbnail, fileExists), ...checkTagsAndUrl(data));
   return problems;
 }
 
 export function checkCollection(
   collection: Collection,
   entries: RawEntry[],
+  fileExists: (publicPath: string) => boolean,
 ): CheckIssue[] {
   const issues: CheckIssue[] = [];
   const seen = new Map<string, string>();
 
   for (const entry of entries) {
-    for (const message of checkOne(collection, entry)) {
+    for (const message of checkOne(collection, entry, fileExists)) {
       issues.push({ file: entry.file, message });
     }
     const slug = entry.data.slug;

@@ -17,8 +17,10 @@ const entry = (data: Record<string, unknown>, file = "sample.mdx"): RawEntry => 
   data: { ...base, ...data },
 });
 
+const exists = (path: string) => path === "/images/uploads/sample.png";
+
 const messages = (entries: RawEntry[], collection: "work" | "blog" = "work") =>
-  checkCollection(collection, entries).map((issue) => issue.message);
+  checkCollection(collection, entries, exists).map((issue) => issue.message);
 
 describe("checkCollection", () => {
   it("accepts a valid entry", () => {
@@ -66,7 +68,7 @@ describe("checkCollection", () => {
     const { category: _omit, ...withoutCategory } = base;
     void _omit;
 
-    const result = checkCollection("work", [{ file: "sample.mdx", data: withoutCategory }]);
+    const result = checkCollection("work", [{ file: "sample.mdx", data: withoutCategory }], exists);
 
     expect(result.map((i) => i.message).join()).toContain("category");
   });
@@ -75,17 +77,51 @@ describe("checkCollection", () => {
     expect(messages([entry({ category: "Misc" })]).length).toBeGreaterThan(0);
   });
 
+  it("requires a thumbnail to live in /images/uploads/ and to exist", () => {
+    expect(messages([entry({ thumbnail: "/elsewhere/x.png" })]).join()).toContain(
+      "/images/uploads/",
+    );
+    expect(messages([entry({ thumbnail: "/images/uploads/missing.png" })]).join()).toContain(
+      "does not exist",
+    );
+  });
+
+  it("accepts an entry without a thumbnail", () => {
+    const { thumbnail: _omit, ...withoutThumbnail } = base;
+    void _omit;
+
+    expect(
+      checkCollection("work", [{ file: "sample.mdx", data: withoutThumbnail }], exists),
+    ).toEqual([]);
+  });
+
+  it("rejects a thumbnail with an unsupported extension", () => {
+    expect(
+      messages([entry({ thumbnail: "/images/uploads/sample.bmp" })]).join(),
+    ).toContain("png, jpg, jpeg, webp or svg");
+  });
+
+  it("requires url to be an http(s) address", () => {
+    expect(messages([entry({ url: "javascript:alert(1)" })]).join()).toContain("http");
+    expect(messages([entry({ url: "https://example.com" })])).toEqual([]);
+  });
+
+  it("rejects empty or padded tags", () => {
+    expect(messages([entry({ tags: ["ok", " "] })]).join()).toContain("tags");
+    expect(messages([entry({ tags: [" padded"] })]).join()).toContain("tags");
+  });
+
   it("does not require a category for blog posts", () => {
     const { category: _omit, ...withoutCategory } = base;
     void _omit;
 
     expect(
-      checkCollection("blog", [{ file: "sample.mdx", data: withoutCategory }]),
+      checkCollection("blog", [{ file: "sample.mdx", data: withoutCategory }], exists),
     ).toEqual([]);
   });
 
   it("names the file in every issue", () => {
-    const issues = checkCollection("work", [entry({ description: "" }, "broken.mdx")]);
+    const issues = checkCollection("work", [entry({ description: "" }, "broken.mdx")], exists);
 
     expect(issues.every((issue) => issue.file === "broken.mdx")).toBe(true);
   });

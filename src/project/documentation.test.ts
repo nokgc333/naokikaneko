@@ -92,3 +92,42 @@ describe("content guide", () => {
     expect(read(".github/workflows/ci.yml")).toContain("npm run content:check");
   });
 });
+
+describe("design records", () => {
+  const adrDir = path.join(process.cwd(), "docs", "adr");
+  const adrFiles = fs
+    .readdirSync(adrDir)
+    .filter((file) => /^\d{4}-.+\.md$/.test(file))
+    .sort();
+
+  it("keeps at least four records", () => {
+    expect(adrFiles.length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("numbers the records consecutively from 0001", () => {
+    adrFiles.forEach((file, index) => {
+      expect(file.slice(0, 4)).toBe(String(index + 1).padStart(4, "0"));
+    });
+  });
+
+  it.each(adrFiles)(
+    "%s states its status, context, decision, consequences and when to revisit",
+    (file) => {
+      const text = fs.readFileSync(path.join(adrDir, file), "utf-8");
+
+      expect(text).toMatch(/^# ADR-\d{4}: .+/m);
+      expect(text).toMatch(/^- 状態: /m);
+      for (const heading of ["## 背景", "## 決定", "## 結果", "## 見直す条件"]) {
+        expect(text, heading).toContain(heading);
+      }
+    },
+  );
+
+  it("links every record from the README", () => {
+    const readme = read("README.md");
+
+    for (const file of adrFiles) {
+      expect(readme, file).toContain(`docs/adr/${file}`);
+    }
+  });
+});

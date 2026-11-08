@@ -25,3 +25,10 @@ Next.js App Router application.
 - `npm run format`: format files.
 - `npm run format:check`: check formatting.
 - `npm run type-check`: generate route types and check TypeScript.
+
+## Continuous integration
+
+Pull requests and pushes to main or feature branches run lint, formatting, type checking, unit tests and a production build.
+
+- `npm test`: run unit tests once.
+- `npm run test:watch`: watch unit tests.

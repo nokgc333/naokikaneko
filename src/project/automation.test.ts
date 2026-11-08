@@ -52,14 +52,21 @@ describe("pre-commit checks", () => {
 });
 
 describe("branch protection policy", () => {
-  const jobNames = [...read(".github/workflows/ci.yml").matchAll(/^\s{4}name: (.+)$/gm)].map(
-    (match) => match[1].trim(),
-  );
+  const jobNames = [...read(".github/workflows/ci.yml").matchAll(/^\s{4}name: (.+)$/gm)]
+    .concat([...read(".github/workflows/security.yml").matchAll(/^\s{4}name: (.+)$/gm)])
+    .map((match) => match[1].trim());
 
   it("requires only checks that really exist as jobs", () => {
     const required = json(".github/branch-protection/main.json").required_status_checks.contexts;
 
-    expect(required.length).toBeGreaterThan(0);
+    expect(required).toEqual([
+      "Lint",
+      "Type Check",
+      "Unit & Integration Tests",
+      "Build",
+      "Dependency Audit",
+      "CodeQL",
+    ]);
     for (const name of required) {
       expect(jobNames, name).toContain(name);
     }

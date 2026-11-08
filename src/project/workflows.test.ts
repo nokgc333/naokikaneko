@@ -39,3 +39,29 @@ describe("CI workflow", () => {
     ]);
   });
 });
+
+describe("Security workflow", () => {
+  const security = fs.readFileSync(
+    path.join(process.cwd(), ".github/workflows/security.yml"),
+    "utf-8",
+  );
+
+  it("fails the build on high severity production vulnerabilities", () => {
+    expect(security).toContain("npm audit --omit=dev --audit-level=high");
+  });
+
+  it("reviews the dependencies added by a pull request", () => {
+    expect(security).toContain("actions/dependency-review-action");
+    expect(security).toMatch(/fail-on-severity: high/);
+  });
+
+  it("scans the source with CodeQL", () => {
+    expect(security).toContain("github/codeql-action/init");
+    expect(security).toContain("github/codeql-action/analyze");
+    expect(security).toContain("security-events: write");
+  });
+
+  it("also runs on a weekly schedule so new advisories are noticed", () => {
+    expect(security).toMatch(/schedule:\s*\n\s+- cron:/);
+  });
+});
